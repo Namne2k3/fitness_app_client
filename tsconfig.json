@@ -12,6 +12,15 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "app/_layout.jsx",
+    "app/(root)/index.jsx",
+    "app/(root)/_layout.jsx",
+    "app/(root)/(tabs)/test_report.tsx",
+    "app/(root)/(tabs)/me.jsx",
+    "app/(root)/(tabs)/welcome.jsx",
+    "app/(root)/(tabs)/exercises.jsx",
+    "app/(root)/(tabs)/custom.jsx",
+    "app/(root)/(tabs)/_layout.jsx"
   ]
 }
