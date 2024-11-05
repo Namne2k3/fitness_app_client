@@ -23,14 +23,12 @@ const RecoveryPasswordPage = () => {
 
     const handleSubmit = async () => {
         if (form.password !== form.newPassword) {
-            Alert.alert("Passwords do not match.");
+            Alert.alert("Password do not match.");
             return;
         }
-
         setLoadingModal(true);
 
         try {
-
             const updatedUser = await handleUpdateUserByEmail(email, form.password)
             Alert.alert("Password reset successfully!");
             setLoadingModal(false);
@@ -41,7 +39,6 @@ const RecoveryPasswordPage = () => {
         } finally {
             setLoadingModal(false);
         }
-
     }
 
     return (
