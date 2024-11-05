@@ -18,7 +18,6 @@ const TrainingContent = () => {
         }
 
         fetchBodyParts();
-
     }, [])
 
     return (

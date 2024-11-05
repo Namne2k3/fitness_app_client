@@ -38,8 +38,8 @@ const FillInformation = () => {
     })
 
     const data = [
-        'male',
-        'female'
+        'Male',
+        'Female'
     ]
 
     useEffect(() => {

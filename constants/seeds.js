@@ -503,3 +503,38 @@ export const seedExercises = [
             "Repeat for the desired number of repetitions."]
     }
 ]
+
+
+const user = {
+    _id: "123",
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    password: 'password123', // Băm mật khẩu trong production
+    image: "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg"
+};
+
+export const seedBlogs = [
+    {
+        content: 'This is the first blog post.',
+        media: [
+            { url: 'https://i.imgur.com/KBHgiMi.png', type: 'image' },
+            { url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4', type: 'video' },
+        ],
+        author: user
+    },
+    {
+        content: 'This is the second blog post with more details.',
+        media: [
+            { url: 'https://i.imgur.com/KBHgiMi.png', type: 'image' },
+            { url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4', type: 'video' },
+        ],
+        author: user
+    },
+    {
+        content: 'An interesting third blog post with a unique perspective.',
+        media: [
+            { url: 'https://i.imgur.com/KBHgiMi.png', type: 'image' },
+        ],
+        author: user
+    },
+];

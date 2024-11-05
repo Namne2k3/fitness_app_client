@@ -44,11 +44,11 @@ export default function TabLayout() {
           title: 'Training',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcons size={28} name='fitness-center' color={color} />
+            <MaterialIcons size={24} name='fitness-center' color={color} />
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 12,
+            fontSize: 10
 
           }
         }}
@@ -59,11 +59,11 @@ export default function TabLayout() {
           title: 'Custom',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcons size={28} name='edit' color={color} />
+            <MaterialIcons size={24} name='edit' color={color} />
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 12
+            fontSize: 10
 
           }
         }}
@@ -74,11 +74,11 @@ export default function TabLayout() {
           title: 'Exercises',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcons size={28} name='article' color={color} />
+            <MaterialCommunityIcons size={24} name='weight-lifter' color={color} />
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 12
+            fontSize: 10
           },
         }}
       />
@@ -88,14 +88,28 @@ export default function TabLayout() {
           title: 'Report',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons size={28} name='google-analytics' color={color} />
+            <MaterialCommunityIcons size={24} name='google-analytics' color={color} />
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 12
+            fontSize: 10
           }
         }}
 
+      />
+      <Tabs.Screen
+        name="feed"
+        options={{
+          title: 'Feed',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons size={24} name='article' color={color} />
+          ),
+          tabBarLabelStyle: {
+            fontWeight: '900',
+            fontSize: 10
+          }
+        }}
       />
       <Tabs.Screen
         name="me"
@@ -103,11 +117,11 @@ export default function TabLayout() {
           title: 'Me',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons size={28} name='person' color={color} />
+            <Ionicons size={24} name='person' color={color} />
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 12
+            fontSize: 10
           }
         }}
       />

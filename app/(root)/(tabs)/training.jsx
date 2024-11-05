@@ -1,12 +1,8 @@
 
-import { NavigationContainer } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import TrainingContent from "../../../components/TrainingContent";
 import Plan from "../../../components/Plan";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
-import { useEffect } from "react";
-import { StatusBar } from "expo-status-bar";
 
 const Tab = createMaterialTopTabNavigator();
 
