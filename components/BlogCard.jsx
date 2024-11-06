@@ -1,8 +1,7 @@
 import { Image, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import Swiper from 'react-native-swiper';
-// import Video from 'react-native-video';
 import { Video } from 'expo-av';
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const BlogCard = ({ blog }) => {
@@ -43,22 +42,25 @@ const BlogCard = ({ blog }) => {
                         activeDotStyle={styles.activeDotStyle} // Style for active dot
                     >
                         {media?.map((med, index) => (
-                            med.type == 'image' ?
-                                <TouchableOpacity className="w-full h-[350px]" key={index}>
-                                    <Image
-                                        source={{ uri: med.url }}
-                                        className="w-full h-full"
-                                        resizeMode="cover"
-                                    />
-                                </TouchableOpacity>
-                                :
-                                <Video
-                                    source={{ uri: med.url }}
-                                    className="w-full h-full"
-                                    resizeMode="contain"
-                                    useNativeControls
-                                    shouldPlay
-                                />
+                            <View key={index}>
+                                {
+                                    med.type == 'image' ?
+                                        <TouchableOpacity className="w-full h-[350px]">
+                                            <Image
+                                                source={{ uri: med.url }}
+                                                className="w-full h-full"
+                                                resizeMode="cover"
+                                            />
+                                        </TouchableOpacity>
+                                        :
+                                        <Video
+                                            source={{ uri: med.url }}
+                                            className="w-full h-full"
+                                            resizeMode="contain"
+                                            useNativeControls
+                                        />
+                                }
+                            </View>
                         ))}
                     </Swiper>
                 </View>

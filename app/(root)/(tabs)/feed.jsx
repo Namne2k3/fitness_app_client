@@ -5,6 +5,9 @@ import { useColorScheme } from 'nativewind'
 import { seedBlogs } from '../../../constants/seeds'
 import { images } from '../../../constants/image'
 import BlogCard from '../../../components/BlogCard';
+import { useRef } from 'react';
+import { router } from 'expo-router';
+
 const Feed = () => {
     const { colorScheme } = useColorScheme()
 
@@ -12,11 +15,11 @@ const Feed = () => {
         <SafeAreaView className="flex bg-[#fff] h-full pt-4 dark:bg-slate-950">
             <View className="flex flex-row justify-between items-center px-4">
                 <View className="">
-                    <AntDesign disabled name='plus' size={26} color={colorScheme == 'dark' ? '#000' : '#fff'} />
+                    <AntDesign disabled name='plus' size={32} color={colorScheme == 'dark' ? '#000' : '#fff'} />
                 </View>
                 <Text className="dark:text-white font-pextrabold text-[32px] text-center">Feed</Text>
-                <TouchableOpacity className="mb-1" onPress={() => { }}>
-                    <AntDesign name='plus' size={26} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                <TouchableOpacity className="mb-1" onPress={() => router.push('/(root)/newfeedpage')}>
+                    <AntDesign name='plus' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                 </TouchableOpacity>
             </View>
 

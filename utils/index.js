@@ -221,9 +221,9 @@ function getCurrentWeekDays() {
     return weekDays;
 }
 
-function changeToLbs() {
-    setIsLbs((current) => !current)
-}
+// function changeToLbs() {
+//     setIsLbs((current) => !current)
+// }
 
 function kgToLbs(kg) {
     return kg * 2.20462
@@ -250,7 +250,7 @@ function calculate1RM(weight, reps, name) {
 
 
 export {
-    changeToLbs,
+    // changeToLbs,
     kgToLbs,
     calculate1RM,
     getTotalTimeDurationThisWeek,
