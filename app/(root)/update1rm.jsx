@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, ScrollView, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Entypo, Feather } from '@expo/vector-icons'
+import { AntDesign, Entypo, Feather } from '@expo/vector-icons'
 import { useColorScheme } from 'nativewind'
 import { router } from 'expo-router'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { kgToLbs, changeToLbs, calculate1RM } from '../../utils/index'
+import { kgToLbs, calculate1RM } from '../../utils/index'
 import CustomButton from '../../components/CustomButton'
 import { handleUpdateUser } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
@@ -46,8 +46,11 @@ const Update1rm = () => {
     const [weight, setWeight] = useState(Number(0))
     const [reps, setReps] = useState(Number(1))
     const user = useUserStore((state) => state.user)
-    const setUser = useUserStore((state) => state.setUser)
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
+
+    const changeToLbs = () => {
+        setIsLbs((current) => !current)
+    }
 
     const updateUser = async () => {
         setIsVisibleLoadingModal(true)
@@ -110,15 +113,25 @@ const Update1rm = () => {
                                         marginTop: 12,
                                         width: 150,
                                         borderColor: colorScheme == 'dark' ? '#fff' : "#000",
-                                        backgroundColor: colorScheme == 'dark' && "#fff",
+                                        backgroundColor: colorScheme == 'dark' ? "#000" : "#fff",
                                         borderWidth: 1,
                                     }}
-                                    // inputStyles={{
-                                    //     color: colorScheme == 'dark' ? "#fff" : "#000"
-                                    // }}
+                                    inputStyles={{
+                                        color: colorScheme == 'dark' ? '#fff' : "#000",
+                                    }}
                                     dropdownStyles={{
-                                        backgroundColor: colorScheme == 'dark' ? "#fff" : "#000",
+                                        backgroundColor: colorScheme == 'dark' ? "#000" : "#fff",
                                         borderColor: colorScheme == 'dark' ? "#fff" : "#000",
+                                    }}
+                                    arrowicon={
+                                        <AntDesign
+                                            name='arrowdown'
+                                            color={colorScheme == 'dark' ? '#fff' : "#000"}
+                                            size={18}
+                                        />
+                                    }
+                                    dropdownTextStyles={{
+                                        color: colorScheme == 'dark' ? '#fff' : '#000'
                                     }}
                                     setSelected={(item) => {
                                         console.log("Check item >>> ", item);
@@ -139,13 +152,14 @@ const Update1rm = () => {
                                         <TextInput
                                             className={`bg-[#ccc] mr-2 font-bold my-2 dark:text-white rounded-lg p-2 text-lg flex-1 text-left`}
                                             keyboardType='numeric'
-                                            value={isLbs ? kgToLbs(weight) : weight}
+                                            value={isLbs ? (weight * 2.20462) : weight}
                                             onChangeText={(weight) => setWeight(weight)}
+                                            placeholder={user?.orm.toString()}
                                         />
                                     </TouchableWithoutFeedback>
                                 </KeyboardAvoidingView>
                                 <TouchableOpacity
-                                    onPress={() => changeToLbs()}
+                                    // onPress={() => changeToLbs()}
                                     className="flex flex-row justify-center items-center w-[40px]"
                                 >
                                     <Text className="font-pmedium dark:text-white">

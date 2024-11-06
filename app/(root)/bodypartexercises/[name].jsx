@@ -4,7 +4,6 @@ import { useLocalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import { images } from '../../../constants/image'
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView, BottomSheetView } from "@gorhom/bottom-sheet";
 import { fetchAllExercisesByBodyPart } from '../../../libs/exerciseDb'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 import { useColorScheme } from 'nativewind'

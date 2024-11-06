@@ -115,6 +115,15 @@ const RootLayout = () => {
                     }}
                 />
                 <Stack.Screen
+                    name='newfeedpage'
+                    options={{
+                        headerShown: true,
+                        headerTitle: '',
+                        headerShadowVisible: false,
+                        headerTintColor: colorScheme == 'dark' && "#fff"
+                    }}
+                />
+                <Stack.Screen
                     name='ForgotPasswordPage'
                     options={{
                         headerShown: false,

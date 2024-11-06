@@ -4,7 +4,6 @@ import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
 import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView, BottomSheetView } from "@gorhom/bottom-sheet";
 import { fetchExerciseByQuery } from '../../../libs/exerciseDb'
 import { images } from '../../../constants/image'
 import { useColorScheme } from 'nativewind'

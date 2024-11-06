@@ -518,6 +518,8 @@ export const seedBlogs = [
         content: 'This is the first blog post.',
         media: [
             { url: 'https://i.imgur.com/KBHgiMi.png', type: 'image' },
+            { url: 'https://i.imgur.com/KBHgiMi.png', type: 'image' },
+            { url: 'https://i.imgur.com/KBHgiMi.png', type: 'image' },
             { url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/WhatCarCanYouGetForAGrand.mp4', type: 'video' },
         ],
         author: user
