@@ -204,6 +204,45 @@ const isEmailExist = async (email) => {
     }
 }
 
+const uploadFiles = async (medias) => {
+    const token = await AsyncStorage.getItem('jwt_token')
+
+    const formData = new FormData();
+
+    medias.forEach((asset, index) => {
+        const uriParts = asset.uri.split('.');
+        const fileType = uriParts[uriParts.length - 1];
+
+        formData.append('files', {
+            uri: asset.uri,
+            name: `file_${index}.${fileType}`,
+            type: asset.type === 'image' ? `image/${fileType}` : `video/${fileType}`,
+        });
+    });
+
+    // Gửi yêu cầu upload tệp lên server
+    try {
+        const response = await axios.post(`${URL}/api/feed/uploads`, formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+            maxContentLength: Infinity, // Không giới hạn kích thước nội dung
+            maxBodyLength: Infinity, // Không giới hạn kích thước thân yêu cầu
+            timeout: 60000,
+        });
+        return response.data;
+    } catch (error) {
+        if (error.response) {
+            console.log("Error response data:", error.response.data);
+            throw new Error(error.response.data.message || 'Upload failed');
+        } else {
+            console.log("Error: ", "File too large!");
+            throw new Error("File too large!");
+        }
+    }
+}
+
 export {
     createUser,
     handleUpdateUserByEmail,
@@ -219,5 +258,6 @@ export {
     deleteTrainingById,
     getTrainingRecordsByMonth,
     createTrainingRecord,
-    handleUpdateUser
+    handleUpdateUser,
+    uploadFiles
 }
