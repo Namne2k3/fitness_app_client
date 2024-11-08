@@ -5,11 +5,28 @@ import { useColorScheme } from 'nativewind'
 import { seedBlogs } from '../../../constants/seeds'
 import { images } from '../../../constants/image'
 import BlogCard from '../../../components/BlogCard';
-import { useRef } from 'react';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { getAllBlog, } from '../../../libs/mongodb'
+import { useCallback, useState } from 'react';
+// import { useFocusEffect } from '@react-navigation/native';
 
 const Feed = () => {
     const { colorScheme } = useColorScheme()
+    const [blogs, setBlogs] = useState([])
+    const fetchBlogs = async () => {
+        try {
+            const res = await getAllBlog()
+            setBlogs(res.data)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchBlogs();
+        }, [])
+    );
 
     return (
         <SafeAreaView className="flex bg-[#fff] h-full pt-4 dark:bg-slate-950">
@@ -25,7 +42,7 @@ const Feed = () => {
 
             <View className="flex justify-center items-center">
                 <FlatList
-                    data={seedBlogs}
+                    data={blogs}
                     renderItem={({ item }) => {
                         return (
                             <BlogCard blog={item} />
@@ -33,14 +50,14 @@ const Feed = () => {
                     }}
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={() => (
-                        <View className="flex flex-col items-center justify-center bg-transparent">
+                        <View className="flex flex-col flex-1 h-full items-center justify-center bg-transparent">
                             <Image
                                 source={images.no_result}
                                 className="w-40 h-40"
                                 alt="No recent rides found"
                                 resizeMethod="contain"
                             />
-                            <Text className="text-sm">No exercises found!</Text>
+                            <Text className="text-sm">No one has posted yet, be the first to post!</Text>
                         </View>
                     )}
                     contentContainerStyle={{

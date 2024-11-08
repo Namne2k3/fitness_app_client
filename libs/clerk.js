@@ -11,7 +11,7 @@ const tokenCache = {
             }
             return item
         } catch (error) {
-            console.error('SecureStore get item error: ', error)
+            console.log('SecureStore get item error: ', error)
             await SecureStore.deleteItemAsync(key)
             return null
         }
