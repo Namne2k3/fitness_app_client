@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomButton from '../../components/CustomButton';
 import { Video, ResizeMode } from 'expo-av';
 import useUserStore from '../../store/userStore'
-import { uploadFiles } from '../../libs/mongodb'
+import { createNewFeed, uploadFiles } from '../../libs/mongodb'
 import LoadingModal from '../../components/LoadingModal'
 import { router } from 'expo-router'
 const NewFeedPage = () => {
@@ -16,7 +16,7 @@ const NewFeedPage = () => {
     const [isVisibleModal, setIsVisibleModal] = useState(false)
     const [form, setForm] = useState({
         content: '',
-        author: currentUser,
+        author: currentUser?._id,
         medias: [],
         likes: [],
         comments: [],
@@ -42,9 +42,23 @@ const NewFeedPage = () => {
         setIsVisibleModal(true)
         try {
             const response = await uploadFiles(form.medias);
-            console.log("Upload success:", response);
+
+            setForm(previous => {
+                return {
+                    ...previous,
+                    medias: response.data
+                }
+            })
+
+            if (response.data) {
+                await createNewFeed({
+                    ...form,
+                    medias: response.data
+                })
+            }
+
             setIsVisibleModal(false)
-            Alert.alert("Posting successfully!")
+            Alert.alert("Posted successfully!")
             router.back()
         } catch (error) {
             setIsVisibleModal(false)
@@ -129,16 +143,7 @@ const NewFeedPage = () => {
                             />
                         </View>
                         <View className="flex flex-row">
-                            {/* <CustomButton
-                                onPress={() => bottomSheetCreateBlogRef?.current.dismiss()}
-                                containerStyle={`flex-1 mr-[5px] border-[3px] border-[#ccc]`}
-                                bgColor='bg-[#fff]'
-                                text={"Cancel"}
-                                textStyle={{
-                                    color: "#c0c0c0"
-                                }}
-                            /> */}
-                            <CustomButton containerStyle={`flex-1 mr-[5px] border-[3px] border-[#4040d6]`}
+                            <CustomButton
                                 text={"Post"}
                                 onPress={handleAddFeed}
                             />

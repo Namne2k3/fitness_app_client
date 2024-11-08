@@ -226,10 +226,7 @@ const uploadFiles = async (medias) => {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
-            },
-            maxContentLength: Infinity, // Không giới hạn kích thước nội dung
-            maxBodyLength: Infinity, // Không giới hạn kích thước thân yêu cầu
-            timeout: 60000,
+            }
         });
         return response.data;
     } catch (error) {
@@ -243,7 +240,36 @@ const uploadFiles = async (medias) => {
     }
 }
 
+const createNewFeed = async (feed) => {
+    const token = await AsyncStorage.getItem('jwt_token')
+    try {
+        const res = await axios.post(`${URL}/api/feed/create`, feed, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        console.log("Error: ", error.message);
+        throw new Error("Error creating feed!");
+    }
+}
+
+const getAllBlog = async () => {
+    try {
+        const res = await axios.get(`${URL}/api/feed/getAll`)
+
+        return res.data;
+    } catch (error) {
+        console.log("Error: ", error.message);
+        throw new Error("Error creating feed!");
+    }
+}
+
 export {
+    getAllBlog,
+    createNewFeed,
     createUser,
     handleUpdateUserByEmail,
     isEmailExist,

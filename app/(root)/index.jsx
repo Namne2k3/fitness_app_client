@@ -49,7 +49,7 @@ const WelcomePage = () => {
                 setUser(userData);
                 return true;
             } catch (error) {
-                console.error('Error fetching user:', error.message);
+                console.log('Error fetching user:', error.message);
                 return false;
             }
         };

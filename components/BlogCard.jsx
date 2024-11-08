@@ -5,22 +5,31 @@ import React from 'react';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const BlogCard = ({ blog }) => {
-    const { content, author, media } = blog;
+    const {
+        content,
+        author,
+        medias,
+        likes,
+        comments,
+        created_at,
+        updated_at,
+        allowComment
+    } = blog;
 
     return (
-        <View className="border-b border-gray-300 pb-4 mb-4">
+        <View className="border-b-[4px] border-gray-300 pb-4 mb-4">
             {/* header */}
             <View className="flex flex-row justify-between items-center px-2">
                 <TouchableOpacity onPress={() => { }} className="mr-3">
                     <Image
-                        source={{ uri: author?.image }}
+                        source={{ uri: author.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
                         className="w-10 h-10 rounded-full"
-                        resizeMode='contain'
+                        resizeMode='cover'
                     />
                 </TouchableOpacity>
                 <View className="flex-1">
-                    <Text className="font-semibold text-sm">{author.name}</Text>
-                    <Text className="text-gray-400 text-xs">11/11/2024</Text>
+                    <Text className="font-semibold text-sm">{author?.username}</Text>
+                    <Text className="text-gray-400 text-xs">{new Date(created_at).toISOString()}</Text>
                 </View>
             </View>
 
@@ -28,7 +37,7 @@ const BlogCard = ({ blog }) => {
             <View className="flex flex-col">
                 {/* content */}
                 <View className="p-2">
-                    <Text className="text-sm font-plight">{content}</Text>
+                    <Text className="text-sm font-plight">{content ?? ""}</Text>
                 </View>
 
                 {/* media */}
@@ -41,27 +50,31 @@ const BlogCard = ({ blog }) => {
                         dotStyle={styles.dotStyle} // Style for inactive dots
                         activeDotStyle={styles.activeDotStyle} // Style for active dot
                     >
-                        {media?.map((med, index) => (
-                            <View key={index}>
-                                {
-                                    med.type == 'image' ?
-                                        <TouchableOpacity className="w-full h-[350px]">
-                                            <Image
-                                                source={{ uri: med.url }}
+                        {medias?.map((med, index) => {
+
+                            return (
+                                <View key={index}>
+                                    {
+                                        med.type == 'image' ?
+                                            <TouchableOpacity className="w-full h-[350px] border-t-[0.5px] border-[#ccc]">
+                                                <Image
+                                                    source={{ uri: med.fileUrl }}
+                                                    className="w-full h-full"
+                                                    resizeMode="cover"
+
+                                                />
+                                            </TouchableOpacity>
+                                            :
+                                            <Video
+                                                source={{ uri: med.fileUrl }}
                                                 className="w-full h-full"
-                                                resizeMode="cover"
+                                                resizeMode="contain"
+                                                useNativeControls
                                             />
-                                        </TouchableOpacity>
-                                        :
-                                        <Video
-                                            source={{ uri: med.url }}
-                                            className="w-full h-full"
-                                            resizeMode="contain"
-                                            useNativeControls
-                                        />
-                                }
-                            </View>
-                        ))}
+                                    }
+                                </View>
+                            )
+                        })}
                     </Swiper>
                 </View>
             </View>
