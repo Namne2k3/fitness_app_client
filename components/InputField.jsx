@@ -26,6 +26,7 @@ const InputField = ({
     className,
     value,
     textRight,
+    placeholder,
     ...props
 }) => {
 
@@ -52,6 +53,7 @@ const InputField = ({
                             secureTextEntry={label === 'Password' && !showPassword}
                             {...props}
                             onChangeText={text => onChange(text)}
+                            placeholder={placeholder}
                             autoCapitalize={'none'}
                         />
                         {

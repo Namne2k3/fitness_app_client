@@ -106,6 +106,15 @@ const RootLayout = () => {
                     }}
                 />
                 <Stack.Screen
+                    name='feed/[_id]'
+                    options={{
+                        headerShown: true,
+                        headerTitle: '',
+                        headerShadowVisible: false,
+                        headerTintColor: colorScheme == 'dark' && "#fff"
+                    }}
+                />
+                <Stack.Screen
                     name='myprofile'
                     options={{
                         headerShown: false,

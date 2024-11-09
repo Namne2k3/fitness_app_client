@@ -6,7 +6,7 @@ const getToken = async () => {
         const token = await AsyncStorage.getItem('jwt_token');
         if (token !== null) {
             // Token đã được lưu trước đó
-            console.log('Token đã lấy:', token);
+            // console.log('Token đã lấy:', token);
             return token;
         } else {
             console.log('Không có token nào được lưu');

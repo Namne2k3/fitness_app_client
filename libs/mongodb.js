@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios'
+import { getToken } from '../libs/token'
 
 const URL = process.env.EXPO_PUBLIC_URL_SERVER || "https://w2fw01lr-3000.asse.devtunnels.ms"
 
@@ -267,7 +268,34 @@ const getAllBlog = async () => {
     }
 }
 
+const getBlogById = async (id) => {
+    try {
+        const res = await axios.get(`${URL}/api/feed/getDetail/${id}`)
+        return res.data;
+    } catch (error) {
+        throw new Error("Error creating feed!");
+    }
+}
+
+const updateBlogById = async (id, feed) => {
+    console.log("Check feed >>> ", feed);
+
+    const token = await getToken()
+    try {
+        const res = await axios.put(`${URL}/api/feed/update/${id}`, feed, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        return res.data;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
 export {
+    updateBlogById,
+    getBlogById,
     getAllBlog,
     createNewFeed,
     createUser,

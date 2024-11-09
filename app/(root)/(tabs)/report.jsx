@@ -7,7 +7,7 @@ import { getTrainingRecordsByMonth, getTrainingRecord } from '../../../libs/mong
 import { getCurrentWeekDays, getAverageTimeDurationThisWeek } from '../../../utils/index'
 import ReportComponent from '../../../components/ReportComponent'
 import HistoryRecordCard from '../../../components/HistoryRecordCard'
-import { router } from 'expo-router'
+import { router, useFocusEffect } from 'expo-router'
 import { useUserStore } from '../../../store'
 import { useColorScheme } from 'nativewind'
 import LoadingModal from '../../../components/LoadingModal'
@@ -63,11 +63,11 @@ const Report = () => {
     };
 
 
-    useEffect(() => {
-
-
-        fetchData();
-    }, [])
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [])
+    );
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -76,6 +76,7 @@ const Report = () => {
             setRefreshing(false);
         }, 1000);
     }, []);
+
 
 
 
@@ -209,7 +210,7 @@ const Report = () => {
                     </View>
                 </ReportComponent>
             </ScrollView>
-            <LoadingModal visible={isVisibleLoadingModal} message={"Analyzing Data ..."} />
+            {/* <LoadingModal visible={isVisibleLoadingModal} message={"Analyzing Data ..."} /> */}
         </SafeAreaView>
     )
 }

@@ -8,7 +8,6 @@ import BlogCard from '../../../components/BlogCard';
 import { router, useFocusEffect } from 'expo-router';
 import { getAllBlog, } from '../../../libs/mongodb'
 import { useCallback, useState } from 'react';
-// import { useFocusEffect } from '@react-navigation/native';
 
 const Feed = () => {
     const { colorScheme } = useColorScheme()
@@ -30,7 +29,7 @@ const Feed = () => {
 
     return (
         <SafeAreaView className="flex bg-[#fff] h-full pt-4 dark:bg-slate-950">
-            <View className="flex flex-row justify-between items-center px-4">
+            <View className="flex flex-row justify-between items-center px-4 border-b-[1px] border-[#ccc]">
                 <View className="">
                     <AntDesign disabled name='plus' size={32} color={colorScheme == 'dark' ? '#000' : '#fff'} />
                 </View>
@@ -40,7 +39,7 @@ const Feed = () => {
                 </TouchableOpacity>
             </View>
 
-            <View className="flex justify-center items-center">
+            <View className="flex justify-center items-center mt-4">
                 <FlatList
                     data={blogs}
                     renderItem={({ item }) => {

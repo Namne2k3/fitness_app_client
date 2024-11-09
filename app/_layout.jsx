@@ -1,18 +1,14 @@
 
 import { useFonts } from 'expo-font';
-import { router, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar';
 import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '../libs/clerk'
 import { useColorScheme } from 'nativewind';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { getUserByEmail } from '@/libs/mongodb';
-import { useUserStore } from '@/store';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

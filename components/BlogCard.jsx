@@ -3,9 +3,12 @@ import Swiper from 'react-native-swiper';
 import { Video } from 'expo-av';
 import React from 'react';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { formatDate, formatDateWithMonth, formatTime } from '../utils';
+import { router } from 'expo-router';
 
 const BlogCard = ({ blog }) => {
     const {
+        _id,
         content,
         author,
         medias,
@@ -22,14 +25,14 @@ const BlogCard = ({ blog }) => {
             <View className="flex flex-row justify-between items-center px-2">
                 <TouchableOpacity onPress={() => { }} className="mr-3">
                     <Image
-                        source={{ uri: author.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
+                        source={{ uri: author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
                         className="w-10 h-10 rounded-full"
                         resizeMode='cover'
                     />
                 </TouchableOpacity>
                 <View className="flex-1">
                     <Text className="font-semibold text-sm">{author?.username}</Text>
-                    <Text className="text-gray-400 text-xs">{new Date(created_at).toISOString()}</Text>
+                    <Text className="text-gray-400 text-xs">{`${formatDateWithMonth(created_at)} ${formatTime(created_at)}`}</Text>
                 </View>
             </View>
 
@@ -37,7 +40,7 @@ const BlogCard = ({ blog }) => {
             <View className="flex flex-col">
                 {/* content */}
                 <View className="p-2">
-                    <Text className="text-sm font-plight">{content ?? ""}</Text>
+                    <Text className="text-sm font-pregular">{content ?? ""}</Text>
                 </View>
 
                 {/* media */}
@@ -56,12 +59,11 @@ const BlogCard = ({ blog }) => {
                                 <View key={index}>
                                     {
                                         med.type == 'image' ?
-                                            <TouchableOpacity className="w-full h-[350px] border-t-[0.5px] border-[#ccc]">
+                                            <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] p-2">
                                                 <Image
                                                     source={{ uri: med.fileUrl }}
-                                                    className="w-full h-full"
+                                                    className="w-full h-full rounded-lg"
                                                     resizeMode="cover"
-
                                                 />
                                             </TouchableOpacity>
                                             :
@@ -77,19 +79,19 @@ const BlogCard = ({ blog }) => {
                         })}
                     </Swiper>
                 </View>
-            </View>
+            </View >
 
             {/* footer */}
-            <View className="flex flex-row mt-3 px-2">
+            <View View className="flex flex-row mt-3 px-2" >
                 <TouchableOpacity onPress={() => { }} >
                     <AntDesign name='like2' size={28} color={'#000'} />
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => { }} className="ml-4">
+                <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="ml-4">
                     <MaterialCommunityIcons name='comment-text-outline' size={28} color={'#000'} />
                 </TouchableOpacity>
-            </View>
-        </View>
+            </View >
+        </View >
     );
 };
 const styles = StyleSheet.create({
