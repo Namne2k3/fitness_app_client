@@ -3,7 +3,7 @@ import Swiper from 'react-native-swiper';
 import { Video } from 'expo-av';
 import React from 'react';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import { formatDate, formatDateWithMonth, formatTime } from '../utils';
+import { formatDateWithMonth, formatTime } from '../utils';
 import { router } from 'expo-router';
 
 const BlogCard = ({ blog }) => {
@@ -18,6 +18,7 @@ const BlogCard = ({ blog }) => {
         updated_at,
         allowComment
     } = blog;
+
 
     return (
         <View className="border-b-[4px] border-gray-300 pb-4 mb-4">
@@ -67,12 +68,14 @@ const BlogCard = ({ blog }) => {
                                                 />
                                             </TouchableOpacity>
                                             :
-                                            <Video
-                                                source={{ uri: med.fileUrl }}
-                                                className="w-full h-full"
-                                                resizeMode="contain"
-                                                useNativeControls
-                                            />
+                                            <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] p-2">
+                                                <Video
+                                                    source={{ uri: med.fileUrl }}
+                                                    className="w-full h-full"
+                                                    resizeMode="contain"
+                                                    useNativeControls
+                                                />
+                                            </TouchableOpacity>
                                     }
                                 </View>
                             )
@@ -86,10 +89,12 @@ const BlogCard = ({ blog }) => {
                 <TouchableOpacity onPress={() => { }} >
                     <AntDesign name='like2' size={28} color={'#000'} />
                 </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="ml-4">
-                    <MaterialCommunityIcons name='comment-text-outline' size={28} color={'#000'} />
-                </TouchableOpacity>
+                {
+                    allowComment &&
+                    <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="ml-4">
+                        <MaterialCommunityIcons name='comment-text-outline' size={28} color={'#000'} />
+                    </TouchableOpacity>
+                }
             </View >
         </View >
     );

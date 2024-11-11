@@ -278,8 +278,6 @@ const getBlogById = async (id) => {
 }
 
 const updateBlogById = async (id, feed) => {
-    console.log("Check feed >>> ", feed);
-
     const token = await getToken()
     try {
         const res = await axios.put(`${URL}/api/feed/update/${id}`, feed, {
