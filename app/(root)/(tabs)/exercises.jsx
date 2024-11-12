@@ -54,6 +54,32 @@ const Exercises = () => {
     return (
         <SafeAreaView className="px-4 pt-4 bg-[#fff] h-full dark:bg-slate-950">
             {
+                isSearching ? (
+                    <View className="shadow-lg flex flex-row justify-between items-center">
+                        <TextInput
+                            className="p-3 rounded-lg bg-[#f4f5f6] flex-1 mr-3"
+                            color={'#000'}
+                            value={searchQuery}
+                            placeholder='Search for exercises...'
+                            onChangeText={onChangeSearchQuery}
+                        />
+                        <View>
+                            <TouchableOpacity onPress={handleToggleSearching}>
+                                <MaterialIcons name='cancel' size={24} color={'#ccc'} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                ) :
+                    <View className="flex flex-row justify-between items-center">
+                        <Text className="font-pextrabold text-[32px] dark:text-white">Exercises</Text>
+                        <View>
+                            <TouchableOpacity onPress={handleToggleSearching}>
+                                <FontAwesome name='search' size={26} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+            }
+            {
                 isLoading ? (
                     <View className="h-full flex justify-center items-center">
                         <ActivityIndicator color={"#000"} size={'large'} />
@@ -88,32 +114,7 @@ const Exercises = () => {
                         contentContainerStyle={{
                             paddingBottom: 16
                         }}
-                        ListHeaderComponent={
-                            isSearching ? (
-                                <View className="shadow-lg flex flex-row justify-between items-center">
-                                    <TextInput
-                                        className="p-3 rounded-lg bg-[#f4f5f6] flex-1 mr-3"
-                                        color={'#000'}
-                                        value={searchQuery}
-                                        placeholder='Search for exercises...'
-                                        onChangeText={onChangeSearchQuery}
-                                    />
-                                    <View>
-                                        <TouchableOpacity onPress={handleToggleSearching}>
-                                            <MaterialIcons name='cancel' size={24} color={'#ccc'} />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            ) :
-                                <View className="flex flex-row justify-between items-center">
-                                    <Text className="font-pextrabold text-[32px] dark:text-white">Exercises</Text>
-                                    <View>
-                                        <TouchableOpacity onPress={handleToggleSearching}>
-                                            <FontAwesome name='search' size={26} color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                        }
+
                     />
                 )
             }

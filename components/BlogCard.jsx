@@ -1,12 +1,12 @@
 import { Image, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Video } from 'expo-av';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatDateWithMonth, formatTime } from '../utils';
 import { router } from 'expo-router';
 
-const BlogCard = ({ blog }) => {
+const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
     const {
         _id,
         content,
@@ -19,9 +19,13 @@ const BlogCard = ({ blog }) => {
         allowComment
     } = blog;
 
+    useEffect(() => {
+
+    }, [likes])
+
 
     return (
-        <View className="border-b-[4px] border-gray-300 pb-4 mb-4">
+        <View className="border-b-[4px] border-gray-300 dark:border-gray-800 pt-4 pb-4 mb-4">
             {/* header */}
             <View className="flex flex-row justify-between items-center px-2">
                 <TouchableOpacity onPress={() => { }} className="mr-3">
@@ -32,7 +36,7 @@ const BlogCard = ({ blog }) => {
                     />
                 </TouchableOpacity>
                 <View className="flex-1">
-                    <Text className="font-semibold text-sm">{author?.username}</Text>
+                    <Text className="font-semibold text-sm dark:text-[#fff]">{author?.username}</Text>
                     <Text className="text-gray-400 text-xs">{`${formatDateWithMonth(created_at)} ${formatTime(created_at)}`}</Text>
                 </View>
             </View>
@@ -86,14 +90,34 @@ const BlogCard = ({ blog }) => {
 
             {/* footer */}
             <View View className="flex flex-row mt-3 px-2" >
-                <TouchableOpacity onPress={() => { }} >
-                    <AntDesign name='like2' size={28} color={'#000'} />
+                <TouchableOpacity className="flex flex-row justify-center items-center" onPress={() => handleLike(blog, index)} >
+                    {
+                        likes?.includes(userId)
+                            ?
+                            <AntDesign name='like1' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                            :
+                            <AntDesign name='like2' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                    }
+                    {
+                        blog?.likes?.length > 0 &&
+                        <Text className="ml-1 dark:text-white">
+                            {blog?.likes?.length}
+                        </Text>
+                    }
                 </TouchableOpacity>
                 {
                     allowComment &&
-                    <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="ml-4">
-                        <MaterialCommunityIcons name='comment-text-outline' size={28} color={'#000'} />
-                    </TouchableOpacity>
+                    <View className="flex flex-row justify-center items-center">
+                        <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="ml-4">
+                            <MaterialCommunityIcons name='comment-text-outline' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </TouchableOpacity>
+                        {
+                            blog?.comments?.length > 0 &&
+                            <Text className="ml-1 dark:text-white">
+                                {blog?.comments?.length}
+                            </Text>
+                        }
+                    </View>
                 }
             </View >
         </View >

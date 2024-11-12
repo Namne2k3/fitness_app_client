@@ -3,14 +3,14 @@ import React from 'react'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useColorScheme } from 'nativewind';
 
-const BottomSheet = ({ bottomSheetRef, children }) => {
+const BottomSheet = ({ bottomSheetRef, children, snapPoints }) => {
     const { colorScheme } = useColorScheme()
     return (
         <BottomSheetModalProvider>
             <BottomSheetModal
                 ref={bottomSheetRef}
                 index={0}
-                snapPoints={['25%']}
+                snapPoints={[snapPoints ?? '25%']}
                 stackBehavior='replace'
                 enableDismissOnClose={true}
                 handleIndicatorStyle={{

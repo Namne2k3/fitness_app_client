@@ -109,6 +109,9 @@ const RootLayout = () => {
                     name='feed/[_id]'
                     options={{
                         headerShown: true,
+                        headerStyle: {
+                            backgroundColor: '#020617'
+                        },
                         headerTitle: '',
                         headerShadowVisible: false,
                         headerTintColor: colorScheme == 'dark' && "#fff"

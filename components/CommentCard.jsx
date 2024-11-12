@@ -5,9 +5,8 @@ import { Entypo } from '@expo/vector-icons'
 import { useColorScheme } from 'nativewind'
 import { router } from 'expo-router'
 
-const CommentCard = ({ comment, handlePresentModalSheet, setSelectedComment, index, currentUserId }) => {
+const CommentCard = ({ comment, handlePresentModalSheet, setSelectedComment, index, currentUserId, colorScheme }) => {
 
-    const { colorScheme } = useColorScheme()
     const { userId, username, userImage, content, created_at } = comment
 
     return (
@@ -25,8 +24,8 @@ const CommentCard = ({ comment, handlePresentModalSheet, setSelectedComment, ind
                             />
                         </TouchableOpacity>
                         <View className="">
-                            <Text className="font-semibold text-[14px]">{username ?? ""}</Text>
-                            <Text className="text-gray-500 text-[10px]">{`${formatDateWithMonth(created_at)} ${formatTime(created_at)}`}</Text>
+                            <Text className="font-semibold text-[14px] dark:text-white">{username ?? ""}</Text>
+                            <Text className="text-gray-500 text-[10px] ">{`${formatDateWithMonth(created_at)} ${formatTime(created_at)}`}</Text>
                         </View>
                     </View>
                     {

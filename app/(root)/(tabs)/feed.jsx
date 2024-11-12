@@ -6,12 +6,15 @@ import { seedBlogs } from '../../../constants/seeds'
 import { images } from '../../../constants/image'
 import BlogCard from '../../../components/BlogCard';
 import { router, useFocusEffect } from 'expo-router';
-import { getAllBlog, } from '../../../libs/mongodb'
+import { getAllBlog, updateBlogById, } from '../../../libs/mongodb'
 import { useCallback, useState } from 'react';
+import useUserStore from '../../../store/userStore';
 
 const Feed = () => {
     const { colorScheme } = useColorScheme()
+    const user = useUserStore.getState().user
     const [blogs, setBlogs] = useState([])
+
     const fetchBlogs = async () => {
         try {
             const res = await getAllBlog()
@@ -20,6 +23,31 @@ const Feed = () => {
             console.log(error);
         }
     }
+
+    const handleLike = useCallback(async (blog, index) => {
+        try {
+
+            if (blog?.likes.includes(user?._id)) {
+                let index = blog?.likes.indexOf(user?._id)
+                blog?.likes?.splice(index, 1)
+                setBlogs((previous) => ([
+                    ...previous,
+                    blog
+                ]))
+            } else {
+                blog?.likes.push(user?._id)
+                setBlogs((previous) => ([
+                    ...previous,
+                    blog
+                ]))
+            }
+
+            await updateBlogById(blog?._id, blog)
+
+        } catch (error) {
+            Alert.alert("Error", error.message)
+        }
+    }, [])
 
     useFocusEffect(
         useCallback(() => {
@@ -39,12 +67,12 @@ const Feed = () => {
                 </TouchableOpacity>
             </View>
 
-            <View className="flex justify-center items-center mt-4">
+            <View className="flex justify-center items-center">
                 <FlatList
                     data={blogs}
-                    renderItem={({ item }) => {
+                    renderItem={({ item, index }) => {
                         return (
-                            <BlogCard blog={item} />
+                            <BlogCard colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
                         )
                     }}
                     showsVerticalScrollIndicator={false}

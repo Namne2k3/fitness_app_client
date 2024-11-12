@@ -13,12 +13,12 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#000',
-        tabBarInactiveTintColor: colorScheme == 'dark' ? '#fff' : 'gray',
+        tabBarInactiveTintColor: colorScheme == 'dark' ? '#ccc' : 'gray',
         tabBarStyle: {
           height: 60,
           // paddingTop: 2,
           // paddingBottom: 2,
-          backgroundColor: colorScheme == 'dark' ? '#292727' : '#fff',
+          backgroundColor: colorScheme == 'dark' ? '#020617' : '#fff',
           borderTopWidth: 0, // Ẩn đường viền tab
         },
         headerShown: false,
@@ -35,7 +35,7 @@ export default function TabLayout() {
           // backgroundColor: 'rgba(0, 0, 139, 0.1)', // Nền mờ mờ cho icon
           borderRadius: 12, // Bo góc container icon
         },
-        tabBarActiveBackgroundColor: colorScheme == 'dark' ? '#fff' : 'rgba(0, 0, 139, 0.1)', // Nền mờ cho tab được chọn
+        tabBarActiveBackgroundColor: colorScheme == 'dark' ? '#6b6b6a' : 'rgba(0, 0, 139, 0.1)', // Nền mờ cho tab được chọn
         tabBarInactiveBackgroundColor: 'transparent', // Tab không được chọn có nền trong suốt
       }}>
       <Tabs.Screen
@@ -48,7 +48,7 @@ export default function TabLayout() {
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 10
+            fontSize: 11
 
           }
         }}
@@ -63,7 +63,7 @@ export default function TabLayout() {
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 10
+            fontSize: 11
 
           }
         }}
@@ -78,7 +78,7 @@ export default function TabLayout() {
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 10
+            fontSize: 11
           },
         }}
       />
@@ -92,7 +92,7 @@ export default function TabLayout() {
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 10
+            fontSize: 11
           }
         }}
 
@@ -107,7 +107,7 @@ export default function TabLayout() {
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 10
+            fontSize: 11
           }
         }}
       />
@@ -121,7 +121,7 @@ export default function TabLayout() {
           ),
           tabBarLabelStyle: {
             fontWeight: '900',
-            fontSize: 10
+            fontSize: 11
           }
         }}
       />

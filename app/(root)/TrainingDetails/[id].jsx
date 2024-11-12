@@ -2,20 +2,23 @@ import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Modal, Alert
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchTrainingById, deleteTrainingById } from '../../../libs/mongodb'
 import { router, useLocalSearchParams } from 'expo-router'
-import { Entypo, Feather } from '@expo/vector-icons'
+import { Entypo, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { formatDate } from '../../../utils/index'
 import ExerciseTrainingCard from '../../../components/ExerciseTrainingCard'
 import CustomButton from '../../../components/CustomButton'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 import { useColorScheme } from 'nativewind'
+import BottomSheet from '../../../components/BottomSheet'
 
 const TrainingDetails = () => {
     const { id } = useLocalSearchParams()
+    const [isEdit, setIsEdit] = useState(false)
     const [trainingData, setTrainingData] = useState({})
     const [selectedExercise, setSelectedExercise] = useState({})
     const { colorScheme } = useColorScheme()
     const bottomSheetRef = useRef(null)
+    const bottomEditSheetRef = useRef(null)
     const [isVisibleModalEdit, setIsVisibleModalEdit] = useState(false)
 
     const handleExeTrainingCardPress = useCallback(async (exercise) => {
@@ -57,12 +60,15 @@ const TrainingDetails = () => {
                     </View>
                     <View>
                         <TouchableOpacity
-                            onPress={() => setIsVisibleModalEdit(true)}
+                            onPress={() => {
+                                bottomEditSheetRef.current?.present()
+                                setIsEdit(true)
+                            }}
                             className="relative"
                         >
                             <Entypo name='dots-three-vertical' size={18} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                         </TouchableOpacity>
-                        <Modal
+                        {/* <Modal
                             animationType="fade"
                             transparent={true}
                             visible={isVisibleModalEdit}
@@ -107,7 +113,7 @@ const TrainingDetails = () => {
                                     <Text className="text-left text-[#fff] text-[14px] dark:text-black">Edit</Text>
                                 </TouchableOpacity>
                             </View>
-                        </Modal>
+                        </Modal> */}
                     </View>
                 </View >
                 <View className="w-full p-4">
@@ -143,6 +149,40 @@ const TrainingDetails = () => {
                 <CustomButton onPress={() => router.push(`/(root)/beginTraining/${id}`)} text={'Start'} />
             </View>
             <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
+            <BottomSheet snapPoints="20%" bottomSheetRef={bottomEditSheetRef}>
+                <View className="flex">
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert(
+                            "Delete Training",
+                            "Are you sure you want to delete this training?",
+                            [
+                                {
+                                    text: "Cancel",
+                                    style: "cancel",
+                                },
+                                {
+                                    text: "Delete",
+                                    onPress: async () => {
+                                        await handleDeleteTrainingById(id)
+                                        setIsVisibleModalEdit(false);
+                                        router.replace('/(root)/(tabs)/custom')
+                                    },
+                                    style: "destructive",
+                                },
+                            ]
+                        );
+                    }}
+                        className="flex flex-row w-full justify-start items-start px-1 py-3 mx-2 border-b-[0.5px] border-[#ccc]"
+                    >
+                        <MaterialCommunityIcons name='delete-alert-outline' size={22} color={colorScheme == 'dark' ? '#fff' : "#000"} style={{ paddingRight: 8 }} />
+                        <Text className="font-pmedium text-[16px]">Delete</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => router.push(`/(root)/editCustomTraining/${id}`)} className="flex flex-row w-full justify-start items-start px-1 py-3 mx-2 border-b-[0.5px] border-[#ccc]">
+                        <Feather name='edit-3' size={22} color={colorScheme == 'dark' ? '#fff' : "#000"} style={{ paddingRight: 8 }} />
+                        <Text className="font-pmedium text-[16px]">Edit</Text>
+                    </TouchableOpacity>
+                </View>
+            </BottomSheet>
         </>
     )
 }

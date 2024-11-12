@@ -18,7 +18,7 @@ const DetailFeed = () => {
     const [commentContent, setCommentContent] = useState("")
     const [isPostingComment, setIsPostingComment] = useState(false)
     const user = useUserStore.getState().user
-    const colorScheme = useColorScheme()
+    const { colorScheme } = useColorScheme()
     const bottomSheetRef = useRef(null)
     const [isEdit, setIsEdit] = useState(false)
     const [selectedComment, setSelectedComment] = useState(null)
@@ -128,6 +128,31 @@ const DetailFeed = () => {
         }
     }
 
+    const handleLike = async (blog) => {
+        try {
+
+            if (blog?.likes.includes(user?._id)) {
+                let index = blog?.likes.indexOf(user?._id)
+                blog?.likes?.splice(index, 1)
+                setBlog((previous) => ({
+                    ...previous,
+                    likes: blog?.likes
+                }))
+            } else {
+                blog?.likes.push(user?._id)
+                setBlog((previous) => ({
+                    ...previous,
+                    likes: blog?.likes
+                }))
+            }
+
+            await updateBlogById(blog?._id, blog)
+
+        } catch (error) {
+            Alert.alert("Error", error.message)
+        }
+    }
+
     useEffect(() => {
         const fetchBlog = async () => {
             try {
@@ -144,7 +169,7 @@ const DetailFeed = () => {
     return (
         <>
             <ScrollView
-                className="bg-[#fff] flex-1"
+                className="bg-[#fff] flex-1 dark:bg-slate-950"
             >
                 {/* header */}
                 <View className="border-t-[1px] border-[#ccc] flex flex-row justify-between items-center px-2 pt-4 ">
@@ -156,20 +181,20 @@ const DetailFeed = () => {
                         />
                     </TouchableOpacity>
                     <View className="flex-1">
-                        <Text className="font-semibold text-sm">{blog?.author?.username}</Text>
+                        <Text className="font-semibold text-sm dark:text-white">{blog?.author?.username}</Text>
                         <Text className="text-gray-400 text-xs">{`${formatDateWithMonth(blog?.created_at)} ${formatTime(blog?.created_at)}`}</Text>
                     </View>
                 </View>
 
                 <View className="flex">
                     <View className="p-2">
-                        <Text className="text-sm font-pregular">{blog?.content ?? ""}</Text>
+                        <Text className="text-sm font-pregular dark:text-white">{blog?.content ?? ""}</Text>
                     </View>
                     <PagerView
                         initialPage={0}
                         style={{
                             height: 350,
-                            backgroundColor: '#fff'
+                            backgroundColor: colorScheme == 'dark' ? '#020617' : '#fff'
                         }}
                     >
                         {blog?.medias?.map((med, index) => {
@@ -195,14 +220,34 @@ const DetailFeed = () => {
                         })}
                     </PagerView>
                     <View className="flex flex-row   p-2">
-                        <TouchableOpacity onPress={() => { }} >
-                            <AntDesign name='like2' size={28} color={'#000'} />
+                        <TouchableOpacity className="flex flex-row justify-center items-center" onPress={() => handleLike(blog)} >
+                            {
+                                blog?.likes?.includes(user?._id)
+                                    ?
+                                    <AntDesign name='like1' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                                    :
+                                    <AntDesign name='like2' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                            }
+                            {
+                                blog?.likes?.length > 0 &&
+                                <Text className="ml-1 dark:text-white">
+                                    {blog?.likes?.length}
+                                </Text>
+                            }
                         </TouchableOpacity>
                         {
                             blog?.allowComment &&
-                            <TouchableOpacity className="ml-4">
-                                <MaterialCommunityIcons name='comment-text-outline' size={28} color={'#000'} />
-                            </TouchableOpacity>
+                            <View className="flex flex-row justify-center items-center">
+                                <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="ml-4">
+                                    <MaterialCommunityIcons name='comment-text-outline' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                                </TouchableOpacity>
+                                {
+                                    blog?.comments?.length > 0 &&
+                                    <Text className="ml-1 dark:text-white">
+                                        {blog?.comments?.length}
+                                    </Text>
+                                }
+                            </View>
                         }
                     </View>
                 </View>
@@ -219,10 +264,11 @@ const DetailFeed = () => {
                                     }}
                                     width={35}
                                     height={35}
+                                    className="rounded-full"
                                     resizeMode='contain'
                                 />
                             </View>
-                            <View className="ml-2 border-[0.1px] p-2 pr-4 text-md flex-1 flex-row justify-between items-center rounded-lg ">
+                            <View className="ml-2 border-[0.5px] dark:border-[#fff] p-2 pr-4 text-md flex-1 flex-row justify-between items-center rounded-lg ">
                                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="w-[85%]">
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                         <TextInput
@@ -235,10 +281,8 @@ const DetailFeed = () => {
                                                     setCommentContent(text)
                                                 }
                                             }}
-                                            // onEndEditing={() => {
-                                            //     setSelectedComment(null)
-                                            //     setIsEdit(false)
-                                            // }}
+                                            placeholderTextColor={colorScheme == 'dark' ? '#6b7280' : '#000'}
+                                            className="dark:text-white"
                                             multiline
                                             ref={inputCommentRef}
                                         />
@@ -274,7 +318,7 @@ const DetailFeed = () => {
                 <View className="p-2 flex-1">
                     {
                         blog?.comments?.map((cmt, index) => (
-                            <CommentCard currentUserId={user?._id} index={index} setSelectedComment={(cmt) => setSelectedComment(cmt)} handlePresentModalSheet={handlePresentModalSheet} comment={cmt} key={index} />
+                            <CommentCard colorScheme={colorScheme} currentUserId={user?._id} index={index} setSelectedComment={(cmt) => setSelectedComment(cmt)} handlePresentModalSheet={handlePresentModalSheet} comment={cmt} key={index} />
                         ))
                     }
                 </View>
@@ -290,7 +334,23 @@ const DetailFeed = () => {
                         <Feather name='edit-3' size={22} color={colorScheme == 'dark' ? '#fff' : "#000"} style={{ paddingRight: 8 }} />
                         <Text className="font-pmedium text-[16px]">Edit</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={handleDeleteComment} className="flex flex-row w-full justify-start items-start px-1 py-3 mx-2 border-b-[0.5px] border-[#ccc]">
+                    <TouchableOpacity onPress={() => {
+                        Alert.alert(
+                            "Delete Comment",
+                            "Are you sure you want to delete this comment?",
+                            [
+                                {
+                                    text: "Cancel",
+                                    style: "cancel",
+                                },
+                                {
+                                    text: "Delete",
+                                    onPress: handleDeleteComment,
+                                    style: "destructive",
+                                },
+                            ]
+                        );
+                    }} className="flex flex-row w-full justify-start items-start px-1 py-3 mx-2 border-b-[0.5px] border-[#ccc]">
                         <MaterialCommunityIcons name='delete-alert-outline' size={22} color={colorScheme == 'dark' ? '#fff' : "#000"} style={{ paddingRight: 8 }} />
                         <Text className="font-pmedium text-[16px]">Delete</Text>
                     </TouchableOpacity>
