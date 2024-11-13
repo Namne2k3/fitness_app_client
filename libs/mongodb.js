@@ -3,7 +3,6 @@ import axios from 'axios'
 import { getToken } from '../libs/token'
 
 const URL = process.env.EXPO_PUBLIC_URL_SERVER || "https://w2fw01lr-3000.asse.devtunnels.ms"
-
 const createUser = async ({ username, email, password, clerkId }) => {
     try {
         await axios.post(`${URL}/api/auth/signup`, { username, email, password, clerkId })
@@ -136,7 +135,7 @@ const createTrainingRecord = async (recordData) => {
 }
 
 const getUserByEmail = async (email) => {
-    const token = await AsyncStorage.getItem('jwt_token')
+    const token = await getToken()
     try {
         const response = await axios.get(`${URL}/api/user/email/${email}`, {
             headers: {
@@ -167,7 +166,7 @@ const createFeedback = async (feedback) => {
 }
 
 const handleUpdateUser = async (userBody) => {
-    const token = await AsyncStorage.getItem('jwt_token')
+    const token = await getToken()
     try {
         const response = await axios.put(`${URL}/api/user/${userBody._id}`, userBody, {
             headers: {
@@ -206,8 +205,8 @@ const isEmailExist = async (email) => {
 }
 
 const uploadFiles = async (medias) => {
-    const token = await AsyncStorage.getItem('jwt_token')
 
+    const token = await getToken()
     const formData = new FormData();
 
     medias.forEach((asset, index) => {
@@ -242,7 +241,7 @@ const uploadFiles = async (medias) => {
 }
 
 const createNewFeed = async (feed) => {
-    const token = await AsyncStorage.getItem('jwt_token')
+    const token = await getToken()
     try {
         const res = await axios.post(`${URL}/api/feed/create`, feed, {
             headers: {
@@ -291,7 +290,73 @@ const updateBlogById = async (id, feed) => {
     }
 }
 
+const getUserById = async (id) => {
+    const token = await getToken()
+    try {
+        const res = await axios.get(`${URL}/api/user/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+const createNewChatRoom = async (chatroom) => {
+    const token = await getToken()
+    try {
+        const res = await axios.post(`${URL}/api/chatroom/create`, chatroom, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        console.log("Check error message >>> ", error.message);
+
+        throw new Error(error.message)
+    }
+}
+
+const findChatRoom = async (userId, userProfileId) => {
+    const token = await getToken()
+    try {
+        const res = await axios.get(`${URL}/api/chatroom/getDetail?userId=${userId}&userProfileId=${userProfileId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+const getFeedsByUserId = async (userId) => {
+    const token = await getToken()
+    try {
+        const res = await axios.get(`${URL}/api/feed/user/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
 export {
+    findChatRoom,
+    getFeedsByUserId,
+    getUserById,
+    createNewChatRoom,
     updateBlogById,
     getBlogById,
     getAllBlog,

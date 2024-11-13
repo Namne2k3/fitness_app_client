@@ -1,12 +1,14 @@
-import { Image, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Image, Text, TouchableOpacity, View, StyleSheet, Pressable } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Video } from 'expo-av';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatDateWithMonth, formatTime } from '../utils';
 import { router } from 'expo-router';
 
 const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
+
+
     const {
         _id,
         content,
@@ -25,10 +27,10 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
 
 
     return (
-        <View className="border-b-[4px] border-gray-300 dark:border-gray-800 pt-4 pb-4 mb-4">
+        <View className=" dark:border-gray-800 pt-4 pb-4 mb-4">
             {/* header */}
             <View className="flex flex-row justify-between items-center px-2">
-                <TouchableOpacity onPress={() => { }} className="mr-3">
+                <TouchableOpacity onPress={() => router.push(`/(root)/feedprofile/${author?._id}`)} className="mr-3">
                     <Image
                         source={{ uri: author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
                         className="w-10 h-10 rounded-full"
@@ -36,7 +38,9 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
                     />
                 </TouchableOpacity>
                 <View className="flex-1">
-                    <Text className="font-semibold text-sm dark:text-[#fff]">{author?.username}</Text>
+                    <TouchableOpacity onPress={() => router.push(`/(root)/feedprofile/${author?._id}`)} className="mr-3">
+                        <Text className="font-semibold text-sm dark:text-[#fff]">{author?.username}</Text>
+                    </TouchableOpacity>
                     <Text className="text-gray-400 text-xs">{`${formatDateWithMonth(created_at)} ${formatTime(created_at)}`}</Text>
                 </View>
             </View>
@@ -64,22 +68,22 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
                                 <View key={index}>
                                     {
                                         med.type == 'image' ?
-                                            <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] p-2">
+                                            <Pressable onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] p-2">
                                                 <Image
                                                     source={{ uri: med.fileUrl }}
                                                     className="w-full h-full rounded-lg"
                                                     resizeMode="cover"
                                                 />
-                                            </TouchableOpacity>
+                                            </Pressable>
                                             :
-                                            <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] p-2">
+                                            <Pressable onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] p-2">
                                                 <Video
                                                     source={{ uri: med.fileUrl }}
                                                     className="w-full h-full"
                                                     resizeMode="contain"
                                                     useNativeControls
                                                 />
-                                            </TouchableOpacity>
+                                            </Pressable>
                                     }
                                 </View>
                             )

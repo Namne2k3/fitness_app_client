@@ -1,6 +1,6 @@
 import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind'
 import { seedBlogs } from '../../../constants/seeds'
 import { images } from '../../../constants/image'
@@ -26,45 +26,50 @@ const Feed = () => {
 
     const handleLike = useCallback(async (blog, index) => {
         try {
+            const userId = user?._id;
+            const updatedBlog = { ...blog };
 
-            if (blog?.likes.includes(user?._id)) {
-                let index = blog?.likes.indexOf(user?._id)
-                blog?.likes?.splice(index, 1)
-                setBlogs((previous) => ([
-                    ...previous,
-                    blog
-                ]))
+            if (updatedBlog.likes.includes(userId)) {
+                updatedBlog.likes = updatedBlog.likes.filter(id => id !== userId);
             } else {
-                blog?.likes.push(user?._id)
-                setBlogs((previous) => ([
-                    ...previous,
-                    blog
-                ]))
+                updatedBlog.likes.push(userId);
             }
 
-            await updateBlogById(blog?._id, blog)
+            setBlogs((previousBlogs) =>
+                previousBlogs.map((item) =>
+                    item._id === updatedBlog._id ? updatedBlog : item
+                )
+            );
 
+            await updateBlogById(updatedBlog._id, updatedBlog);
         } catch (error) {
-            Alert.alert("Error", error.message)
+            Alert.alert("Error", error.message);
         }
-    }, [])
+    }, [user?._id]);
+
 
     useFocusEffect(
         useCallback(() => {
             fetchBlogs();
+
+            return () => {
+                setBlogs([]); // Reset dữ liệu blogs
+            };
         }, [])
     );
 
     return (
         <SafeAreaView className="flex bg-[#fff] h-full pt-4 dark:bg-slate-950">
             <View className="flex flex-row justify-between items-center px-4 border-b-[1px] border-[#ccc]">
-                <View className="">
-                    <AntDesign disabled name='plus' size={32} color={colorScheme == 'dark' ? '#000' : '#fff'} />
-                </View>
                 <Text className="dark:text-white font-pextrabold text-[32px] text-center">Feed</Text>
-                <TouchableOpacity className="mb-1" onPress={() => router.push('/(root)/newfeedpage')}>
-                    <AntDesign name='plus' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                </TouchableOpacity>
+                <View className="flex flex-row">
+                    <TouchableOpacity className="mb-1 px-1" onPress={() => router.push('/(root)/Chat')}>
+                        <FontAwesome5 name='facebook-messenger' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                    </TouchableOpacity>
+                    <TouchableOpacity className="mb-1 px-1" onPress={() => router.push('/(root)/newfeedpage')}>
+                        <AntDesign name='plus' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                    </TouchableOpacity>
+                </View>
             </View>
 
             <View className="flex justify-center items-center">
@@ -75,16 +80,21 @@ const Feed = () => {
                             <BlogCard colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
                         )
                     }}
+                    ItemSeparatorComponent={
+                        <View className="h-[1px] bg-[#ccc]">
+
+                        </View>
+                    }
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={() => (
-                        <View className="flex flex-col flex-1 h-full items-center justify-center bg-transparent">
+                        <View className="flex flex-1 items-center justify-center bg-transparent">
                             <Image
                                 source={images.no_result}
                                 className="w-40 h-40"
                                 alt="No recent rides found"
                                 resizeMethod="contain"
                             />
-                            <Text className="text-sm">No one has posted yet, be the first to post!</Text>
+                            <Text className="text-sm dark:text-white">No one has posted yet, be the first to post!</Text>
                         </View>
                     )}
                     contentContainerStyle={{

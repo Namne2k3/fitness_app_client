@@ -110,7 +110,19 @@ const RootLayout = () => {
                     options={{
                         headerShown: true,
                         headerStyle: {
-                            backgroundColor: '#020617'
+                            backgroundColor: colorScheme == 'dark' ? '#020617' : '#fff'
+                        },
+                        headerTitle: '',
+                        headerShadowVisible: false,
+                        headerTintColor: colorScheme == 'dark' && "#fff"
+                    }}
+                />
+                <Stack.Screen
+                    name='feedprofile/[id]'
+                    options={{
+                        headerShown: false,
+                        headerStyle: {
+                            backgroundColor: colorScheme == 'dark' ? '#020617' : '#fff'
                         },
                         headerTitle: '',
                         headerShadowVisible: false,
@@ -166,6 +178,15 @@ const RootLayout = () => {
                     name='finishTraining/[id]'
                     options={{
                         headerShown: false,
+                        headerTitle: '',
+                        headerShadowVisible: false,
+                        headerTintColor: colorScheme == 'dark' && "#fff"
+                    }}
+                />
+                <Stack.Screen
+                    name='Chat'
+                    options={{
+                        headerShown: true,
                         headerTitle: '',
                         headerShadowVisible: false,
                         headerTintColor: colorScheme == 'dark' && "#fff"
