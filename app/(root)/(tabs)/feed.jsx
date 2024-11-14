@@ -52,14 +52,14 @@ const Feed = () => {
         useCallback(() => {
             fetchBlogs();
 
-            return () => {
-                setBlogs([]); // Reset dữ liệu blogs
-            };
+            // return () => {
+            //     setBlogs([]); // Reset dữ liệu blogs
+            // };
         }, [])
     );
 
     return (
-        <SafeAreaView className="flex bg-[#fff] h-full pt-4 dark:bg-slate-950">
+        <SafeAreaView className="flex  h-full pt-4 dark:bg-slate-950">
             <View className="flex flex-row justify-between items-center px-4 border-b-[1px] border-[#ccc]">
                 <Text className="dark:text-white font-pextrabold text-[32px] text-center">Feed</Text>
                 <View className="flex flex-row">
@@ -81,7 +81,7 @@ const Feed = () => {
                         )
                     }}
                     ItemSeparatorComponent={
-                        <View className="h-[1px] bg-[#ccc]">
+                        <View className="h-[5px] bg-[#ccc]">
 
                         </View>
                     }

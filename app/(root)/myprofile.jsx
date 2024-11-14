@@ -1,15 +1,55 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign, Feather } from '@expo/vector-icons'
 import { useColorScheme } from 'nativewind'
 import { router } from 'expo-router'
 import useUserStore from '../../store/userStore'
+import * as ImagePicker from 'expo-image-picker';
+import LoadingModal from '../../components/LoadingModal'
+import { uploadFile } from '../../libs/appwrite'
+import { handleUpdateUser } from '../../libs/mongodb'
 
 const MyProfile = () => {
-    const user = useUserStore((state) => state.user)
-
+    const user = useUserStore.getState().user
+    const setUser = useUserStore.getState().setUser
     const { colorScheme } = useColorScheme()
+    const [profileImage, setProfileImage] = useState({})
+    const [isVisibleModal, setIsVisibleModal] = useState(false)
+
+    const openPicker = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsMultipleSelection: false,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+
+        if (result.canceled) {
+            Alert.alert('You did not select any image.')
+        } else {
+            console.log("Check result assets[0]: ", result.assets[0]);
+            setProfileImage(result.assets[0])
+        }
+    }
+
+    const handleUpdateUserImage = async () => {
+        setIsVisibleModal(true)
+        try {
+            // upload file image
+            const imageUrl = await uploadFile(profileImage, profileImage?.type)
+            const updatedUser = await handleUpdateUser({ ...user, image: imageUrl.fileUrl })
+            setUser(updatedUser)
+            setProfileImage({})
+
+        } catch (error) {
+            console.log("Error: ", error.message);
+            Alert.alert("Error", error.message)
+        } finally {
+            setIsVisibleModal(false)
+        }
+    }
 
     useEffect(() => {
 
@@ -28,6 +68,45 @@ const MyProfile = () => {
                 </TouchableOpacity>
                 <Text className="ml-4 font-pextrabold text-[28px] dark:text-white">My Profile</Text>
             </View>
+
+            <View className="relative flex justify-center items-center">
+                <Image
+                    source={{ uri: profileImage?.uri ? profileImage?.uri : user?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
+                    width={120}
+                    height={120}
+                    className="rounded-full"
+                    resizeMode='cover'
+                />
+                <TouchableOpacity onPress={openPicker} className="absolute">
+                    <Feather name='camera' size={24} color={"#000"} />
+                </TouchableOpacity>
+
+            </View>
+            {
+                profileImage?.uri &&
+                <View className="flex flex-row mt-2 justify-center items-center">
+                    <TouchableOpacity
+                        className={
+                            colorScheme == 'dark'
+                                ? `flex-1 bg-[#000] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
+                                : `flex-1 bg-[#ccc] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
+                        }
+                        onPress={handleUpdateUserImage}
+                    >
+                        <Text className="font-pregular text-[12px] dark:text-white">Update</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        className={
+                            colorScheme == 'dark'
+                                ? `flex-1 bg-[#000] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
+                                : `flex-1 bg-[#ccc] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
+                        }
+                        onPress={() => setProfileImage({})}
+                    >
+                        <Text className="font-pregular text-[12px] dark:text-white">Cancel</Text>
+                    </TouchableOpacity>
+                </View>
+            }
 
             <View className="mt-4">
                 <TouchableOpacity
@@ -68,6 +147,7 @@ const MyProfile = () => {
                     </View>
                 </TouchableOpacity>
             </View>
+            <LoadingModal visible={isVisibleModal} message={"Loading..."} />
         </SafeAreaView>
     )
 }

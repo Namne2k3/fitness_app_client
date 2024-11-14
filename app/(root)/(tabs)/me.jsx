@@ -51,16 +51,16 @@ const Me = () => {
         <>
             <SafeAreaView className="flex h-full p-4 dark:bg-slate-950">
                 <View className="flex flex-row justify-between items-center ">
-                    <Text className="font-pextrabold text-[32px] dark:text-white">Me</Text>
+                    <Text className="font-pextrabold text-[32px] dark:text-white">{userData?.username}</Text>
                     {
                         userData &&
-                        <TouchableOpacity className="p-3 rounded-t-lg bg-[#fff] dark:bg-[#292727]" onPress={handleLogOut}>
+                        <TouchableOpacity className="flex p-3 rounded-t-lg bg-[#fff] dark:bg-[#292727]" onPress={handleLogOut}>
                             <MaterialCommunityIcons name='logout' size={32} color={colorScheme == 'dark' ? '#fff' : "#000"} />
                         </TouchableOpacity>
                     }
                 </View>
 
-                <View className="bg-[#fff] rounded-lg p-4 mb-4 dark:bg-[#292727] rounded-tr-[0]">
+                <View className="bg-[#fff] rounded-lg p-4 mb-4 dark:bg-[#292727] rounded-tr-[0] shadow-2xl">
                     <Text className="font-pextrabold capitalize text-lg dark:text-white">Settings</Text>
                     <TouchableOpacity
                         className="flex flex-row py-4 mt-2 justify-start  items-center border-[#ccc] border-b-[0.5px]"

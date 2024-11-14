@@ -8,7 +8,7 @@ import { router } from 'expo-router';
 
 const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
 
-
+    const videoRef = useRef(null);
     const {
         _id,
         content,
@@ -22,13 +22,14 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
     } = blog;
 
     useEffect(() => {
-
+        return () => {
+            videoRef?.current?.pauseAsync()
+        }
     }, [likes])
 
 
     return (
-        <View className=" dark:border-gray-800 pt-4 pb-4 mb-4">
-            {/* header */}
+        <View className=" dark:border-gray-800 mb-4 py-2 m-2 rounded-lg">
             <View className="flex flex-row justify-between items-center px-2">
                 <TouchableOpacity onPress={() => router.push(`/(root)/feedprofile/${author?._id}`)} className="mr-3">
                     <Image
@@ -68,7 +69,7 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
                                 <View key={index}>
                                     {
                                         med.type == 'image' ?
-                                            <Pressable onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] p-2">
+                                            <Pressable onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] border-[0.2px] rounded-lg">
                                                 <Image
                                                     source={{ uri: med.fileUrl }}
                                                     className="w-full h-full rounded-lg"
@@ -76,8 +77,9 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
                                                 />
                                             </Pressable>
                                             :
-                                            <Pressable onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] p-2">
+                                            <Pressable onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] border-[0.2px] rounded-lg">
                                                 <Video
+                                                    ref={videoRef}
                                                     source={{ uri: med.fileUrl }}
                                                     className="w-full h-full"
                                                     resizeMode="contain"

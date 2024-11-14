@@ -16,7 +16,7 @@ const FeedProfile = () => {
     const [userProfile, setUserProfile] = useState({})
     const [userFeeds, setUserFeeds] = useState([])
     const { colorScheme } = useColorScheme()
-    const user = useUserStore.getState().user;
+    const user = useUserStore.getState().user
     const [isFetching, setIsFetching] = useState(false)
     const [tab, setTab] = useState('information')
 
@@ -72,19 +72,11 @@ const FeedProfile = () => {
     useEffect(() => {
 
         const fetchFeedsByUserId = async () => {
-            // setIsFetching(true)
             try {
 
                 const res = await getFeedsByUserId(userProfile?._id)
-
-                console.log("Check res data >>> ", res.data);
-
                 setUserFeeds(res.data)
-
-
-                // setIsFetching(false)
             } catch (error) {
-                // setIsFetching(false)
                 console.log("Error: ", error.message);
                 Alert.alert("Error", error.message)
             }
@@ -117,19 +109,18 @@ const FeedProfile = () => {
                         Offline
                     </Text>
                 </View>
-                <View className="flex-1">
-
-                </View>
+                <View className="flex-1" />
             </View>
-            <View className="flex items-center">
-                <Image
-                    source={{ uri: userProfile?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
-                    // className="w-full h-[50%]"
-                    width={120}
-                    height={120}
-                    className="rounded-full"
-                    resizeMode='contain'
-                />
+            <View className="flex items-center justify-center">
+                <View className="relative flex justify-center items-center">
+                    <Image
+                        source={{ uri: userProfile?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
+                        width={120}
+                        height={120}
+                        className="rounded-full"
+                        resizeMode='cover'
+                    />
+                </View>
                 <View className="flex flex-row p-2 justify-center items-center">
                     <TouchableOpacity onPress={() => setTab('information')} className={
                         colorScheme == 'dark'
