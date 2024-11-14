@@ -10,6 +10,7 @@ import useUserStore from '../../store/userStore'
 import { createNewFeed, uploadFiles } from '../../libs/mongodb'
 import LoadingModal from '../../components/LoadingModal'
 import { router } from 'expo-router'
+import { createVideo } from '../../libs/appwrite';
 const NewFeedPage = () => {
     const { colorScheme } = useColorScheme()
     const currentUser = useUserStore.getState().user;
@@ -37,32 +38,61 @@ const NewFeedPage = () => {
             setForm({ ...form, medias: result.assets ?? [] })
         }
     }
+    // upload files to local address with multer and save in mongodb
+    // const handleAddFeed = async () => {
+    //     setIsVisibleModal(true)
+    //     try {
+    //         const response = await uploadFiles(form.medias);
 
+    //         setForm(previous => {
+    //             return {
+    //                 ...previous,
+    //                 medias: response.data
+    //             }
+    //         })
+
+    //         if (response.data) {
+    //             await createNewFeed({
+    //                 ...form,
+    //                 medias: response.data
+    //             })
+    //         }
+
+    //         setIsVisibleModal(false)
+    //         Alert.alert("Posted successfully!")
+    //         router.back()
+    //     } catch (error) {
+    //         setIsVisibleModal(false)
+    //         Alert.alert('Error', 'There was an issue uploading your files: ' + error.message);
+    //     }
+    // };
+
+
+    // upload files with appwrite and save file in appwritedb, then return urls and save urls to mongodb
     const handleAddFeed = async () => {
         setIsVisibleModal(true)
         try {
-            const response = await uploadFiles(form.medias);
-
+            const response = await createVideo(form);
             setForm(previous => {
                 return {
                     ...previous,
-                    medias: response.data
+                    medias: response
                 }
             })
 
-            if (response.data) {
+            if (response) {
                 await createNewFeed({
                     ...form,
-                    medias: response.data
+                    medias: response
                 })
             }
 
-            setIsVisibleModal(false)
             Alert.alert("Posted successfully!")
             router.back()
         } catch (error) {
+            Alert.alert('Error', error.message);
+        } finally {
             setIsVisibleModal(false)
-            Alert.alert('Error', 'There was an issue uploading your files: ' + error.message);
         }
     };
 
