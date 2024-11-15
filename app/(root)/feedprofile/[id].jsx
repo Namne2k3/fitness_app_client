@@ -23,7 +23,14 @@ const FeedProfile = () => {
     const handleNavigateChatScreen = async () => {
         try {
             const chatRoom = await findChatRoom(user?._id, userProfile?._id)
-            router.push(`/(root)/chatroom/${chatRoom?.data?._id}`)
+            router.push({
+                pathname: `/(root)/chatroom/${chatRoom?.data?._id}`,
+                params: {
+                    _id: chatRoom?.data?._id,
+                    roomName: userProfile?.username,
+                    roomImage: userProfile?.image
+                }
+            })
 
         } catch (error) {
             console.log("Error: ", error.message);
@@ -88,9 +95,6 @@ const FeedProfile = () => {
     }, [tab])
 
     return (
-        // <TouchableOpacity onPress={handleNavigateChatScreen}>
-        //     <FontAwesome5 name='facebook-messenger' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
-        // </TouchableOpacity>
         <SafeAreaView className="bg-[#fff] flex relative dark:bg-slate-950 p-4 h-full pb-[100px]">
             <View className="flex flex-row justify-between items-center">
                 <View className="flex-1">
@@ -180,6 +184,11 @@ const FeedProfile = () => {
                 }
             </View>
             <LoadingModal visible={isFetching} />
+            <View className="absolute bottom-0 right-0 m-6 bg-[#ccc] dark:bg-[#000] p-2 rounded-full">
+                <TouchableOpacity onPress={handleNavigateChatScreen}>
+                    <FontAwesome5 name='facebook-messenger' size={32} color={colorScheme == 'dark' ? "#fff" : '#000'} />
+                </TouchableOpacity>
+            </View>
         </SafeAreaView >
     )
 }

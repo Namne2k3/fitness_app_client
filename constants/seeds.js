@@ -540,3 +540,91 @@ export const seedBlogs = [
         author: user
     },
 ];
+
+export const seedMessages = [
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e5",
+        senderId: "66d94b7e11338bbaa6aba357",
+        content: "Hello everyone!",
+        type: "text",
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e5",
+        senderId: "66d94b7e11338bbaa6aba357",
+        content: "How's the project going?",
+        type: "text",
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e6",
+        senderId: "6709272468d05a17f68fe6a0",
+        content: "Check out this image!",
+        type: "image",
+        image: {
+            url: "https://example.com/image1.jpg",
+            width: 800,
+            height: 600,
+            format: "jpg",
+        },
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e6",
+        senderId: "6709272468d05a17f68fe6a0",
+        content: "Here's the document.",
+        type: "file",
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e7",
+        senderId: "66d94b7e11338bbaa6aba357",
+        content: "Good morning!",
+        type: "text",
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e7",
+        senderId: "66d94b7e11338bbaa6aba357",
+        content: "This is a sample message with an image.",
+        type: "image",
+        image: {
+            url: "https://example.com/sample-image.jpg",
+            width: 1024,
+            height: 768,
+            format: "jpg",
+        },
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e8",
+        senderId: "66d94b7e11338bbaa6aba357",
+        content: "Can you check this file?",
+        type: "file",
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e8",
+        senderId: "6709272468d05a17f68fe6a0",
+        content: "I love this photo!",
+        type: "image",
+        image: {
+            url: "https://example.com/photo.jpg",
+            width: 500,
+            height: 500,
+            format: "png",
+        },
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e9",
+        senderId: "6709272468d05a17f68fe6a0",
+        content: "This is another text message.",
+        type: "text",
+    },
+    {
+        roomId: "64f8c2ae1fb85a2f0d1c3b4e9",
+        senderId: "6709272468d05a17f68fe6a0",
+        content: "Here's a cool image!",
+        type: "image",
+        image: {
+            url: "https://example.com/cool-image.jpg",
+            width: 600,
+            height: 400,
+            format: "jpeg",
+        },
+    },
+];
+

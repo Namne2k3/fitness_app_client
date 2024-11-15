@@ -352,8 +352,25 @@ const getFeedsByUserId = async (userId) => {
     }
 }
 
+const getAllChatRooms = async () => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.get(`${URL}/api/chatroom/getAll`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
 export {
     findChatRoom,
+    getAllChatRooms,
     getFeedsByUserId,
     getUserById,
     createNewChatRoom,

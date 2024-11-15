@@ -10,7 +10,7 @@ const BottomSheet = ({ bottomSheetRef, children, snapPoints }) => {
             <BottomSheetModal
                 ref={bottomSheetRef}
                 index={0}
-                snapPoints={[snapPoints ?? '25%']}
+                snapPoints={[...snapPoints ?? '25%']}
                 stackBehavior='replace'
                 enableDismissOnClose={true}
                 handleIndicatorStyle={{

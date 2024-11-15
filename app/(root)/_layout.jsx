@@ -186,7 +186,16 @@ const RootLayout = () => {
                 <Stack.Screen
                     name='Chat'
                     options={{
-                        headerShown: true,
+                        headerShown: false,
+                        headerTitle: '',
+                        headerShadowVisible: false,
+                        headerTintColor: colorScheme == 'dark' && "#fff"
+                    }}
+                />
+                <Stack.Screen
+                    name='chatroom/[id]'
+                    options={{
+                        headerShown: false,
                         headerTitle: '',
                         headerShadowVisible: false,
                         headerTintColor: colorScheme == 'dark' && "#fff"
