@@ -45,7 +45,7 @@ const MessageComponent = ({ item, user, roomImage }) => {
                         <Text>{item.content}</Text>
                     </View>
                 </View>
-                <Text style={{ marginLeft: 40 }}>{item.time}</Text>
+                <Text style={{ marginLeft: 40 }}>{new Date(item.created_at).toLocaleTimeString()}</Text>
             </View>
         </View>
     );

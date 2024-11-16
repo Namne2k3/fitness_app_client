@@ -1,21 +1,60 @@
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons'
 import { router, useLocalSearchParams, useSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, TouchableWithoutFeedback, TextInput, Keyboard, Platform, FlatList } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, TouchableWithoutFeedback, TextInput, Keyboard, Platform, FlatList, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { seedMessages } from '../../../constants/seeds'
 import MessageComponent from '../../../components/MessageComponent'
 import useUserStore from '../../../store/userStore'
+import socket from '../../../utils/socket'
+import { createMessage, getAllMessagesByRoomId } from '../../../libs/mongodb'
 const ChatRoom = () => {
 
     const { colorScheme } = useColorScheme()
     const { id, roomName, roomImage } = useLocalSearchParams()
     const user = useUserStore.getState().user
+    const [message, setMessage] = useState("")
+    const [messages, setMessages] = useState([])
+    const flatListMessages = useRef(null);
+
+    const handleSendMessage = async () => {
+        try {
+            socket.emit('sendMessage', { roomId: id, senderId: user?._id, content: message })
+        } catch (error) {
+            Alert.alert("Error", error.message)
+        }
+    }
 
     useEffect(() => {
+        const fetchAllMessageByRoomId = async () => {
+            try {
+                const res = await getAllMessagesByRoomId(id)
+                setMessages(res.data)
+            } catch (error) {
+                Alert.alert("Error", error.message)
+            }
+        }
 
+        fetchAllMessageByRoomId()
+        flatListMessages?.current.scrollToEnd()
     }, [])
+
+    useEffect(() => {
+        socket.emit('joinRoom', id);
+
+        socket.on("newMessage", async (message) => {
+            console.log("Received new message:", message);
+            await createMessage(message)
+            setMessages((prevMessages) => [...prevMessages, message]);
+            setMessage("")
+        });
+
+        return () => {
+            socket.emit("leaveRoom", id);
+            socket.off("newMessage");
+        };
+    }, [id]);
 
     return (
         <SafeAreaView className="bg-[#fff] flex dark:bg-slate-950 h-full">
@@ -33,7 +72,9 @@ const ChatRoom = () => {
                 <View className="flex">
                     <Text className="font-pextrabold text-[24px] dark:text-white">{roomName}</Text>
                     <Text className="font-plight text-center text-[12px] mt-[-10px]">
-                        Offline
+                        {
+                            console.log("Check socket.auth >>> ", socket.auth)
+                        }
                     </Text>
                 </View>
                 <View className="flex-1" />
@@ -42,14 +83,18 @@ const ChatRoom = () => {
             {/* List message */}
             <View className="flex flex-1">
                 <FlatList
-                    data={seedMessages}
+                    data={messages}
                     renderItem={({ item }) => (
                         <MessageComponent roomImage={roomImage} item={item} user={user} />
                     )}
-                    keyExtractor={(item) => item.id}
+                    ref={flatListMessages}
+                    keyExtractor={(item) => item._id}
                     contentContainerStyle={{
                         paddingHorizontal: 12,
                         paddingTop: 12
+                    }}
+                    onContentSizeChange={() => {
+                        flatListMessages?.current.scrollToEnd()
                     }}
                 />
             </View>
@@ -64,10 +109,9 @@ const ChatRoom = () => {
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                             <TextInput
                                 placeholder={"Enter your text"}
-
+                                value={message}
                                 onChangeText={(text) => {
-                                    console.log(text);
-
+                                    setMessage(text)
                                 }}
                                 placeholderTextColor={colorScheme == 'dark' ? '#6b7280' : '#ccc'}
                                 className="dark:text-white"
@@ -76,7 +120,7 @@ const ChatRoom = () => {
                         </TouchableWithoutFeedback>
                     </KeyboardAvoidingView>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={handleSendMessage}>
                     <Ionicons name='send-outline' size={24} color={colorScheme == 'dark' ? '#fff' : "#000"} />
                 </TouchableOpacity>
             </View>

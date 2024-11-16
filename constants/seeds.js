@@ -543,18 +543,22 @@ export const seedBlogs = [
 
 export const seedMessages = [
     {
+        _id: "1",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e5",
         senderId: "66d94b7e11338bbaa6aba357",
         content: "Hello everyone!",
         type: "text",
+        created_at: new Date().toLocaleTimeString()
     },
     {
         roomId: "64f8c2ae1fb85a2f0d1c3b4e5",
         senderId: "66d94b7e11338bbaa6aba357",
         content: "How's the project going?",
         type: "text",
+        created_at: new Date().toLocaleTimeString()
     },
     {
+        _id: "2",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e6",
         senderId: "6709272468d05a17f68fe6a0",
         content: "Check out this image!",
@@ -565,20 +569,26 @@ export const seedMessages = [
             height: 600,
             format: "jpg",
         },
+        created_at: new Date().toLocaleTimeString()
     },
     {
+        _id: "3",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e6",
         senderId: "6709272468d05a17f68fe6a0",
         content: "Here's the document.",
         type: "file",
+        created_at: new Date().toLocaleTimeString()
     },
     {
+        _id: "4",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e7",
         senderId: "66d94b7e11338bbaa6aba357",
         content: "Good morning!",
         type: "text",
+        created_at: new Date().toLocaleTimeString()
     },
     {
+        _id: "5",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e7",
         senderId: "66d94b7e11338bbaa6aba357",
         content: "This is a sample message with an image.",
@@ -589,14 +599,18 @@ export const seedMessages = [
             height: 768,
             format: "jpg",
         },
+        created_at: new Date().toLocaleTimeString()
     },
     {
+        _id: "6",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e8",
         senderId: "66d94b7e11338bbaa6aba357",
         content: "Can you check this file?",
         type: "file",
+        created_at: new Date().toLocaleTimeString()
     },
     {
+        _id: "7",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e8",
         senderId: "6709272468d05a17f68fe6a0",
         content: "I love this photo!",
@@ -607,14 +621,17 @@ export const seedMessages = [
             height: 500,
             format: "png",
         },
+        created_at: new Date().toLocaleTimeString()
     },
     {
+        _id: "8",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e9",
         senderId: "6709272468d05a17f68fe6a0",
         content: "This is another text message.",
         type: "text",
     },
     {
+        _id: "9",
         roomId: "64f8c2ae1fb85a2f0d1c3b4e9",
         senderId: "6709272468d05a17f68fe6a0",
         content: "Here's a cool image!",
@@ -625,6 +642,7 @@ export const seedMessages = [
             height: 400,
             format: "jpeg",
         },
+        created_at: new Date().toLocaleTimeString()
     },
 ];
 

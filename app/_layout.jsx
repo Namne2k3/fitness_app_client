@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ClerkProvider } from '@clerk/clerk-expo'
 import { tokenCache } from '../libs/clerk'
 import { useColorScheme } from 'nativewind';
+import socket from '../utils/socket'
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

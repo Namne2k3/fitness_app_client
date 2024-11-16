@@ -9,7 +9,7 @@ import { createNewChatRoom, findChatRoom, getUserById, getFeedsByUserId, updateB
 import LoadingModal from '../../../components/LoadingModal'
 import BlogCard from '../../../components/BlogCard'
 import { images } from '../../../constants/image'
-
+import socket from '../../../utils/socket'
 const FeedProfile = () => {
 
     const { id } = useLocalSearchParams()
@@ -22,7 +22,10 @@ const FeedProfile = () => {
 
     const handleNavigateChatScreen = async () => {
         try {
+
+            socket.emit("createPrivateRoom", user?._id, userProfile?._id)
             const chatRoom = await findChatRoom(user?._id, userProfile?._id)
+
             router.push({
                 pathname: `/(root)/chatroom/${chatRoom?.data?._id}`,
                 params: {

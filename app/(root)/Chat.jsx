@@ -73,8 +73,8 @@ const Chat = () => {
                 {rooms?.length > 0 ? (
                     <FlatList
                         data={rooms}
-                        renderItem={({ item, index }) => <ChatComponent key={index} index={index} handlePressChatComponent={handlePressChatComponent} item={item} />}
-                        keyExtractor={(item) => item.id}
+                        renderItem={({ item, index }) => <ChatComponent index={index} handlePressChatComponent={handlePressChatComponent} item={item} />}
+                        keyExtractor={(item) => item._id}
                     />
                 ) : (
                     <View style={styles.chatemptyContainer}>

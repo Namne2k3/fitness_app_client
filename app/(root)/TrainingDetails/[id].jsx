@@ -149,7 +149,7 @@ const TrainingDetails = () => {
                 <CustomButton onPress={() => router.push(`/(root)/beginTraining/${id}`)} text={'Start'} />
             </View>
             <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
-            <BottomSheet snapPoints="20%" bottomSheetRef={bottomEditSheetRef}>
+            <BottomSheet snapPoints={["20%"]} bottomSheetRef={bottomEditSheetRef}>
                 <View className="flex">
                     <TouchableOpacity onPress={() => {
                         Alert.alert(

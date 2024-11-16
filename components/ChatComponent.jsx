@@ -11,7 +11,11 @@ const ChatComponent = ({ item, handlePressChatComponent, index }) => {
 
 
     return (
-        <Pressable style={styles.cchat} onPress={() => handlePressChatComponent(item)}>
+        <Pressable
+            style={styles.cchat}
+            onLongPress={() => console.log('Long press')}
+            onPress={() => handlePressChatComponent(item)}
+        >
 
             <Image
                 source={{ uri: roomImage }}

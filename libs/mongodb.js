@@ -286,7 +286,7 @@ const updateBlogById = async (id, feed) => {
         })
         return res.data;
     } catch (error) {
-        throw new Error(error.message);
+        throw new Error(error);
     }
 }
 
@@ -301,7 +301,7 @@ const getUserById = async (id) => {
 
         return res.data;
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error(error)
     }
 }
 
@@ -318,7 +318,7 @@ const createNewChatRoom = async (chatroom) => {
     } catch (error) {
         console.log("Check error message >>> ", error.message);
 
-        throw new Error(error.message)
+        throw new Error(error)
     }
 }
 
@@ -333,7 +333,7 @@ const findChatRoom = async (userId, userProfileId) => {
 
         return res.data;
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error(error)
     }
 }
 
@@ -348,7 +348,7 @@ const getFeedsByUserId = async (userId) => {
 
         return res.data;
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error(error)
     }
 }
 
@@ -364,11 +364,45 @@ const getAllChatRooms = async () => {
 
         return res.data
     } catch (error) {
-        throw new Error(error.message)
+        throw new Error(error)
+    }
+}
+
+const createMessage = async (message) => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.post(`${URL}/api/chatroom/addMessage`, message, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getAllMessagesByRoomId = async (roomId) => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.get(`${URL}/api/chatroom/getAllMessages/${roomId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data
+    } catch (error) {
+        throw new Error(error)
     }
 }
 
 export {
+    createMessage,
+    getAllMessagesByRoomId,
     findChatRoom,
     getAllChatRooms,
     getFeedsByUserId,
