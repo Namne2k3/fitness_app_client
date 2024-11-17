@@ -1,16 +1,16 @@
-import { Alert, Image, KeyboardAvoidingView, Keyboard, Platform, TouchableWithoutFeedback, StyleSheet, Button, Text, TextInput, TouchableOpacity, View, ScrollView, FlatList } from 'react-native'
-import React, { useEffect, useState, useRef, useCallback } from 'react'
-import { useLocalSearchParams } from 'expo-router'
-import { getBlogById, updateBlogById } from '../../../libs/mongodb'
 import { AntDesign, Feather, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
-import { formatDateWithMonth, formatTime } from '../../../utils'
 import { Video } from 'expo-av'
-import PagerView from 'react-native-pager-view';
-import CommentCard from '../../../components/CommentCard'
-import BottomSheet from '../../../components/BottomSheet'
+import { useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
-import useUserStore from '../../../store/userStore'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import PagerView from 'react-native-pager-view'
+import BottomSheet from '../../../components/BottomSheet'
+import CommentCard from '../../../components/CommentCard'
 import LoadingModal from '../../../components/LoadingModal'
+import { getBlogById, updateBlogById } from '../../../libs/mongodb'
+import useUserStore from '../../../store/userStore'
+import { formatDateWithMonth, formatTime } from '../../../utils'
 const DetailFeed = () => {
 
     const { _id } = useLocalSearchParams()

@@ -1,13 +1,12 @@
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { AntDesign, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useColorScheme } from 'nativewind'
-import { seedBlogs } from '../../../constants/seeds'
-import { images } from '../../../constants/image'
-import BlogCard from '../../../components/BlogCard';
+import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
-import { getAllBlog, updateBlogById, } from '../../../libs/mongodb'
+import { useColorScheme } from 'nativewind';
 import { useCallback, useState } from 'react';
+import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import BlogCard from '../../../components/BlogCard';
+import { images } from '../../../constants/image';
+import { getAllBlog, updateBlogById, } from '../../../libs/mongodb';
 import useUserStore from '../../../store/userStore';
 
 const Feed = () => {

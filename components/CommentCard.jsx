@@ -1,9 +1,8 @@
-import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { formatDateWithMonth, formatTime } from '../utils'
 import { Entypo } from '@expo/vector-icons'
-import { useColorScheme } from 'nativewind'
 import { router } from 'expo-router'
+import React from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { formatDateWithMonth, formatTime } from '../utils'
 
 const CommentCard = ({ comment, handlePresentModalSheet, setSelectedComment, index, currentUserId, colorScheme }) => {
 

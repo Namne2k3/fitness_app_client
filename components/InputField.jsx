@@ -1,16 +1,15 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 
 import {
-    View,
-    Text,
-    KeyboardAvoidingView,
-    TouchableWithoutFeedback,
     Image,
-    TextInput,
-    Platform,
     Keyboard,
-    TouchableOpacity
+    KeyboardAvoidingView,
+    Platform,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    TouchableWithoutFeedback,
+    View
 } from "react-native";
 import { icons } from "../constants/icon";
 

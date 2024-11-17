@@ -1,7 +1,6 @@
-import { Image, Text, View } from 'react-native'
-import React from 'react'
-import styles from '../utils/styles'
-import { Ionicons } from "@expo/vector-icons";
+import React from 'react';
+import { Image, Text, View } from 'react-native';
+import styles from '../utils/styles';
 const MessageComponent = ({ item, user, roomImage }) => {
 
     const status = item.senderId !== user?._id;
@@ -42,7 +41,7 @@ const MessageComponent = ({ item, user, roomImage }) => {
                                 : [styles.mmessage, { backgroundColor: "rgb(194, 243, 194)" }]
                         }
                     >
-                        <Text>{item.content}</Text>
+                        <Text>{item?.content}</Text>
                     </View>
                 </View>
                 <Text style={{ marginLeft: 40 }}>{new Date(item.created_at).toLocaleTimeString()}</Text>

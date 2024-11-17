@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BodyPartList from "./BodyPartList";
 import { getAllBodyParts } from "../libs/exerciseDb";
-import { Text } from "react-native";
+import BodyPartList from "./BodyPartList";
 
 const TrainingContent = () => {
 

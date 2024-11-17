@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
@@ -15,29 +15,12 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#000',
         tabBarInactiveTintColor: colorScheme == 'dark' ? '#ccc' : 'gray',
         tabBarStyle: {
-          height: 60,
-          // paddingTop: 2,
-          // paddingBottom: 2,
+          height: 55,
           backgroundColor: colorScheme == 'dark' ? '#020617' : '#fff',
-          borderTopWidth: 0, // Ẩn đường viền tab
         },
-        headerShown: false,
-        tabBarItemStyle: {
-          margin: 4, // Tạo khoảng cách giữa các tab
-          paddingBottom: 4,
-          borderRadius: 12, // Bo góc cho các tab
-        },
-        tabBarIconStyle: {
-          width: 48,
-          height: 48, // Đặt kích thước cho icon container
-          justifyContent: 'center',
-          alignItems: 'center',
-          // backgroundColor: 'rgba(0, 0, 139, 0.1)', // Nền mờ mờ cho icon
-          borderRadius: 12, // Bo góc container icon
-        },
-        tabBarActiveBackgroundColor: colorScheme == 'dark' ? '#6b6b6a' : 'rgba(0, 0, 139, 0.1)', // Nền mờ cho tab được chọn
-        tabBarInactiveBackgroundColor: 'transparent', // Tab không được chọn có nền trong suốt
-      }}>
+        tabBarActiveBackgroundColor: colorScheme == 'dark' ? '#ccc' : 'rgba(0, 0, 139, 0.1)'
+      }}
+    >
       <Tabs.Screen
         name="training"
         options={{

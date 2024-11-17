@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View, Switch } from 'react-native'
-import React from 'react'
-import { useColorScheme } from 'nativewind'
-import { router } from 'expo-router'
+import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Feather } from '@expo/vector-icons'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { router } from 'expo-router';
+import { useColorScheme } from 'nativewind';
+import React from 'react';
+import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 const GeneralSettings = () => {
     const { colorScheme, toggleColorScheme } = useColorScheme()
 

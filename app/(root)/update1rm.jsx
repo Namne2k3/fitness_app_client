@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard, ScrollView, Alert } from 'react-native'
-import React, { useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign, Entypo, Feather } from '@expo/vector-icons'
-import { useColorScheme } from 'nativewind'
 import { router } from 'expo-router'
+import { useColorScheme } from 'nativewind'
+import React, { useState } from 'react'
+import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { kgToLbs, calculate1RM } from '../../utils/index'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
+import LoadingModal from '../../components/LoadingModal'
 import { handleUpdateUser } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
-import LoadingModal from '../../components/LoadingModal'
+import { calculate1RM } from '../../utils/index'
 
 const seedData = [
     {

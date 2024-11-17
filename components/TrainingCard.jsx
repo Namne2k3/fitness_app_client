@@ -1,6 +1,5 @@
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View, Animated, PanResponder } from 'react-native'
-import React, { useRef } from 'react'
-import { Entypo } from '@expo/vector-icons'
+import React from 'react'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import SetCard from './SetCard'
 
 const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpdateKilogramAndReps, hasCheck }) => {

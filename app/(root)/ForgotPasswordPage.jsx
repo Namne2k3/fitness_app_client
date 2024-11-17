@@ -1,16 +1,15 @@
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
-import React, { useCallback, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { useAuth, useSignIn } from '@clerk/clerk-expo'
 import { Feather, FontAwesome } from '@expo/vector-icons'
+import { router } from 'expo-router'
 import { useColorScheme } from 'nativewind'
-import InputField from '../../components/InputField'
+import React, { useCallback, useState } from 'react'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ReactNativeModal } from "react-native-modal"
+import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
+import InputField from '../../components/InputField'
 import LoadingModal from '../../components/LoadingModal'
 import { isEmailExist } from '../../libs/mongodb'
-import { ReactNativeModal } from "react-native-modal";
-import { useSignIn } from '@clerk/clerk-expo'
-import { router } from 'expo-router'
-import { useAuth } from '@clerk/clerk-expo';
 const ForgotPasswordPage = () => {
 
     const { colorScheme } = useColorScheme()

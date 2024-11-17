@@ -1,14 +1,14 @@
 
+import { ClerkProvider } from '@clerk/clerk-expo';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar';
-import { ClerkProvider } from '@clerk/clerk-expo'
-import { tokenCache } from '../libs/clerk'
 import { useColorScheme } from 'nativewind';
+import { useEffect } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-reanimated';
+import { tokenCache } from '../libs/clerk';
 import socket from '../utils/socket'
 SplashScreen.preventAutoHideAsync();
 
@@ -29,6 +29,7 @@ export default function RootLayout() {
 
 
   useEffect(() => {
+
     if (error) throw error;
 
     if (fontsLoaded) SplashScreen.hideAsync()

@@ -1,14 +1,14 @@
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign, Feather } from '@expo/vector-icons'
-import { useColorScheme } from 'nativewind'
+import * as ImagePicker from 'expo-image-picker'
 import { router } from 'expo-router'
-import useUserStore from '../../store/userStore'
-import * as ImagePicker from 'expo-image-picker';
+import { useColorScheme } from 'nativewind'
+import React, { useEffect, useState } from 'react'
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import LoadingModal from '../../components/LoadingModal'
 import { uploadFile } from '../../libs/appwrite'
 import { handleUpdateUser } from '../../libs/mongodb'
+import useUserStore from '../../store/userStore'
 
 const MyProfile = () => {
     const user = useUserStore.getState().user

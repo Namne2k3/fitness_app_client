@@ -1,12 +1,12 @@
-import { FlatList, Image, ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocalSearchParams } from 'expo-router'
+import { useColorScheme } from 'nativewind'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import { images } from '../../../constants/image'
 import { fetchAllExercisesByBodyPart } from '../../../libs/exerciseDb'
-import BottomSheetModalComponent from '../../../components/BottomSheetModal'
-import { useColorScheme } from 'nativewind'
 
 const ListHeaderComponent = ({ name }) => {
 

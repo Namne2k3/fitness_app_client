@@ -1,14 +1,13 @@
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons'
-import { router, useLocalSearchParams, useSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useEffect, useRef, useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View, KeyboardAvoidingView, TouchableWithoutFeedback, TextInput, Keyboard, Platform, FlatList, Alert } from 'react-native'
+import { Alert, FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { seedMessages } from '../../../constants/seeds'
 import MessageComponent from '../../../components/MessageComponent'
+import { createMessage, getAllMessagesByRoomId } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import socket from '../../../utils/socket'
-import { createMessage, getAllMessagesByRoomId } from '../../../libs/mongodb'
 const ChatRoom = () => {
 
     const { colorScheme } = useColorScheme()
@@ -45,8 +44,12 @@ const ChatRoom = () => {
 
         socket.on("newMessage", async (message) => {
             console.log("Received new message:", message);
-            await createMessage(message)
-            setMessages((prevMessages) => [...prevMessages, message]);
+            const savedMessage = await createMessage(message)
+
+            console.log("Check savedMessage >>> ", savedMessage);
+
+
+            setMessages((prevMessages) => [...prevMessages, savedMessage.data]);
             setMessage("")
         });
 

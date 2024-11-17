@@ -1,7 +1,6 @@
-import { View, Text, Pressable, Image } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
+import { Image, Pressable, Text, View } from "react-native";
 import styles from "../utils/styles";
 
 const ChatComponent = ({ item, handlePressChatComponent, index }) => {

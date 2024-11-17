@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useColorScheme } from 'nativewind';
+import React from 'react';
+import { StyleSheet } from 'react-native';
 
 const BottomSheet = ({ bottomSheetRef, children, snapPoints = ['25%'] }) => {
     const { colorScheme } = useColorScheme()

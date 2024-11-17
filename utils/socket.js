@@ -12,7 +12,6 @@ socket.on('connect', () => {
 
 socket.on('disconnect', (reason) => {
     console.log("Disconnected from server", reason);
-
 })
 
 export default socket;

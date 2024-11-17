@@ -20,30 +20,6 @@ const BodyPartExercisesCard = ({ item }) => {
                     />
                 </View>
             </View>
-
-            {/* <View className="mt-4 flex">
-                <View className="flex justify-between items-center flex-row mb-1">
-                    <Text className="font-pmedium">Bench Fly- Dumbbell</Text>
-                    <Text className="font-pextrabold">4x8</Text>
-                </View>
-                <View className="flex justify-between items-center flex-row mb-1">
-                    <Text className="font-pmedium">Bench Fly- Dumbbell</Text>
-                    <Text className="font-pextrabold">4x8</Text>
-                </View>
-                <View className="flex justify-between items-center flex-row mb-1">
-                    <Text className="font-pmedium">Bench Fly- Dumbbell</Text>
-                    <Text className="font-pextrabold">4x8</Text>
-                </View>
-            </View> */}
-
-            {/* <View className="flex justify-center items-end mt-2">
-                <Link
-                    href={`/(root)/bodypartexercises/${item}`}
-                    className='text-[#00008B] font-pmedium'
-                >
-                    View All
-                </Link>
-            </View> */}
         </TouchableOpacity>
     )
 }

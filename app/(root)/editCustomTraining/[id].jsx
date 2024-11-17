@@ -1,11 +1,11 @@
-import { Alert, FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState, useCallback } from 'react'
-import { router, useLocalSearchParams } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { fetchTrainingById, updateTraining } from '../../../libs/mongodb'
 import { Feather } from '@expo/vector-icons'
-import TrainingCard from '../../../components/TrainingCard'
+import { router, useLocalSearchParams } from 'expo-router'
+import React, { useCallback, useEffect, useState } from 'react'
+import { Alert, FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
+import TrainingCard from '../../../components/TrainingCard'
+import { fetchTrainingById, updateTraining } from '../../../libs/mongodb'
 const EditCustomTraining = () => {
 
     const { id } = useLocalSearchParams()

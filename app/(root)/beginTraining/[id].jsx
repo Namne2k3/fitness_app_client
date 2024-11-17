@@ -1,14 +1,14 @@
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
-import { router, useLocalSearchParams } from 'expo-router'
-import { createTrainingRecord, fetchTrainingById, updateTraining } from '../../../libs/mongodb'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { AntDesign, Feather } from '@expo/vector-icons'
-import TrainingCard from '../../../components/TrainingCard'
-import CustomButton from '../../../components/CustomButton'
-import { useUserStore } from '../../../store'
+import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
+import React, { useCallback, useEffect, useState } from 'react'
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import CustomButton from '../../../components/CustomButton'
 import LoadingModal from '../../../components/LoadingModal'
+import TrainingCard from '../../../components/TrainingCard'
+import { createTrainingRecord, fetchTrainingById } from '../../../libs/mongodb'
+import { useUserStore } from '../../../store'
 const BeginTrainingId = () => {
 
     const [dataTraining, setDataTraining] = useState({})

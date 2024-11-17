@@ -1,13 +1,13 @@
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Modal } from 'react-native'
-import React, { useCallback, useState } from 'react'
 import { Feather } from '@expo/vector-icons'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import { useColorScheme } from 'nativewind'
+import React, { useCallback, useState } from 'react'
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
-import { useUserStore } from '../../store'
-import { createFeedback } from '../../libs/mongodb'
-import { useColorScheme } from 'nativewind';
 import LoadingModal from '../../components/LoadingModal'
+import { createFeedback } from '../../libs/mongodb'
+import { useUserStore } from '../../store'
 const FeedBack = () => {
 
     const user = useUserStore((state) => state.user)

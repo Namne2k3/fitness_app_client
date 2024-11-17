@@ -1,16 +1,16 @@
-import { Image, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View, Alert } from 'react-native'
-import { useColorScheme } from 'nativewind';
-import React, { useEffect, useState } from 'react'
+import { ResizeMode, Video } from 'expo-av';
 import * as ImagePicker from 'expo-image-picker';
-import Swiper from 'react-native-swiper';
+import { router } from 'expo-router';
+import { useColorScheme } from 'nativewind';
+import React, { useEffect, useState } from 'react';
+import { Alert, Image, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Swiper from 'react-native-swiper';
 import CustomButton from '../../components/CustomButton';
-import { Video, ResizeMode } from 'expo-av';
-import useUserStore from '../../store/userStore'
-import { createNewFeed, uploadFiles } from '../../libs/mongodb'
-import LoadingModal from '../../components/LoadingModal'
-import { router } from 'expo-router'
+import LoadingModal from '../../components/LoadingModal';
 import { createVideo } from '../../libs/appwrite';
+import { createNewFeed } from '../../libs/mongodb';
+import useUserStore from '../../store/userStore';
 const NewFeedPage = () => {
     const { colorScheme } = useColorScheme()
     const currentUser = useUserStore.getState().user;
