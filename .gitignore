@@ -7,10 +7,11 @@ npm-debug.*
 *.p12
 *.key
 *.mobileprovision
+eas.json
 *.orig.*
 web-build/
 .env
-
+credential.json
 # macOS
 .DS_Store
 

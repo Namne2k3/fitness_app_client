@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios'
 import { getToken } from '../libs/token'
 
-const URL = process.env.EXPO_PUBLIC_URL_SERVER || "https://w2fw01lr-3000.asse.devtunnels.ms"
+const URL = process.env.EXPO_PUBLIC_URL_SERVER
 const createUser = async ({ username, email, password, clerkId }) => {
     try {
         await axios.post(`${URL}/api/auth/signup`, { username, email, password, clerkId })
@@ -384,11 +384,27 @@ const createMessage = async (message) => {
     }
 }
 
-const getAllMessagesByRoomId = async (roomId) => {
+const getAllMessagesByRoomId = async (roomId, { limit, skip }) => {
     const token = await getToken()
 
     try {
-        const res = await axios.get(`${URL}/api/chatroom/getAllMessages/${roomId}`, {
+        const res = await axios.get(`${URL}/api/chatroom/getAllMessages/${roomId}?limit=${limit}&skip=${skip}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const updateLastMessageForRoomChatById = async (roomId, lastMessage) => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.put(`${URL}/api/chatroom/update/${roomId}`, lastMessage, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -401,6 +417,7 @@ const getAllMessagesByRoomId = async (roomId) => {
 }
 
 export {
+    updateLastMessageForRoomChatById,
     createMessage,
     getAllMessagesByRoomId,
     findChatRoom,

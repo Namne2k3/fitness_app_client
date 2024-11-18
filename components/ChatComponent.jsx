@@ -35,7 +35,7 @@ const ChatComponent = ({ item, handlePressChatComponent, index }) => {
                 </View>
                 <View>
                     <Text style={styles.ctime}>
-                        {lastMessage?.createdAt ? new Date(lastMessage?.createdAt).toLocaleTimeString() : "now"}
+                        {updated_at ? new Date(updated_at).toLocaleTimeString() : "now"}
                     </Text>
                 </View>
             </View>

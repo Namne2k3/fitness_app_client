@@ -46,18 +46,28 @@ const Report = () => {
     }
 
     const fetchData = async () => {
-        setIsVisibleLoadingModal(true)
+        let isMounted = true;
+        setLoading(true);
+        setIsVisibleLoadingModal(true);
         try {
             await Promise.all([
                 fetchTrainingRecordsByMonth(new Date().getMonth() + 1),
-                fetchAllTrainingRecord()
+                fetchAllTrainingRecord(),
             ]);
-            setIsVisibleLoadingModal(false)
-            // scrollViewRef.current?.scrollToEnd({ animated: true });
+            if (isMounted) {
+                setIsVisibleLoadingModal(false);
+                setLoading(false);
+            }
         } catch (error) {
-            setIsVisibleLoadingModal(false)
+            if (isMounted) {
+                setIsVisibleLoadingModal(false);
+                setLoading(false);
+            }
             console.error("Error fetching data:", error);
         }
+        return () => {
+            isMounted = false;
+        };
     };
 
 
@@ -81,7 +91,7 @@ const Report = () => {
     return (
         <SafeAreaView className="flex h-full  dark:bg-slate-950">
             <ScrollView
-                // className="dark:bg-slate-950"
+                nestedScrollEnabled={true}
                 showsVerticalScrollIndicator={false}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -116,32 +126,24 @@ const Report = () => {
                                 horizontal={true}
                                 showsHorizontalScrollIndicator={false}
                             >
-                                <LineChart
-                                    data={data}
-                                    width={screenWidth * 3}
-                                    height={220}
-                                    chartConfig={{
-                                        color: (opacity = 0.5) => colorScheme == 'dark' ? '#fff' : `rgba(255, 255, 255, ${opacity})`,
-                                        style: {
-                                            borderRadius: 16
-                                        }
-                                    }}
-                                    // chartConfig={{
-                                    //     backgroundColor: '#e26a00',
-                                    //     backgroundGradientFrom: '#fb8c00',
-                                    //     backgroundGradientTo: '#ffa726',
-                                    //     decimalPlaces: 2, // optional, defaults to 2dp
-                                    //     color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                                    //     style: {
-                                    //       borderRadius: 16
-                                    //     }
-                                    //   }}
-                                    bezier
-                                    style={{
-                                        marginVertical: 8,
-                                        borderRadius: 16
-                                    }}
-                                />
+                                {monthRecords.length > 0 && (
+                                    <LineChart
+                                        data={data}
+                                        width={Math.min(screenWidth * 3, 1000)}
+                                        height={220}
+                                        chartConfig={{
+                                            color: (opacity = 0.5) => colorScheme == 'dark' ? '#fff' : `rgba(255, 255, 255, ${opacity})`,
+                                            style: {
+                                                borderRadius: 16,
+                                            },
+                                        }}
+                                        bezier
+                                        style={{
+                                            marginVertical: 8,
+                                            borderRadius: 16,
+                                        }}
+                                    />
+                                )}
                             </ScrollView>
 
                         </View>
@@ -188,23 +190,19 @@ const Report = () => {
                     </TouchableOpacity>
                 }>
                     <View className="rounded-lg p-4 bg-[#fff] dark:bg-[#292727]">
-                        {
-                            recordDatas.length > 0
-                                ?
-                                recordDatas?.slice(0, 3).map((item, index) => (
-                                    <HistoryRecordCard key={index} item={item} />
-                                ))
-                                :
-                                <View className="flex flex-col items-center justify-center bg-transparent">
-                                    <Image
-                                        source={images.no_result}
-                                        className="w-40 h-40"
-                                        alt="No recent rides found"
-                                        resizeMethod="contain"
-                                    />
-                                    <Text className="text-sm">No records found!</Text>
-                                </View>
-                        }
+                        {recordDatas && recordDatas.length > 0 ? (
+                            recordDatas.slice(0, 3).map((item, index) => <HistoryRecordCard key={index} item={item} />)
+                        ) : (
+                            <View className="flex flex-col items-center justify-center bg-transparent">
+                                <Image
+                                    source={images.no_result}
+                                    className="w-40 h-40"
+                                    alt="No recent rides found"
+                                    resizeMethod="contain"
+                                />
+                                <Text className="text-sm">No records found!</Text>
+                            </View>
+                        )}
                     </View>
                 </ReportComponent>
             </ScrollView>

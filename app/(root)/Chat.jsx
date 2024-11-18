@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BottomSheet from "../../components/BottomSheet";
@@ -34,21 +34,20 @@ const Chat = () => {
         bottomSheetRef?.current?.present()
     }
 
-    useEffect(() => {
-        const fetchAllChatRooms = async () => {
-            setFetching(true)
-            try {
-                const res = await getAllChatRooms()
-                setRooms(res.data)
-            } catch (error) {
-                Alert.alert('Error', error.message)
-            } finally {
-                setFetching(false)
-            }
+    const fetchAllChatRooms = async () => {
+        // setFetching(true)
+        try {
+            const res = await getAllChatRooms()
+            setRooms(res.data)
+        } catch (error) {
+            Alert.alert('Error', error.message)
+        } finally {
+            setFetching(false)
         }
-
+    }
+    useFocusEffect(useCallback(() => {
         fetchAllChatRooms()
-    }, [])
+    }, []))
 
     return (
         <SafeAreaView className="bg-[#fff] flex dark:bg-slate-950 p-4 h-full pb-[100px]">

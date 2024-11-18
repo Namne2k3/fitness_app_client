@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Alert, FlatList, Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MessageComponent from '../../../components/MessageComponent'
-import { createMessage, getAllMessagesByRoomId } from '../../../libs/mongodb'
+import { createMessage, getAllMessagesByRoomId, updateLastMessageForRoomChatById } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import socket from '../../../utils/socket'
 const ChatRoom = () => {
@@ -16,6 +16,19 @@ const ChatRoom = () => {
     const [message, setMessage] = useState("")
     const [messages, setMessages] = useState([])
     const flatListMessages = useRef(null);
+    const [isFetching, setIsFetching] = useState(false)
+    const [skip, setSkip] = useState(0);
+    const limit = 10;
+
+    const onRefresh = () => {
+        try {
+            setIsFetching(true)
+        } catch (error) {
+
+        } finally {
+            setIsFetching(false)
+        }
+    }
 
     const handleSendMessage = async () => {
         try {
@@ -25,32 +38,63 @@ const ChatRoom = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchAllMessageByRoomId = async () => {
-            try {
-                const res = await getAllMessagesByRoomId(id)
-                setMessages(res.data)
-            } catch (error) {
-                Alert.alert("Error", error.message)
-            }
+    const handleLoadMore = () => {
+        if (!isFetching) {
+            fetchAllMessageByRoomId();
         }
+    };
+
+    const handleScroll = (event) => {
+        const { contentOffset } = event.nativeEvent;
+        if (contentOffset.y <= 0 && !isFetching) {
+            handleLoadMore();
+        }
+    };
+
+    const fetchAllMessageByRoomId = async () => {
+        try {
+            setIsFetching(true);
+            const res = await getAllMessagesByRoomId(id, { limit, skip });
+
+            if (res.status == '404') {
+                console.log("Gap loi 404");
+
+                return;
+            }
+
+            setMessages((prevMessages) => [...res.data.reverse(), ...prevMessages]);
+            setSkip((prevSkip) => prevSkip + limit);
+        } catch (error) {
+            // console.log("Error message >>> ", error);
+            // Alert.alert("Error", error.message)
+        } finally {
+            setIsFetching(false);
+        }
+    }
+    useEffect(() => {
 
         fetchAllMessageByRoomId()
         flatListMessages?.current.scrollToEnd()
     }, [])
 
+
     useEffect(() => {
         socket.emit('joinRoom', id);
 
         socket.on("newMessage", async (message) => {
-            console.log("Received new message:", message);
-            const savedMessage = await createMessage(message)
+            const savedMessagePromise = createMessage(message);
+            const updateLastMessagePromise = savedMessagePromise.then((savedMessage) =>
+                updateLastMessageForRoomChatById(id, {
+                    senderId: user?._id,
+                    content: savedMessage.data.content
+                })
+            );
 
-            console.log("Check savedMessage >>> ", savedMessage);
-
+            const [savedMessage] = await Promise.all([savedMessagePromise, updateLastMessagePromise]);
+            flatListMessages?.current.scrollToEnd()
 
             setMessages((prevMessages) => [...prevMessages, savedMessage.data]);
-            setMessage("")
+            setMessage("");
         });
 
         return () => {
@@ -75,9 +119,7 @@ const ChatRoom = () => {
                 <View className="flex">
                     <Text className="font-pextrabold text-[24px] dark:text-white">{roomName}</Text>
                     <Text className="font-plight text-center text-[12px] mt-[-10px]">
-                        {
-                            console.log("Check socket.auth >>> ", socket.auth)
-                        }
+                        Offline
                     </Text>
                 </View>
                 <View className="flex-1" />
@@ -87,18 +129,26 @@ const ChatRoom = () => {
             <View className="flex flex-1">
                 <FlatList
                     data={messages}
-                    renderItem={({ item }) => (
-                        <MessageComponent roomImage={roomImage} item={item} user={user} />
+                    renderItem={({ item, index }) => (
+                        <MessageComponent index={index} roomImage={roomImage} item={item} user={user} />
                     )}
+                    onScroll={handleScroll}
+                    scrollEventThrottle={16} // Đảm bảo sự kiện onScroll được gọi mượt hơn
+                    refreshing={isFetching}
+                    // onRefresh={() => {
+                    //     setSkip(0);
+                    //     setMessages([]);
+                    //     fetchAllMessageByRoomId();
+                    // }}
                     ref={flatListMessages}
                     keyExtractor={(item) => item._id}
                     contentContainerStyle={{
                         paddingHorizontal: 12,
                         paddingTop: 12
                     }}
-                    onContentSizeChange={() => {
-                        flatListMessages?.current.scrollToEnd()
-                    }}
+                // onContentSizeChange={() => {
+                //     flatListMessages?.current.scrollToEnd()
+                // }}
                 />
             </View>
 

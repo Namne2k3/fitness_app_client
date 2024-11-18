@@ -11,6 +11,7 @@ import LoadingModal from '../../components/LoadingModal';
 import { createVideo } from '../../libs/appwrite';
 import { createNewFeed } from '../../libs/mongodb';
 import useUserStore from '../../store/userStore';
+import { analyzeImage } from '../../libs/google_vision_cloud';
 const NewFeedPage = () => {
     const { colorScheme } = useColorScheme()
     const currentUser = useUserStore.getState().user;
@@ -25,47 +26,52 @@ const NewFeedPage = () => {
     })
 
     const openPicker = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsMultipleSelection: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsMultipleSelection: true,
+                aspect: [4, 3],
+                quality: 1,
+                base64: true,
+            });
 
-        if (result.canceled) {
-            Alert.alert('You did not select any image.')
-        } else {
-            setForm({ ...form, medias: result.assets ?? [] })
+            const base64Images = result?.assets?.map((base64Img) => base64Img.base64)
+
+            if (result.canceled) {
+                throw new Error("You did not select any image.")
+            } else {
+                const analysisResult = await analyzeImage(base64Images)
+                if (analysisResult?.responses) {
+                    analysisResult.responses.forEach((response, index) => {
+                        const safeSearch = response.safeSearchAnnotation;
+                        console.log(`Image ${index + 1}:`);
+
+                        console.log(`- Adult: ${safeSearch.adult}`);
+                        console.log(`- Spoof: ${safeSearch.spoof}`);
+                        console.log(`- Medical: ${safeSearch.medical}`);
+                        console.log(`- Violence: ${safeSearch.violence}`);
+                        console.log(`- Racy: ${safeSearch.racy}`);
+
+                        if (
+                            ["LIKELY", "VERY_LIKELY"].includes(safeSearch.adult) ||
+                            ["LIKELY", "VERY_LIKELY"].includes(safeSearch.violence) ||
+                            ["LIKELY", "VERY_LIKELY"].includes(safeSearch.racy)
+                        ) {
+                            throw new Error(`Image ${index + 1} contains inappropriate content.`)
+                        } else {
+                            setForm({ ...form, medias: result.assets ?? [] })
+                        }
+
+                    });
+                }
+                else {
+                    throw new Error("Error occurred when analyze images.")
+                }
+            }
+        } catch (error) {
+            Alert.alert("Error", error.message)
         }
     }
-    // upload files to local address with multer and save in mongodb
-    // const handleAddFeed = async () => {
-    //     setIsVisibleModal(true)
-    //     try {
-    //         const response = await uploadFiles(form.medias);
-
-    //         setForm(previous => {
-    //             return {
-    //                 ...previous,
-    //                 medias: response.data
-    //             }
-    //         })
-
-    //         if (response.data) {
-    //             await createNewFeed({
-    //                 ...form,
-    //                 medias: response.data
-    //             })
-    //         }
-
-    //         setIsVisibleModal(false)
-    //         Alert.alert("Posted successfully!")
-    //         router.back()
-    //     } catch (error) {
-    //         setIsVisibleModal(false)
-    //         Alert.alert('Error', 'There was an issue uploading your files: ' + error.message);
-    //     }
-    // };
 
 
     // upload files with appwrite and save file in appwritedb, then return urls and save urls to mongodb
