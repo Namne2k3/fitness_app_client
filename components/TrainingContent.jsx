@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getAllBodyParts } from "../libs/exerciseDb";
+import { getAllBodyPart } from '../libs/mongodb'
 import BodyPartList from "./BodyPartList";
 
 const TrainingContent = () => {
@@ -10,9 +11,9 @@ const TrainingContent = () => {
 
     useEffect(() => {
         const fetchBodyParts = async () => {
-            const data = await getAllBodyParts()
-            if (data) {
-                setBodyParts(data)
+            const res = await getAllBodyPart()
+            if (res.data) {
+                setBodyParts(res.data)
             }
         }
 

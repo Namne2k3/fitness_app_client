@@ -19,7 +19,7 @@ const FeedBack = () => {
         setIsVisibleModalLoading(true)
         try {
             if (!content) {
-                throw new Error("You haven't written feedback yet!")
+                throw new Error("Bạn phải điền phản hồi!")
             }
             await createFeedback({
                 user: user?._id,
@@ -27,12 +27,12 @@ const FeedBack = () => {
                 rate: null
             })
             setIsVisibleModalLoading(false)
-            Alert.alert('Your feedback has been sent!')
+            Alert.alert('Phản hồi của bạn đã được gửi đi!')
             router.replace('/(root)/me')
 
         } catch (error) {
             setIsVisibleModalLoading(false)
-            Alert.alert('Error', error.message || 'An unknown error occurred') // Chuyển đổi đối tượng lỗi thành chuỗi
+            Alert.alert('Lỗi', error.message || 'Mỗi lỗi không xác định đã xảy ra') // Chuyển đổi đối tượng lỗi thành chuỗi
         }
     })
 
@@ -48,7 +48,7 @@ const FeedBack = () => {
                     >
                         <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} style={{ paddingRight: 12, marginRight: 12 }} />
                     </TouchableOpacity>
-                    <Text className="font-pextrabold text-[24px] dark:text-white">Feedback</Text>
+                    <Text className="font-pextrabold text-[24px] dark:text-white">Phản hồi</Text>
                 </View>
                 <ScrollView className="bg-[#fff] dark:bg-[#292727] flex-1 rounded-lg" showsVerticalScrollIndicator={false}>
                     <TextInput
@@ -57,7 +57,7 @@ const FeedBack = () => {
                             maxWidth: '100%',
                             padding: 10,
                         }}
-                        placeholder='Feedback or suggestion'
+                        placeholder='Phản hồi hoặc đề xuất gợi ý'
                         placeholderTextColor="#ccc"
                         multiline={true}
                         textAlignVertical="top"
@@ -68,11 +68,11 @@ const FeedBack = () => {
             </SafeAreaView>
             <View className="absolute bottom-0 left-0 right-0 m-4">
                 <CustomButton
-                    text="Send"
+                    text="Gửi"
                     onPress={() => handleSendFeedback()}
                 />
             </View>
-            <LoadingModal visible={isVisibleModalLoading} message="We are sending you feedback..." />
+            <LoadingModal visible={isVisibleModalLoading} message="Chúng tôi đang gửi phản hồi của bạn..." />
         </>
     )
 }

@@ -3,7 +3,8 @@ import { Video } from 'expo-av'
 import { useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Image } from 'expo-image'
 import PagerView from 'react-native-pager-view'
 import BottomSheet from '../../../components/BottomSheet'
 import CommentCard from '../../../components/CommentCard'
@@ -88,7 +89,7 @@ const DetailFeed = () => {
         try {
 
             if (!commentContent) {
-                throw new Error("Please enter your comment!")
+                throw new Error("Bạn chưa điền bình luận!")
             }
 
             setBlog((previous) => ({
@@ -272,7 +273,7 @@ const DetailFeed = () => {
                                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="w-[85%]">
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                         <TextInput
-                                            placeholder={isEdit ? 'Edit your comment here' : 'Enter your comment here'}
+                                            placeholder={isEdit ? 'Thay đổi bình luận' : 'Nhập bình luận'}
                                             value={isEdit ? selectedComment?.content : commentContent}
                                             onChangeText={(text) => {
                                                 if (isEdit) {
@@ -281,7 +282,7 @@ const DetailFeed = () => {
                                                     setCommentContent(text)
                                                 }
                                             }}
-                                            placeholderTextColor={colorScheme == 'dark' ? '#6b7280' : '#000'}
+                                            placeholderTextColor={colorScheme == 'dark' ? '#6b7280' : '#9ca3af'}
                                             className="dark:text-white"
                                             multiline
                                             ref={inputCommentRef}

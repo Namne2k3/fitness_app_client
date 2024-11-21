@@ -41,7 +41,7 @@ const SetCard = ({ index, item: { kilogram, reps, isCheck }, handleUpdateIsCheck
                     onChangeText={(text) => handleUpdateKilogramAndReps(itemParent, index, Number(kilogram), Number(text))}
                 />
             </View>
-            <Text className={`font-bold dark:text-white text-md ${isCheck && 'text-white'}`}>Reps</Text>
+            <Text className={`font-bold dark:text-white text-md ${isCheck && 'text-white'}`}>Hiệp</Text>
         </View>
     )
 }

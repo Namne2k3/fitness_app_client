@@ -2,7 +2,8 @@ import { Feather, FontAwesome5 } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BlogCard from '../../../components/BlogCard'
 import LoadingModal from '../../../components/LoadingModal'
@@ -112,13 +113,13 @@ const FeedProfile = () => {
                 </View>
                 <View className="flex">
                     <Text className="font-pextrabold text-[24px] dark:text-white">{userProfile?.username}</Text>
-                    <Text className="font-plight text-center text-[12px] mt-[-10px]">
+                    <Text className="font-plight text-center text-[12px] mt-[0px]">
                         Offline
                     </Text>
                 </View>
                 <View className="flex-1" />
             </View>
-            <View className="flex items-center justify-center">
+            <View className="flex items-center justify-center mt-4">
                 <View className="relative flex justify-center items-center">
                     <Image
                         source={{ uri: userProfile?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
@@ -180,7 +181,7 @@ const FeedProfile = () => {
                                     </View>
                                 }
                                 contentContainerStyle={{
-                                    paddingBottom: 100
+                                    paddingBottom: 150
                                 }}
                             />
                         </>

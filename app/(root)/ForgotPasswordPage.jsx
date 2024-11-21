@@ -77,14 +77,14 @@ const ForgotPasswordPage = () => {
                         <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                     </TouchableOpacity>
 
-                    <Text className="ml-4 font-pextrabold capitalize text-[28px] dark:text-white">Verify Email</Text>
+                    <Text className="ml-4 font-pextrabold capitalize text-[28px] dark:text-white">Xác thực email</Text>
                 </View>
             </View>
             <View className="px-4 mt-4">
-                <InputField value={email} onChange={(text) => setEmail(text)} placeholder="Enter your email" />
+                <InputField value={email} onChange={(text) => setEmail(text)} placeholder="Nhập email đã được liên kết với tài khoản" />
             </View>
             <View className="mt-4 px-4">
-                <CustomButton text="Send" onPress={handleSend} />
+                <CustomButton text="Gửi" onPress={handleSend} />
             </View>
             <ReactNativeModal
                 isVisible={verification.state === "pending"}
@@ -94,13 +94,14 @@ const ForgotPasswordPage = () => {
             >
                 <View className={`bg-white px-7 py-9 rounded-2xl min-h-[300px]`}>
                     <Text className={`text-2xl font-pextrabold mb-2 `}>
-                        Verification
+                        Xác thực
                     </Text>
                     <Text className={`font-pregular mb-5`}>
-                        We've sent a verification code to {email}
+                        Chúng tôi đã gửi một đoạn mã đến {email} để xác thực
+                        Vui lòng nhập đoạn mã vào ô bên dưới
                     </Text>
                     <InputField
-                        label={`Code`}
+                        label={`Đoạn mã`}
                         icon={<FontAwesome name='lock' size={24} style={{ marginLeft: 12 }} />}
                         placeholder={`12345`}
                         value={verification.code}
@@ -115,14 +116,14 @@ const ForgotPasswordPage = () => {
                         </Text>
                     )}
                     <CustomButton
-                        text={'Verify Email'}
+                        text={'Xác thực'}
                         onPress={onPressVerify}
                         containerStyle={`mt-4`}
                     />
                 </View>
 
             </ReactNativeModal>
-            <LoadingModal visible={isVisibleModelLoading} message={"loading"} />
+            <LoadingModal visible={isVisibleModelLoading} message={"Đang tải..."} />
         </SafeAreaView>
     )
 }

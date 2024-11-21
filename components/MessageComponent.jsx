@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { Image } from 'expo-image'
 import styles from '../utils/styles';
 const MessageComponent = ({ item, user, roomImage }) => {
 

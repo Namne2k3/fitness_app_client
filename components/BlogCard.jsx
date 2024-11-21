@@ -1,4 +1,5 @@
-import { Image, Text, TouchableOpacity, View, StyleSheet, Pressable } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet, Pressable } from 'react-native';
+import { Image } from 'expo-image'
 import Swiper from 'react-native-swiper';
 import { Video } from 'expo-av';
 import React, { useEffect, useRef } from 'react';

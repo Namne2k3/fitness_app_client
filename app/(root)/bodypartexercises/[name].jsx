@@ -1,12 +1,15 @@
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import { images } from '../../../constants/image'
 import { fetchAllExercisesByBodyPart } from '../../../libs/exerciseDb'
+import { getAllExercisesByBodyPart } from '../../../libs/mongodb'
+import { Feather } from '@expo/vector-icons'
 
 const ListHeaderComponent = ({ name }) => {
 
@@ -14,7 +17,6 @@ const ListHeaderComponent = ({ name }) => {
     <View className="flex flex-row justify-between items-center mb-4">
       <View>
         <Text className="dark:text-white font-pextrabold text-[32px] uppercase">{name}</Text>
-        <Text className=" dark:text-white -mt-4 font-pextrabold text-[32px] uppercase">workout</Text>
       </View>
       <View className="">
         <Image
@@ -29,38 +31,70 @@ const ListHeaderComponent = ({ name }) => {
 const BodyPartExercisesDetails = () => {
 
   const { name } = useLocalSearchParams()
-  const [loading, setLoading] = useState(false)
+  console.log("Check name >>> ", name);
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [smallLoading, setSmallLoading] = useState(false)
   const [selectedExercise, setSelectedExercise] = useState({})
-  const [offset, setOffSet] = useState(1)
   const { colorScheme } = useColorScheme()
   const [exercisesBodyParts, setExercisesBodyParts] = useState([])
   const bottomSheetRef = useRef(null)
+  const [skip, setSkip] = useState(0)
+  const limit = 10
 
   const handlePresentModalSheet = useCallback((item) => {
     bottomSheetRef.current?.present()
     setSelectedExercise(item)
 
   })
-  const fetchDetailBodyExercises = async (offsetProps = 0) => {
-    setLoading(true)
-    const data = await fetchAllExercisesByBodyPart(name.toLowerCase())
-    if (data) {
-      setExercisesBodyParts(data);
-      setLoading(false)
+
+  const fetchDataByQuery = async (isSearchReset = false) => {
+    try {
+      if (isSearchReset) {
+        setIsLoading(true);
+        setSkip(0);
+        setExercisesBodyParts([]);
+      } else {
+        setSmallLoading(true)
+      }
+
+      const res = await getAllExercisesByBodyPart(name || "", { limit, skip: isSearchReset ? 0 : skip });
+      if (res.status === '404') {
+        console.log("Gặp lỗi 404");
+        return;
+      }
+
+      const newExercises = res.data;
+      setExercisesBodyParts((prevExercises) => isSearchReset ? newExercises : [...prevExercises, ...newExercises]);
+
+      if (newExercises.length > 0) {
+        setSkip((prevSkip) => prevSkip + limit);
+      }
+    } catch (error) {
+      console.log("Error fetching training data:", error);
+    } finally {
+      setSmallLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
 
   useEffect(() => {
-    fetchDetailBodyExercises()
-
-    return () => {
-      setOffSet(0)
-    }
-  }, [name])
+    fetchDataByQuery(true)
+  }, [])
 
   return (
-    <SafeAreaView className="bg-[#fff] h-full px-6 dark:bg-slate-950">
+    <SafeAreaView className="bg-[#fff] h-full p-4 dark:bg-slate-950">
+      <View className="flex flex-row justify-start items-center pb-2">
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={{
+            backgroundColor: 'transparent'
+          }}
+        >
+          <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+        </TouchableOpacity>
+      </View>
 
       <FlatList
         data={exercisesBodyParts}
@@ -71,13 +105,17 @@ const BodyPartExercisesDetails = () => {
         }
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 16,
-          // flex: 1,
-        }}
+        ListFooterComponent={
+          !smallLoading ?
+            <TouchableOpacity className='p-4 flex flex-row justify-center items-center' onPress={() => fetchDataByQuery(false)}>
+              <Text className='text-center'>Tải thêm</Text>
+            </TouchableOpacity>
+            :
+            <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+        }
         ListEmptyComponent={() => (
           <View className="flex-1 justify-center items-center">
-            {!loading ? (
+            {!isLoading ? (
               <View className="flex justify-center items-center">
                 <Image
                   source={images.no_result}

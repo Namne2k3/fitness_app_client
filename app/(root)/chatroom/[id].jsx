@@ -118,7 +118,7 @@ const ChatRoom = () => {
                 </View>
                 <View className="flex">
                     <Text className="font-pextrabold text-[24px] dark:text-white">{roomName}</Text>
-                    <Text className="font-plight text-center text-[12px] mt-[-10px]">
+                    <Text className="font-plight text-center text-[12px] ">
                         Offline
                     </Text>
                 </View>

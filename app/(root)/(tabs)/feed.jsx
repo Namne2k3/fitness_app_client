@@ -2,7 +2,8 @@ import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useState } from 'react';
-import { FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BlogCard from '../../../components/BlogCard';
 import { images } from '../../../constants/image';
@@ -58,8 +59,8 @@ const Feed = () => {
     );
 
     return (
-        <SafeAreaView className="flex  h-full pt-4 dark:bg-slate-950">
-            <View className="flex flex-row justify-between items-center px-4 border-b-[1px] border-[#ccc]">
+        <SafeAreaView className="flex h-full pt-4 dark:bg-slate-950">
+            <View className="pb-2 flex flex-row justify-between items-center px-4 border-b-[1px] border-[#ccc]">
                 <Text className="dark:text-white font-pextrabold text-[32px] text-center">Feed</Text>
                 <View className="flex flex-row">
                     <TouchableOpacity className="mb-1 px-1" onPress={() => router.push('/(root)/Chat')}>

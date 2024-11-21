@@ -23,7 +23,7 @@ const TrainingPage = () => {
         tabBarLabelStyle: {
           fontSize: 16,
           alignSelf: 'center',
-          fontFamily: 'Poppins-Bold',
+          fontFamily: 'Roboto-Bold',
           marginTop: 32
         },
         tabBarStyle: {
@@ -36,8 +36,8 @@ const TrainingPage = () => {
         }
       }}
     >
-      <Tab.Screen name="Plan" component={Plan} />
-      <Tab.Screen name="Training" component={TrainingContent} />
+      <Tab.Screen name="LỘ TRÌNH" component={Plan} />
+      <Tab.Screen name="NHÓM CƠ" component={TrainingContent} />
     </Tab.Navigator>
 
   )

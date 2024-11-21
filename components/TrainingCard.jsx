@@ -1,5 +1,6 @@
 import React from 'react'
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image } from 'expo-image'
 import SetCard from './SetCard'
 
 const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpdateKilogramAndReps, hasCheck }) => {
@@ -20,7 +21,7 @@ const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpd
                 </View>
                 <View className="flex flex-col flex-1 justify-center items-start">
                     <Text className="font-psemibold text-[13px] capitalize dark:text-white">{exercise.name}</Text>
-                    <Text className="font-pregular text-[12px] dark:text-white">Set: {sets?.length}</Text>
+                    <Text className="font-pregular text-[12px] dark:text-white">Số hiệp: {sets?.length}</Text>
                 </View>
             </View>
 

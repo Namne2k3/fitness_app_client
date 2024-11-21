@@ -86,7 +86,7 @@ const SignUp = () => {
     return (
         <SafeAreaView className="p-8 bg-[#fff] h-full">
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Text className="font-pextrabold text-[32px] mb-4 text-center">Sign Up</Text>
+                <Text className="font-pextrabold text-[32px] mb-4 text-center">Đăng ký tài khoản</Text>
 
                 <InputField
                     value={form.email}
@@ -98,23 +98,23 @@ const SignUp = () => {
                 <InputField
                     value={form.username}
                     onChange={(text) => setForm({ ...form, username: text })}
-                    label={'Username'}
+                    label={'Tên tài khoản'}
                     icon={<AntDesign name={`user`} size={24} style={{ marginLeft: 12 }} />}
                 />
 
                 <InputField
                     value={form.password}
                     onChange={(text) => setForm({ ...form, password: text })}
-                    label={'Password'}
+                    label={'Mật khẩu'}
                     icon={<MaterialIcons name={`password`} size={24} style={{ marginLeft: 12 }} />}
                 />
 
-                <CustomButton containerStyle={`mt-4`} text={`Sign Up`} onPress={handleSubmitSignUp} />
+                <CustomButton containerStyle={`mt-4`} text={`Đăng ký`} onPress={handleSubmitSignUp} />
 
                 <View className="flex flex-row justify-center items-center mt-4">
-                    <Text className="font-pmedium text-[15px]">Already have an account?</Text>
+                    <Text className="font-pmedium text-[15px]">Đã có tài khoản?</Text>
                     <TouchableOpacity onPress={() => router.replace('/(auth)/sign-in')}>
-                        <Text className="font-psemibold text-[#00008B] text-[15px]"> Log In</Text>
+                        <Text className="font-psemibold text-[#00008B] text-[15px]"> Đăng nhập</Text>
                     </TouchableOpacity>
                 </View>
 

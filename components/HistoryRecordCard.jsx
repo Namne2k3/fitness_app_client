@@ -17,12 +17,12 @@ const HistoryRecordCard = ({ item }) => {
 
                 <View className="flex-1">
                     <Text className=" dark:text-white font-psemibold">{item?.duration}</Text>
-                    <Text className="text-[#878686] font-psemibold">Duration</Text>
+                    <Text className="text-[#878686] font-psemibold">Thời lượng</Text>
                 </View>
 
                 <View className="flex-1">
-                    <Text className=" dark:text-white font-psemibold">{item?.caloriesBurned}</Text>
-                    <Text className="text-[#878686] font-psemibold">Calo Burned</Text>
+                    <Text className=" dark:text-white font-psemibold">{item?.caloriesBurned.toFixed(2)}</Text>
+                    <Text className="text-[#878686] font-psemibold">Calo tiêu hao</Text>
                 </View>
             </View>
         </TouchableOpacity>

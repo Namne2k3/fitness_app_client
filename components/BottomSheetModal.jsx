@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
+import { Image } from 'expo-image'
 import React from 'react'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useColorScheme } from 'nativewind';
@@ -13,7 +14,7 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef }) => {
             <BottomSheetModal
                 ref={bottomSheetRef}
                 index={0}
-                snapPoints={['65%', '90%']}
+                snapPoints={['65%', '95%']}
                 stackBehavior='replace'
                 enableDismissOnClose={true}
                 handleIndicatorStyle={{
@@ -27,6 +28,7 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef }) => {
                     borderWidth: 0
                 }}
                 style={{
+                    borderWidth: 1,
                     borderRadius: 12,
                     zIndex: 100,
                     backgroundColor: colorScheme == 'dark' ? 'rgb(2,6,23)' : '#fff'
@@ -53,21 +55,21 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef }) => {
                     </View>
                     <Text className="font-pextrabold text-lg capitalize mt-4 dark:text-white">{selectedExercise?.name}</Text>
                     <Text className="font-pbold text-lg mt-2 dark:text-white">
-                        * Target: <Text className="font-pregular">{selectedExercise?.target} {selectedExercise?.secondaryMuscles?.map((mus, index) =>
+                        * Mục tiêu: <Text className="font-pregular">{selectedExercise?.target} {selectedExercise?.secondaryMuscles?.map((mus, index) =>
                             <Text key={index}>
                                 , {mus}
                             </Text>)}
                         </Text>
                     </Text>
                     <Text className="font-pbold text-lg mt-2 dark:text-white">
-                        * Equipment:
+                        * Thiết bị:
                         <Text className="font-pregular">
                             {` ${selectedExercise?.equipment}`}
                         </Text>
                     </Text>
 
                     <View>
-                        <Text className="font-pbold text-lg mt-3 dark:text-white">* Instructions</Text>
+                        <Text className="font-pextrabold text-lg mt-3 dark:text-white">* Hướng dẫn</Text>
                         {
                             selectedExercise?.instructions?.map((ins, index) => (
                                 <View className="flex flex-row mt-3" key={index}>

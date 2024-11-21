@@ -40,6 +40,16 @@ const RootLayout = () => {
                     }}
                 />
                 <Stack.Screen
+                    name='ChooseGender'
+                    options={{
+                        headerShown: false,
+                        title: "",
+                        headerStyle: {
+                            backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
+                        }
+                    }}
+                />
+                <Stack.Screen
                     name='createexercisepage'
                     options={{
                         headerShown: false,
@@ -87,7 +97,7 @@ const RootLayout = () => {
                 <Stack.Screen
                     name='bodypartexercises/[name]'
                     options={{
-                        headerShown: true,
+                        headerShown: false,
                         headerTitle: "",
                         headerShadowVisible: false,
                         headerTintColor: colorScheme == 'dark' && "#fff",

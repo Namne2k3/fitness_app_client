@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, View, Text, Modal, Alert } from 'react-na
 import React, { useCallback, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useUserStore } from '@/store'
-import { AntDesign, FontAwesome5, MaterialCommunityIcons, Octicons } from '@expo/vector-icons'
+import { AntDesign, FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import CustomButton from '@/components/CustomButton'
 import { createFeedback } from '@/libs/mongodb'
@@ -40,7 +40,7 @@ const Me = () => {
         try {
             await AsyncStorage.removeItem('jwt_token');
             clearUser()
-            Alert.alert('Log out successfully!');
+            Alert.alert('Đăng xuất thành công!');
             router.replace('/(auth)/sign-in')
         } catch (error) {
             console.error('Lỗi khi đăng xuất:', error);
@@ -60,35 +60,35 @@ const Me = () => {
                     }
                 </View>
 
-                <View className="bg-[#fff] rounded-lg p-4 mb-4 dark:bg-[#292727] rounded-tr-[0] shadow-2xl">
-                    <Text className="font-pextrabold capitalize text-lg dark:text-white">Settings</Text>
+                <View className="bg-[#fff] rounded-lg p-4 mb-4 dark:bg-[#292727] rounded-tr-[0]">
+                    <Text className="font-pextrabold capitalize text-[22px] dark:text-white">Cài đặt</Text>
                     <TouchableOpacity
                         className="flex flex-row py-4 mt-2 justify-start  items-center border-[#ccc] border-b-[0.5px]"
                         onPress={() => router.push('/(root)/myprofile')}
                     >
                         <AntDesign color={colorScheme == 'dark' ? '#fff' : "#000"} name='profile' size={24} style={{ marginRight: 12 }} />
-                        <Text className="dark:text-white font-psemibold text-md capitalize">My Profile</Text>
+                        <Text className="dark:text-white font-psemibold text-md capitalize">Thông tin của tôi</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => router.push('/(root)/GeneralSettings')} className="flex flex-row py-4 mt-2  justify-start items-center border-[#ccc] border-b-[0.5px]">
                         <AntDesign color={colorScheme == 'dark' ? '#fff' : "#000"} name='setting' size={24} style={{ marginRight: 12 }} />
-                        <Text className=" dark:text-white font-psemibold text-md capitalize">General Settings</Text>
+                        <Text className=" dark:text-white font-psemibold text-md capitalize">Thiết lập hệ thống</Text>
                     </TouchableOpacity>
                     <TouchableOpacity disabled className="flex flex-row py-4 mt-2  justify-start items-center border-[#ccc] border-b-[0.5px]">
                         <AntDesign color={colorScheme == 'dark' ? '#fff' : "#9ca3af"} name='earth' size={24} style={{ marginRight: 12 }} />
-                        <Text className="text-gray-400 dark:text-white font-psemibold text-md capitalize">Language</Text>
+                        <Text className="text-gray-400 dark:text-white font-psemibold text-md capitalize">Ngôn ngữ</Text>
                     </TouchableOpacity>
                 </View>
                 <View className="bg-[#fff] rounded-lg p-4 dark:bg-[#292727]">
                     <TouchableOpacity onPress={() => setIsVisibleModalEdit(true)} className="flex flex-row py-4 justify-start items-center border-[#ccc] border-b-[0.5px]">
                         <AntDesign color={colorScheme == 'dark' ? '#fff' : "#000"} name='staro' size={24} style={{ marginRight: 12 }} />
-                        <Text className="dark:text-white font-psemibold text-md capitalize">Rate Us</Text>
+                        <Text className="dark:text-white font-psemibold text-md capitalize">Đánh giá</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => router.push('/(root)/FeedBack')} className="flex flex-row py-4 mt-2  justify-start items-center border-[#ccc] border-b-[0.5px]">
-                        <Octicons color={colorScheme == 'dark' ? '#fff' : "#000"} name='pencil' size={24} style={{ marginRight: 12 }} />
-                        <Text className="dark:text-white font-psemibold text-md capitalize">Feedback</Text>
+                        <MaterialIcons color={colorScheme == 'dark' ? '#fff' : "#000"} name='feedback' size={24} style={{ marginRight: 12 }} />
+                        <Text className="dark:text-white font-psemibold text-md capitalize">Phản hồi</Text>
                     </TouchableOpacity>
                 </View>
-                <Text className="text-center my-2 font-pmedium text-[#878686]">Version {packageInfo.version}</Text>
+                <Text className="text-center my-2 font-pmedium text-[#878686]">Phiên bản {packageInfo.version}</Text>
             </SafeAreaView >
             <Modal
                 animationType="fade"
@@ -117,10 +117,10 @@ const Me = () => {
                                         </View>
                                         <View className="">
                                             <Text className="text-center font-pmedium">
-                                                We are working hard for a better user experience.
+                                                Chúng tôi đang làm việc chăm chỉ để trải nghiệm người dùng được tốt hơn
                                             </Text>
                                             <Text className="text-center font-pmedium">
-                                                We'd greatly appreciate if you can rate us
+                                                Chúng tôi rất chân trọng nếu bạn có thể đánh giá chúng tôi
                                             </Text>
                                         </View>
 
@@ -144,7 +144,7 @@ const Me = () => {
 
                                         <View className="w-full">
                                             <CustomButton
-                                                text="Rate"
+                                                text="Đánh giá"
                                                 onPress={handleRating}
                                                 containerStyle={" mt-2"}
                                             />
@@ -167,13 +167,13 @@ const Me = () => {
                                         </View>
 
                                         <Text className="text-center font-pextrabold text-lg mb-4">
-                                            Thank you for rating us!
+                                            Cảm ơn bạn đã đánh giá!
                                         </Text>
                                         <Text className="text-center font-pextrabold text-[16px]">
-                                            Your review contributes to improving the quality of the customer experience
+                                            Phản hồi của bạn đóng góp để cải thiện chất lượng trải nghiệm người dùng
                                         </Text>
                                         <Text className="text-center font-pextrabold text-[16px]">
-                                            If you want to contribute, please leave feedback. Thank you
+                                            Nếu bạn muốn đóng góp, vui lòng hãy để lại phản hồi. Xin cám ơn!
                                         </Text>
                                     </View>
                                 )

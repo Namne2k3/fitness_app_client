@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { Image, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
+import { Image } from 'expo-image'
 import styles from "../utils/styles";
 
 const ChatComponent = ({ item, handlePressChatComponent, index }) => {
@@ -14,6 +15,7 @@ const ChatComponent = ({ item, handlePressChatComponent, index }) => {
             style={styles.cchat}
             onLongPress={() => console.log('Long press')}
             onPress={() => handlePressChatComponent(item)}
+            className="bg-[#ccc]"
         >
 
             <Image

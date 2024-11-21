@@ -1,7 +1,8 @@
 import { router, useFocusEffect } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useRef, useState } from 'react'
-import { Dimensions, Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image } from 'expo-image'
 import { LineChart } from 'react-native-chart-kit'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HistoryRecordCard from '../../../components/HistoryRecordCard'
@@ -98,19 +99,19 @@ const Report = () => {
                 }
             >
                 <View className="pt-4 px-4">
-                    <Text className="capitalize font-pextrabold text-[32px] dark:text-white">report</Text>
+                    <Text className="capitalize font-pextrabold text-[32px] dark:text-white">thống kê</Text>
                 </View>
-                <ReportComponent title={'Total'}>
+                <ReportComponent title={'Toàn bộ'}>
                     <View className="bg-[#fff] rounded-lg mt-2 p-4 w-full dark:bg-[#292727]" >
                         <View className="flex flex-row ">
                             <View className="flex justify-center items-start flex-1">
-                                <Text className="text-[13px] font-pmedium dark:text-white">Workouts</Text>
+                                <Text className="text-[13px] font-pmedium dark:text-white">Đã luyện tập</Text>
                                 <Text className="text-[#4040d6] font-pextrabold text-[22px]">
                                     {recordDatas?.length}
                                 </Text>
                             </View>
                             <View className="flex justify-center items-start flex-1">
-                                <Text className="text-[13px] font-pmedium dark:text-white">Time(min)</Text>
+                                <Text className="text-[13px] font-pmedium dark:text-white">Thời gian (phút)</Text>
                                 <Text className="text-[#4040d6] font-pextrabold text-[22px]">
                                     {getTotalTimeDuration(recordDatas && recordDatas)}
                                 </Text>
@@ -118,7 +119,7 @@ const Report = () => {
                         </View>
 
                         <View className="mt-2" >
-                            <Text className="font-pmedium text-[13px] dark:text-white">Workout times per week</Text>
+                            <Text className="font-pmedium text-[13px] dark:text-white">Số lần luyện tập trong tuần</Text>
 
                             <ScrollView
                                 nestedScrollEnabled={true}
@@ -150,7 +151,7 @@ const Report = () => {
                     </View>
                 </ReportComponent>
 
-                <ReportComponent title={`this week`}>
+                <ReportComponent title={`tuần này`}>
                     <View className="bg-[#fff] w-full py-2 rounded-lg mt-2 dark:bg-[#292727]">
                         <View className="flex flex-row justify-between items-center px-4 py-2">
                             {
@@ -164,7 +165,7 @@ const Report = () => {
                         </View>
                         <View className="p-4 bg-[#fff] flex flex-row dark:bg-[#292727]">
                             <View className="flex justify-start items-start flex-1">
-                                <Text className='dark:text-white font-psemibold text-[12px]'>Today(min)</Text>
+                                <Text className='dark:text-white font-psemibold text-[12px]'>Hôm nay (phút)</Text>
                                 <Text className="text-[#4040d6] font-pextrabold text-[22px]">
                                     {
                                         recordDatas?.filter(
@@ -174,7 +175,7 @@ const Report = () => {
                                 </Text>
                             </View>
                             <View className="flex justify-start items-start flex-1">
-                                <Text className='dark:text-white font-psemibold text-[12px]'>Weekly average(min)</Text>
+                                <Text className='dark:text-white font-psemibold text-[12px]'>Trung bình trong tuần (phút)</Text>
                                 <Text className="text-[#4040d6] font-pextrabold text-[22px]">
                                     {getAverageTimeDurationThisWeek(recordDatas && recordDatas)}
                                 </Text>
@@ -184,9 +185,9 @@ const Report = () => {
                 </ReportComponent>
 
 
-                <ReportComponent title={`History`} rightComponent={
+                <ReportComponent title={`lịch sử`} rightComponent={
                     <TouchableOpacity onPress={() => router.push('/(root)/allHistoryRecords')}>
-                        <Text className="text-[#4040d6] font-psemibold">View All</Text>
+                        <Text className="text-[#4040d6] font-psemibold">Tất cả</Text>
                     </TouchableOpacity>
                 }>
                     <View className="rounded-lg p-4 bg-[#fff] dark:bg-[#292727]">
@@ -200,7 +201,7 @@ const Report = () => {
                                     alt="No recent rides found"
                                     resizeMethod="contain"
                                 />
-                                <Text className="text-sm">No records found!</Text>
+                                <Text className="text-sm">Không có lịch sử nào!</Text>
                             </View>
                         )}
                     </View>

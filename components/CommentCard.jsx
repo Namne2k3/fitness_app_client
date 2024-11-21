@@ -1,7 +1,8 @@
 import { Entypo } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import React from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image } from 'expo-image'
 import { formatDateWithMonth, formatTime } from '../utils'
 
 const CommentCard = ({ comment, handlePresentModalSheet, setSelectedComment, index, currentUserId, colorScheme }) => {

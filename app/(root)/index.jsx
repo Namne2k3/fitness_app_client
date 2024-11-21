@@ -1,4 +1,5 @@
-import { Dimensions, Image, Text, View } from 'react-native';
+import { Dimensions, Text, View } from 'react-native';
+import { Image } from 'expo-image'
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '@/constants/image';

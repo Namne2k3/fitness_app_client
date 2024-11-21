@@ -62,7 +62,7 @@ const Chat = () => {
                         <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} style={{ paddingRight: 12, marginRight: 12 }} />
                     </TouchableOpacity>
                 </View>
-                <Text className=" text-center font-pextrabold text-[24px] dark:text-white">Chats</Text>
+                <Text className=" text-center font-pextrabold text-[24px] dark:text-white">Tin nhắn</Text>
                 <TouchableOpacity onPress={openBottomSheet} className="flex flex-row flex-1 justify-end items-center">
                     <Feather name="edit" size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                 </TouchableOpacity>

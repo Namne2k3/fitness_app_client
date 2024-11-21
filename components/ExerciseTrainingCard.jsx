@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Modal } from 'react-native'
+import { Image } from 'expo-image'
 import React from 'react'
 const ExerciseTrainingCard = ({ item, onPress }) => {
 

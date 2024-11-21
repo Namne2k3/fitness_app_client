@@ -3,7 +3,8 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Swiper from 'react-native-swiper';
 import CustomButton from '../../components/CustomButton';

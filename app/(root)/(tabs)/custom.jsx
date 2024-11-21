@@ -2,7 +2,8 @@ import { images } from '@/constants/image';
 import { AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchTrainingsByUserId } from '../../../libs/mongodb';
 import CustomTrainingCard from '../../../components/CustomTrainingCard';
@@ -45,8 +46,8 @@ const CustomPage = () => {
 
   return (
     <SafeAreaView className="flex bg-[#fff] h-full px-4 pt-4 dark:bg-slate-950">
-      <View className="flex flex-row justify-between items-center">
-        <Text className="dark:text-white font-pextrabold text-[32px]">Custom</Text>
+      <View className="flex flex-row justify-between items-center mb-4">
+        <Text className="dark:text-white font-pextrabold text-[32px]">Tùy chỉnh</Text>
         <TouchableOpacity onPress={() => router.push('/(root)/createexercisepage')}>
           <AntDesign name='pluscircle' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
         </TouchableOpacity>
@@ -74,7 +75,7 @@ const CustomPage = () => {
               }}
             >
               <View className="flex justify-center items-center">
-                <Text className="font-psemibold text-lg">No Custom Training Found!</Text>
+                <Text className="font-psemibold text-lg">Chưa có bài tập tùy chỉnh nào được tạo</Text>
                 <View>
                   <Image
                     source={images.no_result}

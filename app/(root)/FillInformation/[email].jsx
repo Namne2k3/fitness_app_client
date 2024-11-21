@@ -9,11 +9,12 @@ import { router, useLocalSearchParams } from 'expo-router'
 import { getUserByEmail, handleUpdateUser } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import LoadingModal from '../../../components/LoadingModal'
+
 function calculateBmr(weight, height, gender, age) {
     if (gender == 'male')
-        return (88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age))
+        return 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age
     else
-        return (447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age))
+        return 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age
 }
 
 function calculateTdee(bmr, hstq) {
@@ -21,7 +22,6 @@ function calculateTdee(bmr, hstq) {
 }
 
 const FillInformation = () => {
-
     const [user, setUser] = useState({})
     const setUserDataStore = useUserStore((state) => state.setUser)
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
@@ -31,16 +31,130 @@ const FillInformation = () => {
         height: 0,
         age: 0,
         gender: '',
+        waist: 0,
+        hip: 0,
+        sleep: 0,
+        activityLevel: '',
+        healthGoal: '',
         bmr: 0,
         hstq: 0,
         tdee: 0,
         orm: 0
     })
 
-    const data = [
-        'Male',
-        'Female'
+    const genderOptions = ['Nam', 'Nữ']
+    const healthGoals = ['Giảm cân', 'Tăng cơ', 'Duy trì cân nặng', 'Cải thiện sức khỏe']
+
+    const handlePressSend = useCallback(async () => {
+        try {
+
+            console.log("Check values >>> ", values);
+
+            setIsVisibleLoadingModal(true);
+
+            if (values.weight && values.height && values.age && values.gender && values.activityLevel) {
+                console.log("Check hstqValue >>> ", values.activityLevel);
+
+
+                const bmrValue = calculateBmr(values.weight, values.height, values.gender, values.age);
+                const tdeeValue = calculateTdee(bmrValue, values.activityLevel);
+
+                setValues({
+                    ...values,
+                    hstq: values.activityLevel,  // Cập nhật hstq
+                    bmr: bmrValue,
+                    tdee: tdeeValue
+                });
+
+                // Tiến hành xử lý và gửi dữ liệu, ví dụ: cập nhật người dùng trong cơ sở dữ liệu
+                const savedData = await handleUpdateUser({
+                    ...user,
+                    ...values,
+                    bmr: bmrValue,
+                    tdee: tdeeValue
+                })
+
+                console.log("Check savedData >>> ", savedData);
+
+
+                setIsVisibleLoadingModal(false);
+                const { conclusion, suggestions } = analyzeAndSuggest(values);
+                Alert.alert(
+                    'Kết quả phân tích',
+                    `${conclusion}\n\nGợi ý:\n${suggestions.join('\n')}`
+                );
+
+                router.replace('/(root)/(tabs)/training')
+            } else {
+                setIsVisibleLoadingModal(false);
+                Alert.alert("Vui lòng điền đầy đủ thông tin!");
+            }
+        } catch (error) {
+            setIsVisibleLoadingModal(false);
+            Alert.alert(error.message);
+        }
+    });
+
+
+    const analyzeAndSuggest = (values) => {
+        const { weight, height, waist, hip, age, gender, sleep, hstq, healthGoal } = values;
+
+        const heightInMeters = height / 100;
+        const bmi = weight / (heightInMeters * heightInMeters);
+        const whr = waist / hip;
+
+        let conclusion = '';
+        let suggestions = [];
+
+        if (bmi < 18.5) {
+            conclusion += 'Bạn thuộc nhóm thiếu cân. ';
+            suggestions.push('Tăng cường chế độ ăn uống giàu dinh dưỡng để tăng cân.');
+        } else if (bmi < 24.9) {
+            conclusion += 'Bạn có chỉ số BMI bình thường. ';
+            suggestions.push('Duy trì chế độ tập luyện và ăn uống lành mạnh.');
+        } else if (bmi < 29.9) {
+            conclusion += 'Bạn thuộc nhóm thừa cân. ';
+            suggestions.push('Nên tập luyện thường xuyên, đặc biệt là các bài tập đốt mỡ như cardio.');
+        } else {
+            conclusion += 'Bạn thuộc nhóm béo phì. ';
+            suggestions.push('Cần giảm cân bằng cách kết hợp tập luyện và kiểm soát chế độ ăn.');
+        }
+
+        if ((gender === 'Nam' && whr > 0.9) || (gender === 'Nữ' && whr > 0.85)) {
+            conclusion += 'Bạn có nguy cơ cao về sức khỏe liên quan đến mỡ bụng. ';
+            suggestions.push('Tập trung vào các bài tập giảm mỡ bụng như plank, crunches, và chạy bộ.');
+        }
+
+        if (healthGoal === 'Giảm cân') {
+            suggestions.push('Tập luyện ít nhất 5-6 ngày mỗi tuần với các bài tập cường độ trung bình hoặc cao.');
+        } else if (healthGoal === 'Tăng cơ') {
+            suggestions.push('Nên tập luyện 4-5 ngày mỗi tuần với các bài tập tạ, kết hợp ăn nhiều protein.');
+        } else if (healthGoal === 'Cải thiện sức khỏe') {
+            suggestions.push('Chỉ cần duy trì 3-4 ngày tập luyện mỗi tuần với các bài tập vừa sức.');
+        }
+
+        if (sleep < 6) {
+            suggestions.push('Nên ngủ đủ 7-8 tiếng mỗi ngày để tăng hiệu quả tập luyện và cải thiện sức khỏe.');
+        }
+
+        return { conclusion, suggestions };
+    }
+
+    const activityOptions = [
+        'Ít vận động (Ngồi làm việc, ít đi lại)',
+        'Hoạt động nhẹ (Đi lại nhẹ nhàng, thể thao không thường xuyên)',
+        'Hoạt động vừa phải (Tập luyện thể thao đều đặn)',
+        'Hoạt động nhiều (Làm việc nặng hoặc tập luyện chuyên sâu)',
+        'Vận động cực kỳ nhiều'
     ]
+    const activityLevelToHstq = {
+        'Ít vận động (Ngồi làm việc, ít đi lại)': 1.2,
+        'Hoạt động nhẹ (Đi lại nhẹ nhàng, thể thao không thường xuyên)': 1.375,
+        'Hoạt động vừa phải (Tập luyện thể thao đều đặn)': 1.55,
+        'Hoạt động nhiều (Làm việc nặng hoặc tập luyện chuyên sâu)': 1.725,
+        'Vận động cực kỳ nhiều': 1.9
+    };
+
 
     useEffect(() => {
         const fetchUserByEmail = async () => {
@@ -52,120 +166,95 @@ const FillInformation = () => {
         fetchUserByEmail()
     }, [])
 
-    const handlePressSend = useCallback(async () => {
-        try {
-            setIsVisibleLoadingModal(true)
-            if (values.weight && values.height && values.age && values.gender && values.hstq) {
-                const bmrValue = calculateBmr(values.weight, values.height, values.gender, values.age);
-                const tdeeValue = calculateTdee(bmrValue, values.hstq);
-                setValues({
-                    ...values,
-                    bmr: bmrValue,
-                    tdee: tdeeValue
-                });
-
-                const savedData = await handleUpdateUser({
-                    ...user,
-                    weight: values.weight,
-                    height: values.height,
-                    age: values.age,
-                    tdee: tdeeValue,
-                    orm: values.orm
-                })
-                setIsVisibleLoadingModal(false)
-                router.replace('/(root)/(tabs)/training')
-            } else {
-                setIsVisibleLoadingModal(false)
-                Alert.alert("Please fill in complete information")
-            }
-        } catch (error) {
-            setIsVisibleLoadingModal(false)
-            Alert.alert(error.message)
-        }
-    })
 
     return (
         <SafeAreaView className="bg-[#fff] dark:bg-slate-950 h-full p-4">
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                horizontal={false}
-            >
-                <Text className="font-pextrabold text-[24px]">Please help us by filling some information.</Text>
+            <ScrollView showsVerticalScrollIndicator={false} horizontal={false}>
+                <Text className="font-pextrabold text-[24px]">Vui lòng điền một số thông tin</Text>
                 <View className="flex mt-4">
                     <InputField
                         onChange={(text) => setValues({ ...values, weight: text })}
                         keyboardType="numeric"
-                        placeholder="Your weight (kg)"
-                        icon={<Ionicons name='body' size={24} style={{ marginLeft: 12 }} />}
+                        placeholder="Cân nặng (kg)"
+                        icon={<Ionicons name="body" size={24} style={{ marginLeft: 12 }} />}
                         textRight={'Kg'}
                     />
                     <InputField
                         onChange={(text) => setValues({ ...values, height: text })}
                         keyboardType="numeric"
-                        placeholder="Your height (cm)"
-                        icon={<MaterialCommunityIcons name='human-male-height' size={24} style={{ marginLeft: 12 }} />}
+                        placeholder="Chiều cao (cm)"
+                        icon={<MaterialCommunityIcons name="human-male-height" size={24} style={{ marginLeft: 12 }} />}
                         textRight={'Cm'}
+                    />
+                    <InputField
+                        onChange={(text) => setValues({ ...values, orm: text })}
+                        keyboardType="numeric"
+                        placeholder="Mức tạ tối đa trong bài Bench Press"
                     />
                     <InputField
                         onChange={(text) => setValues({ ...values, age: text })}
                         keyboardType="numeric"
-                        placeholder="Your age"
+                        placeholder="Tuổi"
                     />
-
-                    <Text className="font-psemibold text-md mt-6">The heaviest weight you can lift at one time</Text>
                     <InputField
-                        onChange={(text) => setValues({ ...values, orm: text })}
+                        onChange={(text) => setValues({ ...values, waist: text })}
                         keyboardType="numeric"
-                        placeholder="Your heaviest weight"
+                        placeholder="Vòng eo (cm)"
+                    />
+                    <InputField
+                        onChange={(text) => setValues({ ...values, hip: text })}
+                        keyboardType="numeric"
+                        placeholder="Vòng hông (cm)"
+                    />
+                    <InputField
+                        onChange={(text) => setValues({ ...values, sleep: text })}
+                        keyboardType="numeric"
+                        placeholder="Thời gian ngủ mỗi ngày (giờ)"
                     />
                     <SelectList
                         boxStyles={{
                             marginTop: 12
                         }}
                         setSelected={(text) => setValues({ ...values, gender: text })}
-                        data={data}
+                        data={genderOptions}
                         save="value"
-                        placeholder="Gender"
+                        placeholder="Giới tính"
                         search={false}
                     />
-
-                    <Text className="font-psemibold text-md mt-6">How many days do you spend on training?</Text>
                     <SelectList
                         boxStyles={{
-                            marginTop: 6
+                            marginTop: 12
                         }}
-                        dropdownTextStyles={{
-                            fontSize: 18
+                        setSelected={(text) => setValues({ ...values, activityLevel: activityLevelToHstq[text] })}
+                        data={activityOptions}
+                        save="value"
+                        placeholder="Mức độ hoạt động"
+                        search={false}
+                    />
+                    {/* <SelectList
+                        boxStyles={{
+                            marginTop: 12
                         }}
-                        dropdownItemStyles={{
-                            width: 100
+                        setSelected={(text) => setValues({ ...values, diet: text })}
+                        data={dietOptions}
+                        save="value"
+                        placeholder="Chế độ ăn"
+                        search={false}
+                    /> */}
+                    <SelectList
+                        boxStyles={{
+                            marginTop: 12
                         }}
-                        setSelected={(text) => {
-                            let hstqValue = null;
-
-                            if (text == 0) {
-                                hstqValue = 1.2;
-                            } else if (text >= 1 && text < 3) {
-                                hstqValue = 1.375;
-                            } else if (text >= 3 && text <= 5) {
-                                hstqValue = 1.55;
-                            } else if (text >= 6 && text <= 7) {
-                                hstqValue = 1.725;
-                            }
-
-                            setValues({
-                                ...values,
-                                hstq: hstqValue,
-                            });
-                        }}
-                        data={[0, 1, 2, 3, 4, 5, 6, 7]}
-                        placeholder="Options"
+                        setSelected={(text) => setValues({ ...values, healthGoal: text })}
+                        data={healthGoals}
+                        save="value"
+                        placeholder="Mục tiêu sức khỏe"
                         search={false}
                     />
                 </View>
-                <CustomButton containerStyle={"mt-4"} text={'Continue'} onPress={handlePressSend} />
+                <CustomButton containerStyle={'mt-4'} text={'Tiếp tục'} onPress={handlePressSend} />
             </ScrollView>
-            <LoadingModal visible={isVisibleLoadingModal} message={'Loading'} />
+            <LoadingModal visible={isVisibleLoadingModal} message={'Đang xử lý'} />
         </SafeAreaView>
     )
 }

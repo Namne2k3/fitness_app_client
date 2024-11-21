@@ -9,6 +9,44 @@ import LoadingModal from '../../../components/LoadingModal'
 import TrainingCard from '../../../components/TrainingCard'
 import { createTrainingRecord, fetchTrainingById } from '../../../libs/mongodb'
 import { useUserStore } from '../../../store'
+
+async function generatePrompt(trainingRecord) {
+    try {
+
+        console.log("Chay trainingRecord .user >>> ", trainingRecord.user);
+
+
+        const training = JSON.parse(trainingRecord.training);
+        const exercises = training.exercises;
+        const totalTime = trainingRecord.duration;
+
+        let prompt = `Giúp tôi tính calo tiêu hao cho buổi tập:\n`;
+
+        exercises.forEach((exerciseData, index) => {
+            const exercise = exerciseData.exercise;
+            const sets = exerciseData.sets;
+
+            // Tạo thông tin bài tập
+            let exerciseInfo = `- ${exercise.name}: `;
+            let setsInfo = sets
+                .map((set, setIndex) => {
+                    return `${set.reps} reps x ${set.kilogram} kg${setIndex === sets.length - 1 ? '' : ', '}`;
+                })
+                .join("");
+            exerciseInfo += `${sets.length} sets (${setsInfo}).`;
+
+            prompt += exerciseInfo + `\n`;
+        });
+
+        prompt += `- Tổng thời gian: ${totalTime}, chia đều cho ${exercises.length} bài tập.\n`;
+
+        return prompt;
+    } catch (error) {
+        console.log("error prompt >>> ", error.message);
+
+    }
+}
+
 const BeginTrainingId = () => {
 
     const [dataTraining, setDataTraining] = useState({})
@@ -191,6 +229,13 @@ const BeginTrainingId = () => {
             }
 
             const saved = await createTrainingRecord(trainingRecord)
+            let promptCreate = await generatePrompt({
+                duration: "01:00:00",
+                training: JSON.stringify(dataTraining),
+                user: user,
+                caloriesBurned: calculateCaloriesBurned("01:00:00", dataTraining, user?.weight)
+            })
+
             if (saved) {
                 setIsVisibleLoadingModal(false)
                 router.replace(`/(root)/finishTraining/${saved?._id}`)
@@ -265,7 +310,7 @@ const BeginTrainingId = () => {
                                 className="bg-[#00008B] rounded-lg  p-4"
                                 onPress={() => handleStart()}
                             >
-                                <Text className="font-psemibold text-lg text-white">Continue</Text>
+                                <Text className="font-psemibold text-lg text-white">Tiếp tục</Text>
                             </TouchableOpacity>
                         </View>
                     }
@@ -274,7 +319,8 @@ const BeginTrainingId = () => {
             <View className="p-4">
                 <Text className="font-psemibold text-yellow-500">Note: </Text>
                 <Text className="font-pregular dark:text-white">
-                    We'll calculate calories based on how many reps you've done, so make sure you get them right for accurate results.
+                    {/* We'll calculate calories based on how many reps you've done, so make sure you get them right for accurate results. */}
+                    Chúng tôi tính toán lượng calo tiêu hao dựa vào thông tin luyện tập của bạn, và chỉ mang tính chất tham khảo
                 </Text>
             </View>
 
@@ -311,7 +357,7 @@ const BeginTrainingId = () => {
             <View className="absolute bottom-0 left-0 right-0 m-4">
                 <CustomButton
                     disabled={!isCompleted}
-                    text="Finished"
+                    text="Hoàn thành"
                     onPress={handleFinishedTraining}
                     bgColor={`${isCompleted ? "bg-[#00008B]" : "bg-[#ccc]"}`}
                 />
@@ -343,7 +389,7 @@ const BeginTrainingId = () => {
                                 setBackModalVisible(false)
                             }}
                         >
-                            <Text className="uppercase text-white text-[28px] font-pextrabold">pause</Text>
+                            <Text className="uppercase text-white text-[28px] font-pextrabold">Tạm dừng</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -351,7 +397,7 @@ const BeginTrainingId = () => {
                             style={{ backgroundColor: 'rgba(0, 0, 100, 0.7)' }}
                             onPress={() => setBackModalVisible(false)}
                         >
-                            <Text className="uppercase text-white text-[28px] font-pextrabold">resume</Text>
+                            <Text className="uppercase text-white text-[28px] font-pextrabold">Trở lại</Text>
                         </TouchableOpacity>
 
 
@@ -360,7 +406,7 @@ const BeginTrainingId = () => {
                             style={{ backgroundColor: 'rgba(0, 0, 100, 0.7)' }}
                             onPress={() => router.replace(`/(root)/beginTraining/${id}`)}
                         >
-                            <Text className="uppercase text-white text-[28px] font-pextrabold">restart</Text>
+                            <Text className="uppercase text-white text-[28px] font-pextrabold">Bắt đầu lại</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -368,7 +414,7 @@ const BeginTrainingId = () => {
                             style={{ backgroundColor: 'rgba(0, 0, 100, 0.7)' }}
                             onPress={() => router.back()}
                         >
-                            <Text className="uppercase text-white text-[28px] font-pextrabold">Quit</Text>
+                            <Text className="uppercase text-white text-[28px] font-pextrabold">Kết thúc</Text>
                         </TouchableOpacity>
 
                     </View>

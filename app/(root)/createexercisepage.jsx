@@ -1,21 +1,23 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, TextInput, Image, Alert, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, TextInput, Alert, ActivityIndicator } from 'react-native'
+import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { AntDesign, Feather } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import CustomButton from '../../components/CustomButton'
 import ExerciseDetailSelectCard from '../../components/ExerciseDetailSelectCard'
-import { fetchExerciseByQuery } from '../../libs/exerciseDb'
 import LoadingModal from '../../components/LoadingModal'
-import { createTrainings } from '../../libs/mongodb'
+import { createTrainings, getAllExercisesBySearchQueryName } from '../../libs/mongodb'
 import { useUserStore } from '../../store';
 import { images } from '../../constants/image'
 import BottomSheetModalComponent from '../../components/BottomSheetModal';
+import { useColorScheme } from 'nativewind';
 
 const CreateExercisePage = () => {
 
 
     const [searchQuery, onChangeSearchQuery] = useState('')
+    const [smallLoading, setSmallLoading] = useState(false)
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
     const [exercises, setExercises] = useState([])
     const [exerciseSelections, setExerciseSelections] = useState([])
@@ -23,14 +25,27 @@ const CreateExercisePage = () => {
     const bottomSheetRef = useRef(null)
     const user = useUserStore((state) => state.user)
     const [isLoading, setIsLoading] = useState(true)
+    const { colorScheme } = useColorScheme()
+    const [skip, setSkip] = useState(0)
+    const limit = 10
 
     const [trainingData, setTrainingData] = useState({
-        title: 'New Training',
+        title: 'Bài tập mới',
         exercises: [
 
         ],
         user: user?._id
     })
+
+    const handleAddExerciseToSelection = useCallback((exercise) => {
+        if (!exerciseSelections.some((ex) => ex.id === exercise.id)) {
+            setExerciseSelections((prev) => [...prev, exercise]);
+        } else {
+            setExerciseSelections(
+                (prev) => prev.filter((ex) => ex.id !== exercise.id) // Sử dụng `id` hoặc thuộc tính bạn đang sử dụng
+            );
+        }
+    }, [exerciseSelections]);
 
     const handleSaveAddExerciseToTraining = useCallback(async () => {
         setIsVisibleLoadingModal(true)
@@ -80,26 +95,38 @@ const CreateExercisePage = () => {
         setSelectedExercise(item)
     })
 
+    const fetchDataByQuery = async (isSearchReset = false) => {
+        setSmallLoading(true)
+        try {
+            if (isSearchReset) {
+                setIsLoading(true); // Hiển thị loader cho tìm kiếm mới
+                setSkip(0); // Đặt lại skip
+                setExercises([]); // Xóa danh sách hiện tại
+            }
+
+            const res = await getAllExercisesBySearchQueryName(searchQuery || "", { limit, skip: isSearchReset ? 0 : skip });
+            if (res.status === '404') {
+                console.log("Gặp lỗi 404");
+                return;
+            }
+
+            const newExercises = res.data;
+            setExercises((prevExercises) => isSearchReset ? newExercises : [...prevExercises, ...newExercises]);
+
+            if (newExercises.length > 0) {
+                setSkip((prevSkip) => prevSkip + limit);
+            }
+        } catch (error) {
+            console.log("Error fetching training data:", error);
+        } finally {
+            setSmallLoading(false)
+            setIsLoading(false);
+        }
+    };
 
 
     useEffect(() => {
-        const fetchDataByQuery = async () => {
-            try {
-                const searchData = await fetchExerciseByQuery(searchQuery.toLowerCase())
-                if (searchData) {
-                    setExercises(searchData);
-                }
-            } catch (error) {
-                console.log(error);
-
-            } finally {
-                setIsLoading(false)
-            }
-        }
-
-        setTimeout(async () => {
-            await fetchDataByQuery()
-        }, 500)
+        fetchDataByQuery(true)
     }, [searchQuery])
 
     return (
@@ -113,6 +140,9 @@ const CreateExercisePage = () => {
                         </TouchableOpacity>
                     </View>
                     <View className="flex flex-row p-2 bg-[#ccc] rounded-lg" >
+                        <View className="flex justify-center items-center mr-2">
+                            <Feather name='edit-3' size={24} />
+                        </View>
                         <TextInput
                             className="rounded-lg font-pextrabold text-lg"
                             style={{
@@ -121,24 +151,19 @@ const CreateExercisePage = () => {
                             value={trainingData.title}
                             onChangeText={(text) => setTrainingData({ ...trainingData, title: text })}
                         />
-                        <View className="flex justify-center items-center ml-2">
-                            <Feather name='edit-3' size={24} />
-                        </View>
                     </View>
                 </View>
 
                 <View className="p-4">
-                    <View className="shadow-lg flex flex-row justify-between items-center">
+                    <View className="shadow-lg flex flex-row justify-between items-center mb-2">
                         <TextInput
                             className="p-3 rounded-lg bg-[#f4f5f6] flex-1"
                             color={'#000'}
                             value={searchQuery}
-                            placeholder='Search for exercises...'
+                            placeholder='Tìm kiếm tên bài tập'
                             onChangeText={onChangeSearchQuery}
                         />
-                        <View className="ml-2">
-                            <CustomButton text="Save" onPress={handleSaveAddExerciseToTraining} />
-                        </View>
+
                     </View>
                     {
                         isLoading ? (
@@ -152,12 +177,20 @@ const CreateExercisePage = () => {
                                     <ExerciseDetailSelectCard
                                         exerciseSelections={exerciseSelections}
                                         exercise={item}
-                                        setExerciseSelections={setExerciseSelections}
+                                        handleAddExerciseToSelection={(ex) => handleAddExerciseToSelection(ex)}
                                         handlePresentModalSheet={handlePresentModalSheet}
                                     />
                                 )}
                                 ItemSeparatorComponent={() =>
                                     <View className="h-[10px] bg-[#fff]" />
+                                }
+                                ListFooterComponent={
+                                    !smallLoading ?
+                                        <TouchableOpacity className='p-4 flex flex-row justify-center items-center' onPress={() => fetchDataByQuery(false)}>
+                                            <Text className='text-center'>Tải thêm</Text>
+                                        </TouchableOpacity>
+                                        :
+                                        <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                                 }
                                 ListEmptyComponent={() => (
                                     <View className="flex flex-col items-center justify-center bg-transparent">
@@ -172,73 +205,16 @@ const CreateExercisePage = () => {
                                 )}
                                 showsVerticalScrollIndicator={false}
                                 contentContainerStyle={{
-                                    paddingBottom: 132,
+                                    paddingBottom: 210,
                                     marginTop: 12
                                 }}
                             />
                         )
                     }
                 </View>
-                {/* <BottomSheetModalProvider>
-
-                    <BottomSheetModal
-                        ref={bottomSheetRef}
-                        index={0}
-                        snapPoints={['65%', '90%']}
-                        stackBehavior='replace'
-                        enableDismissOnClose={true}
-                        style={{
-                            borderRadius: 12,
-                            zIndex: 100
-                        }}
-                    >
-                        <BottomSheetScrollView
-                            horizontal={false}
-                            contentContainerStyle={{
-                                padding: 16,
-                            }}
-                            showsVerticalScrollIndicator={false}
-                        >
-                            <View className="flex justify-center items-center rounded-lg">
-                                <Image
-                                    source={{
-                                        uri: selectedExercise?.gifUrl
-                                    }}
-                                    className="w-full min-h-[300px]"
-                                    resizeMode="contain"
-                                />
-                            </View>
-                            <Text className="font-pextrabold text-lg capitalize mt-4">{selectedExercise?.name}</Text>
-                            <Text className="font-pbold text-lg mt-2">
-                                Target: <Text className="font-pregular">{selectedExercise?.target} {selectedExercise?.secondaryMuscles?.map((mus, index) =>
-                                    <Text key={index}>
-                                        , {mus}
-                                    </Text>)}
-                                </Text>
-                            </Text>
-                            <Text className="font-pbold text-lg mt-2">
-                                Equipment:
-                                <Text className="font-pregular">
-                                    {` ${selectedExercise?.equipment}`}
-                                </Text>
-                            </Text>
-
-                            <View>
-                                <Text className="font-pbold text-lg mt-3">Instructions</Text>
-                                {
-                                    selectedExercise?.instructions?.map((ins, index) => (
-                                        <View className="flex flex-row mt-3" key={index}>
-                                            <Text className="flex-[10%] font-pextrabold text-lg">{index + 1}</Text>
-                                            <Text className="flex-[90%] font-pmedium">{ins}</Text>
-                                        </View>
-                                    ))
-                                }
-                            </View>
-
-                        </BottomSheetScrollView>
-                    </BottomSheetModal>
-
-                </BottomSheetModalProvider> */}
+                <View className="absolute bottom-0 m-4">
+                    <CustomButton text="Save" onPress={handleSaveAddExerciseToTraining} />
+                </View>
                 <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
                 <LoadingModal visible={isVisibleLoadingModal} message={'Your training is in process ...'} />
             </SafeAreaView>

@@ -23,19 +23,19 @@ const RecoveryPasswordPage = () => {
 
     const handleSubmit = async () => {
         if (form.password !== form.newPassword) {
-            Alert.alert("Password do not match.");
+            Alert.alert("Mật khẩu không trùng khớp.");
             return;
         }
         setLoadingModal(true);
 
         try {
             const updatedUser = await handleUpdateUserByEmail(email, form.password)
-            Alert.alert("Password reset successfully!");
+            Alert.alert("Mật khẩu đã được tạo lại!");
             setLoadingModal(false);
             router.replace('/(auth)/sign-in'); // Navigate back after successful reset
         } catch (error) {
             setLoadingModal(false);
-            Alert.alert("Error resetting password:", error.message);
+            Alert.alert("Xảy ra lỗi khi tạo lại mật khẩu:", error.message);
         } finally {
             setLoadingModal(false);
         }
@@ -51,13 +51,13 @@ const RecoveryPasswordPage = () => {
                         <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                     </TouchableOpacity>
 
-                    <Text className="ml-4 font-pextrabold uppercase text-[28px] dark:text-white">New password</Text>
+                    <Text className="ml-4 font-pextrabold uppercase text-[28px] dark:text-white">Tạo lại mật khẩu</Text>
                 </View>
             </View>
             <View className="px-4 mt-4">
                 <InputField
-                    placeholder="New password"
-                    label={'Password'}
+                    placeholder="Mật khẩu mới"
+                    label={'Mật khẩu'}
                     icon={<MaterialIcons name={`password`} size={24} style={{ marginLeft: 12 }} />}
                     onChange={text => setForm({ ...form, password: text })}
                     value={form.password}
@@ -65,18 +65,18 @@ const RecoveryPasswordPage = () => {
             </View>
             <View className="px-4 mt-4">
                 <InputField
-                    placeholder="Re-enter new password"
-                    label={'Password'}
+                    placeholder="Mật khẩu mới"
+                    label={'Nhập lại mật khẩu'}
                     icon={<MaterialIcons name={`password`} size={24} style={{ marginLeft: 12 }} />}
                     onChange={text => setForm({ ...form, newPassword: text })}
                     value={form.newPassword}
                 />
             </View>
             <View className="mt-4 px-4">
-                <CustomButton text="Submit" onPress={handleSubmit} />
+                <CustomButton text="Xác nhận" onPress={handleSubmit} />
             </View>
 
-            <LoadingModal visible={loadingModal} message={"loading"} />
+            <LoadingModal visible={loadingModal} message={"Đang tải..."} />
         </SafeAreaView>
     )
 }

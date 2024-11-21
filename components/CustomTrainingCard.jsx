@@ -14,7 +14,7 @@ const CustomTrainingCard = ({ item }) => {
                 <View className="flex">
                     <Text className="dark:text-white text-[20px] font-pextrabold">{item.title}</Text>
                     <Text className="dark:text-white font-pbold">
-                        {item?.exercises?.length} exercises
+                        {item?.exercises?.length} bài tập
                     </Text>
                 </View>
                 <View className={`rounded-full w-[40px] h-[40px] flex justify-center items-center `}
@@ -32,7 +32,7 @@ const CustomTrainingCard = ({ item }) => {
                     item?.exercises?.map((ex, index) => (
                         <View key={index} className="flex flex-row justify-between items-start mb-2">
                             <Text className="dark:text-white flex-1 font-pmedium capitalize">{ex.exercise.name}</Text>
-                            <Text className="dark:text-white flex-[0.4] text-right font-pextrabold">{ex.sets.length} Set</Text>
+                            <Text className="dark:text-white flex-[0.4] text-right font-pextrabold">{ex.sets.length} Hiệp</Text>
                         </View>
                     ))
                 }

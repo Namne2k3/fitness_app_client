@@ -416,7 +416,74 @@ const updateLastMessageForRoomChatById = async (roomId, lastMessage) => {
     }
 }
 
+const getAllExercisesByBodyPart = async (bodyPart, { limit, skip }) => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.get(`${URL}/api/exercises/getAllExercisesByBodyPart/${bodyPart}?limit=${limit}&skip=${skip}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getAllExercisesBySearchQueryName = async (searchQueryName, { limit, skip }) => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.get(`${URL}/api/exercises/getAllExercisesBySearchQueryName/${searchQueryName}?limit=${limit}&skip=${skip}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getExerciseById = async (id) => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.get(`${URL}/api/exercises/getExerciseById/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getAllBodyPart = async () => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.get(`${URL}/api/exercises/getAllBodyParts`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export {
+    getAllBodyPart,
+    getAllExercisesByBodyPart,
+    getAllExercisesBySearchQueryName,
+    getExerciseById,
     updateLastMessageForRoomChatById,
     createMessage,
     getAllMessagesByRoomId,

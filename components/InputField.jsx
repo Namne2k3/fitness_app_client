@@ -1,7 +1,6 @@
 import { useState } from "react";
-
+import { Image } from 'expo-image'
 import {
-    Image,
     Keyboard,
     KeyboardAvoidingView,
     Platform,
@@ -49,21 +48,21 @@ const InputField = ({
                         <TextInput
                             value={value}
                             className={`rounded-full p-4 font-JakartaSemiBold text-[15px] flex-1 ${inputStyle} text-left`}
-                            secureTextEntry={label === 'Password' && !showPassword}
+                            secureTextEntry={label === 'Mật khẩu' && !showPassword}
                             {...props}
                             onChangeText={text => onChange(text)}
                             placeholder={placeholder}
                             autoCapitalize={'none'}
                         />
                         {
-                            label === 'Password' && (
+                            label === 'Mật khẩu' || label === 'Nhập lại mật khẩu' ? (
                                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} className="p-4">
                                     <Image
                                         className="w-6 h-6" resizeMode='contain'
                                         source={!showPassword ? icons.eye_hide : icons.eye}
                                     />
                                 </TouchableOpacity>
-                            )
+                            ) : null
                         }
                         {
                             textRight &&

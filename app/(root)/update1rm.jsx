@@ -2,7 +2,8 @@ import { AntDesign, Entypo, Feather } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useState } from 'react'
-import { Alert, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Image } from 'expo-image'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
@@ -15,17 +16,17 @@ const seedData = [
     {
         name: "Bench Press",
         value: "Bench Press",
-        url: "https://v2.exercisedb.io/image/DNQCIG2ntogLek"
+        url: "https://drive.google.com/uc?id=13ibeDSBV0wx7lpYJI9f2N2xc85ky0ztc"
     },
     {
         name: "Deadlift",
         value: "Deadlift",
-        url: "https://v2.exercisedb.io/image/PDcpzZSzRkRCB3"
+        url: "https://drive.google.com/uc?id=16To7ZKpunF0vQugU4oPsrm3NAjA1Fzzf"
     },
     {
         name: "Squats",
         value: "Squats",
-        url: "https://v2.exercisedb.io/image/e2NHPX-u2PpZtK"
+        url: "https://drive.google.com/uc?id=1vqA6d5AQw336tvhRuY3SeizWK7GZtyVx"
     }
 ]
 
@@ -48,10 +49,6 @@ const Update1rm = () => {
     const user = useUserStore((state) => state.user)
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
 
-    const changeToLbs = () => {
-        setIsLbs((current) => !current)
-    }
-
     const updateUser = async () => {
         setIsVisibleLoadingModal(true)
         const orm = calculate1RM(weight, reps, selected)
@@ -63,7 +60,7 @@ const Update1rm = () => {
                 })
                 if (res) {
                     setIsVisibleLoadingModal(false)
-                    Alert.alert("Your information has been updated!")
+                    Alert.alert("Thông tin đã được cập nhật!")
                     router.replace('/(root)/myprofile')
                 } else {
                     throw new Error()
@@ -93,7 +90,7 @@ const Update1rm = () => {
                         >
                             <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                         </TouchableOpacity>
-                        <Text className="font-pextrabold text-[28px] dark:text-white">My 1RM</Text>
+                        <Text className="font-pextrabold text-[28px] dark:text-white">1RM của tôi</Text>
                     </View>
                     <View className="flex justify-start items-center">
                         <Image
@@ -106,7 +103,7 @@ const Update1rm = () => {
                     </View>
                     <View className="border-b-[0.5px] border-[#ccc]">
                         <View className="flex flex-row items-center p-2">
-                            <Text className="font-pmedium text-[16px] flex-1 dark:text-white">Benchmark</Text>
+                            <Text className="font-pmedium text-[16px] flex-1 dark:text-white">Bài tạ</Text>
                             <View className="flex-1">
                                 <SelectList
                                     boxStyles={{
@@ -145,7 +142,7 @@ const Update1rm = () => {
                             </View>
                         </View>
                         <View className="flex flex-row justify-between items-center p-2">
-                            <Text className="font-pmedium text-[16px] flex-1 dark:text-white">When lifting</Text>
+                            <Text className="font-pmedium text-[16px] flex-1 dark:text-white">Nâng tạ</Text>
                             <View className='flex flex-row justify-end items-center flex-1'>
                                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -170,7 +167,7 @@ const Update1rm = () => {
                             </View>
                         </View>
                         <View className="flex flex-row justify-between items-center p-2">
-                            <Text className="font-pmedium text-[16px] flex-1 dark:text-white">Till tired, I can do</Text>
+                            <Text className="font-pmedium text-[16px] flex-1 dark:text-white">Khi mệt tôi có thể nâng</Text>
                             <View className='flex flex-row justify-end items-center flex-1'>
                                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -187,7 +184,7 @@ const Update1rm = () => {
                                     className="flex flex-row justify-center items-center w-[40px]"
                                 >
                                     <Text className="font-pmedium dark:text-white">
-                                        Reps
+                                        Hiệp
                                     </Text>
                                 </View>
                             </View>
@@ -197,7 +194,7 @@ const Update1rm = () => {
                     <View className="">
                         <View className="flex flex-row justify-between items-center p-2">
                             <View className="flex">
-                                <Text className="font-pbold text-lg dark:text-white">Your 1RM</Text>
+                                <Text className="font-pbold text-lg dark:text-white">1RM của bạn</Text>
                                 <Text className="font-pregular text-[12px] dark:text-white">({selected})</Text>
                             </View>
                             <View className='flex flex-row justify-end items-center flex-1'>
@@ -210,10 +207,10 @@ const Update1rm = () => {
                     </View>
                 </ScrollView>
 
-                <CustomButton onPress={() => updateUser()} text={'Update'} />
+                <CustomButton onPress={updateUser} text={'Cập nhật'} />
 
             </SafeAreaView>
-            <LoadingModal visible={isVisibleLoadingModal} message={'Updating'} />
+            <LoadingModal visible={isVisibleLoadingModal} />
         </>
     )
 }
