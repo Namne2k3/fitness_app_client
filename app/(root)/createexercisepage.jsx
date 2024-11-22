@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, FlatList, TextInput, Alert, A
 import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { AntDesign, Feather } from '@expo/vector-icons'
+import { AntDesign, Feather, Ionicons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import CustomButton from '../../components/CustomButton'
 import ExerciseDetailSelectCard from '../../components/ExerciseDetailSelectCard'
@@ -81,7 +81,7 @@ const CreateExercisePage = () => {
 
             setIsVisibleLoadingModal(false)
             router.replace('/(root)/(tabs)/custom')
-            Alert.alert("New Training has been created!")
+            Alert.alert("Đã tạo set bài tập mới!")
 
         } catch (error) {
             setIsVisibleLoadingModal(false)
@@ -187,7 +187,7 @@ const CreateExercisePage = () => {
                                 ListFooterComponent={
                                     !smallLoading ?
                                         <TouchableOpacity className='p-4 flex flex-row justify-center items-center' onPress={() => fetchDataByQuery(false)}>
-                                            <Text className='text-center'>Tải thêm</Text>
+                                            <Ionicons name='reload' size={30} />
                                         </TouchableOpacity>
                                         :
                                         <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />
@@ -216,7 +216,7 @@ const CreateExercisePage = () => {
                     <CustomButton text="Save" onPress={handleSaveAddExerciseToTraining} />
                 </View>
                 <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
-                <LoadingModal visible={isVisibleLoadingModal} message={'Your training is in process ...'} />
+                <LoadingModal visible={isVisibleLoadingModal} />
             </SafeAreaView>
         </>
     )

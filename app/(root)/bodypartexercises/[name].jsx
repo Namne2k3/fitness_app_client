@@ -9,7 +9,7 @@ import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import { images } from '../../../constants/image'
 import { fetchAllExercisesByBodyPart } from '../../../libs/exerciseDb'
 import { getAllExercisesByBodyPart } from '../../../libs/mongodb'
-import { Feather } from '@expo/vector-icons'
+import { Feather, Ionicons } from '@expo/vector-icons'
 
 const ListHeaderComponent = ({ name }) => {
 
@@ -31,7 +31,6 @@ const ListHeaderComponent = ({ name }) => {
 const BodyPartExercisesDetails = () => {
 
   const { name } = useLocalSearchParams()
-  console.log("Check name >>> ", name);
 
   const [isLoading, setIsLoading] = useState(false)
   const [smallLoading, setSmallLoading] = useState(false)
@@ -108,7 +107,7 @@ const BodyPartExercisesDetails = () => {
         ListFooterComponent={
           !smallLoading ?
             <TouchableOpacity className='p-4 flex flex-row justify-center items-center' onPress={() => fetchDataByQuery(false)}>
-              <Text className='text-center'>Tải thêm</Text>
+              <Ionicons name='reload' size={30} />
             </TouchableOpacity>
             :
             <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />

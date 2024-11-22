@@ -61,7 +61,7 @@ const Feed = () => {
     return (
         <SafeAreaView className="flex h-full pt-4 dark:bg-slate-950">
             <View className="pb-2 flex flex-row justify-between items-center px-4 border-b-[1px] border-[#ccc]">
-                <Text className="dark:text-white font-pextrabold text-[32px] text-center">Feed</Text>
+                <Text className="dark:text-white font-pextrabold text-[32px] text-center">Bài viết</Text>
                 <View className="flex flex-row">
                     <TouchableOpacity className="mb-1 px-1" onPress={() => router.push('/(root)/Chat')}>
                         <FontAwesome5 name='facebook-messenger' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
@@ -87,14 +87,14 @@ const Feed = () => {
                     }
                     showsVerticalScrollIndicator={false}
                     ListEmptyComponent={() => (
-                        <View className="flex flex-1 items-center justify-center bg-transparent">
+                        <View className="flex flex-1 items-center justify-center bg-transparent px-8">
                             <Image
                                 source={images.no_result}
                                 className="w-40 h-40"
                                 alt="No recent rides found"
                                 resizeMethod="contain"
                             />
-                            <Text className="text-sm dark:text-white">No one has posted yet, be the first to post!</Text>
+                            <Text className="text-sm dark:text-white">Chưa có ai đăng bài viết, hãy là người đầu tiên đăng viết!</Text>
                         </View>
                     )}
                     contentContainerStyle={{

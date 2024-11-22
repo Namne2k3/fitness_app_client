@@ -16,6 +16,7 @@ export const images = {
     "bắp tay": require('../assets/images/upper_arms.jpg'),
     "đùi": require('../assets/images/upper_legs.jpg'),
     eo: require('../assets/images/waist.jpg'),
+    butt: require('../assets/images/butt.jpg'),
     cardio: require('../assets/images/cardio.jpg'),
     no_result: require('../assets/images/no-result.png'),
     welcome_image: require('../assets/images/welcome_image.jpg'),

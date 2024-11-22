@@ -48,12 +48,11 @@ const FillInformation = () => {
     const handlePressSend = useCallback(async () => {
         try {
 
-            console.log("Check values >>> ", values);
 
             setIsVisibleLoadingModal(true);
 
             if (values.weight && values.height && values.age && values.gender && values.activityLevel) {
-                console.log("Check hstqValue >>> ", values.activityLevel);
+
 
 
                 const bmrValue = calculateBmr(values.weight, values.height, values.gender, values.age);
@@ -73,9 +72,6 @@ const FillInformation = () => {
                     bmr: bmrValue,
                     tdee: tdeeValue
                 })
-
-                console.log("Check savedData >>> ", savedData);
-
 
                 setIsVisibleLoadingModal(false);
                 const { conclusion, suggestions } = analyzeAndSuggest(values);

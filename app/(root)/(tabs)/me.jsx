@@ -10,7 +10,9 @@ import { useColorScheme } from 'nativewind'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Me = () => {
-    const userData = useUserStore((state) => state.user)
+    // const userData = useUserStore.getState().user
+    const { user, setUser } = useUserStore();
+
     const packageInfo = require('../../../package.json');
     const [isRated, setIsRated] = useState(false)
     const [rate, setRate] = useState(0)
@@ -25,7 +27,7 @@ const Me = () => {
             }
 
             const data = await createFeedback({
-                user: userData?._id,
+                user: user?._id,
                 content: '',
                 rate
             })
@@ -47,13 +49,14 @@ const Me = () => {
         }
     }
 
+
     return (
         <>
             <SafeAreaView className="flex h-full p-4 dark:bg-slate-950">
                 <View className="flex flex-row justify-between items-center ">
-                    <Text className="font-pextrabold text-[32px] dark:text-white">{userData?.username}</Text>
+                    <Text className="font-pextrabold text-[32px] dark:text-white">{user?.username}</Text>
                     {
-                        userData &&
+                        user &&
                         <TouchableOpacity className="flex p-3 rounded-t-lg bg-[#fff] dark:bg-[#292727]" onPress={handleLogOut}>
                             <MaterialCommunityIcons name='logout' size={32} color={colorScheme == 'dark' ? '#fff' : "#000"} />
                         </TouchableOpacity>

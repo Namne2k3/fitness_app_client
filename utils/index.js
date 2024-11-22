@@ -230,6 +230,11 @@ function kgToLbs(kg) {
 }
 
 function calculate1RM(weight, reps, name) {
+
+    if (isNaN(weight) || isNaN(reps)) {
+        throw new Error("Weight hoặc Reps không hợp lệ!");
+    }
+
     if (reps == 1) {
         return weight; // Nếu chỉ có 1 rep, thì 1RM chính là trọng lượng đó
     }
@@ -237,11 +242,11 @@ function calculate1RM(weight, reps, name) {
     switch (name) {
         case 'Bench Press':
             // Nếu cần điều chỉnh, bạn có thể áp dụng hệ số cho từng bài tập
-            return (oneRepMax * 1.0).toFixed(0); // không thay đổi
+            return (oneRepMax * 1.0)
         case 'Deadlift':
-            return (oneRepMax * 1.05).toFixed(0); // có thể áp dụng hệ số tăng thêm 5%
+            return (oneRepMax * 1.05)
         case 'Squats':
-            return (oneRepMax * 1.03).toFixed(0); // có thể áp dụng hệ số tăng thêm 3%
+            return (oneRepMax * 1.03)
         default:
             throw new Error('Bài tập không hợp lệ!'); // Kiểm tra bài tập hợp lệ
     }

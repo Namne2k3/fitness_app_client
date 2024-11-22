@@ -3,6 +3,7 @@ import React from 'react'
 import BodyPartExercisesCard from './BodyPartExercisesCard'
 
 const BodyPartList = ({ bodyParts }) => {
+
     return (
         <View className="">
             <FlatList

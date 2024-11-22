@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, Dimensions, TextInput, TouchableOpacity, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useUserStore from '../../store/userStore';
 import { images } from '../../constants/image';
@@ -14,12 +14,12 @@ const ChooseGender = () => {
     const setUser = useUserStore.getState().setUser;
     const [gen, setGen] = useState("")
 
-    const setGender = (gender) => {
+    const setGender = async (gender) => {
         setGen(gender)
-        setUser((current) => ({
-            ...current,
+        setUser({
+            ...user,
             gender: gender
-        }))
+        })
     }
 
     const handleNext = async () => {
@@ -33,44 +33,48 @@ const ChooseGender = () => {
         }
     }
 
+    useEffect(() => {
+
+    }, [])
+
     return (
-        <SafeAreaView style={styles.container} className="flex flex-col flex-1">
+        <SafeAreaView className="flex flex-col flex-1 mt-4 h-full bg-[#fff]">
             <View>
-                <Text style={styles.title}>Giới tính của bạn</Text>
+                <Text className="font-pbold text-[28px] text-center">Giới tính của bạn</Text>
             </View>
             <View />
             <View style={styles.genderContainer}>
-                <View style={styles.imageContainer}>
+                <TouchableOpacity onPress={() => setGender('nam')} style={styles.imageContainer}>
                     <Image
                         source={images["3d_male"]}
                         style={styles.image}
                         resizeMode="cover"
                     />
-                </View>
-                <View style={styles.imageContainer}>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setGender('nữ')} style={styles.imageContainer}>
                     <Image
                         source={images["3d_female"]}
                         style={styles.image}
                         resizeMode="cover"
                     />
-                </View>
+                </TouchableOpacity>
 
 
             </View>
             <View className="flex flex-row justify-around items-center my-6">
                 <TouchableOpacity>
-                    <Text className="font-pextrabold text-lg">Male</Text>
+                    <Text className="font-pextrabold text-lg">Nam</Text>
                 </TouchableOpacity>
                 <TouchableOpacity >
-                    <Text className="font-pextrabold text-lg">Female</Text>
+                    <Text className="font-pextrabold text-lg">Nữ</Text>
                 </TouchableOpacity>
             </View>
             <View className="flex flex-row justify-around items-center my-2">
-                <TouchableOpacity onPress={() => setGender('male')}>
-                    <AntDesign name={gen == 'male' ? 'checkcircle' : 'checkcircleo'} size={28} />
+                <TouchableOpacity onPress={() => setGender('nam')}>
+                    <AntDesign name={gen == 'nam' ? 'checkcircle' : 'checkcircleo'} size={28} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setGender('female')}>
-                    <AntDesign name={gen == 'female' ? 'checkcircle' : 'checkcircleo'} size={28} />
+                <TouchableOpacity onPress={() => setGender('nữ')}>
+                    <AntDesign name={gen == 'nữ' ? 'checkcircle' : 'checkcircleo'} size={28} />
                 </TouchableOpacity>
             </View>
             <View className="absolute bottom-0 m-4 ">
@@ -90,11 +94,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 16,
     },
-    title: {
-        fontFamily: 'Poppins-ExtraBold', // Thay font của bạn
-        fontSize: 30,
-        textAlign: 'center',
-    },
+    // title: {
+    //     fontFamily: 'Poppins-ExtraBold', // Thay font của bạn
+    //     fontSize: 30,
+    //     textAlign: 'center',
+    // },
     genderContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',

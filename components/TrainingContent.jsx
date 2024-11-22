@@ -13,6 +13,7 @@ const TrainingContent = () => {
         const fetchBodyParts = async () => {
             const res = await getAllBodyPart()
             if (res.data) {
+
                 setBodyParts(res.data)
             }
         }

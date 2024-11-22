@@ -30,7 +30,7 @@ const MyProfile = () => {
         if (result.canceled) {
             Alert.alert('You did not select any image.')
         } else {
-            console.log("Check result assets[0]: ", result.assets[0]);
+
             setProfileImage(result.assets[0])
         }
     }
@@ -67,10 +67,10 @@ const MyProfile = () => {
                 >
                     <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                 </TouchableOpacity>
-                <Text className="ml-4 font-pextrabold text-[28px] dark:text-white">My Profile</Text>
+                <Text className="ml-4 font-pextrabold text-[28px] dark:text-white">Thông tin của tôi</Text>
             </View>
 
-            <View className="relative flex justify-center items-center">
+            <View className="relative flex justify-center items-center mt-4">
                 <Image
                     source={{ uri: profileImage?.uri ? profileImage?.uri : user?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
                     width={120}
@@ -114,7 +114,7 @@ const MyProfile = () => {
                     onPress={() => router.push('/(root)/update1rm')}
                     className="bg-[#fff] dark:bg-[#292727] flex p-4 rounded-lg shadow-xl"
                 >
-                    <Text className="dark:text-white font-pmedium">My 1RM (Bench Press)</Text>
+                    <Text className="dark:text-white font-pmedium">ORM (Bench Press)</Text>
                     <View className='flex flex-row justify-between items-center'>
                         <Text className="font-psemibold text-lg capitalize dark:text-white">
                             {user?.orm} kg
@@ -127,21 +127,21 @@ const MyProfile = () => {
             <View className="mt-4">
                 <Text className="text-[#acaaaa] font-pregular">Basic Info</Text>
                 <TouchableOpacity className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
-                    <Text className="font-pregular text-lg dark:text-white">Gender</Text>
+                    <Text className="font-pregular text-lg dark:text-white">Giới tính</Text>
                     <View className="flex flex-row justify-center items-center">
                         <Text className="text-center font-pextrabold text-lg dark:text-white capitalize">{user?.gender}</Text>
                         <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
-                    <Text className="font-pregular text-lg dark:text-white">Current Weight</Text>
+                    <Text className="font-pregular text-lg dark:text-white">Cân nặng hiện tại</Text>
                     <View className="flex flex-row justify-center items-center">
                         <Text className="text-center font-pextrabold text-lg dark:text-white">{user?.weight} Kg</Text>
                         <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
-                    <Text className="font-pregular text-lg dark:text-white">Height</Text>
+                    <Text className="font-pregular text-lg dark:text-white">Chiều cao</Text>
                     <View className="flex flex-row justify-center items-center">
                         <Text className="text-center font-pextrabold text-lg dark:text-white">{user?.height} cm</Text>
                         <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />

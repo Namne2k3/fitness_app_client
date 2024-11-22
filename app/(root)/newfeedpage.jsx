@@ -39,7 +39,7 @@ const NewFeedPage = () => {
             const base64Images = result?.assets?.map((base64Img) => base64Img.base64)
 
             if (result.canceled) {
-                throw new Error("You did not select any image.")
+
             } else {
                 const analysisResult = await analyzeImage(base64Images)
                 if (analysisResult?.responses) {
@@ -58,7 +58,7 @@ const NewFeedPage = () => {
                             ["LIKELY", "VERY_LIKELY"].includes(safeSearch.violence) ||
                             ["LIKELY", "VERY_LIKELY"].includes(safeSearch.racy)
                         ) {
-                            throw new Error(`Image ${index + 1} contains inappropriate content.`)
+                            throw new Error(`Ảnh ${index + 1} nội dung không thích hợp.`)
                         } else {
                             setForm({ ...form, medias: result.assets ?? [] })
                         }
@@ -66,16 +66,14 @@ const NewFeedPage = () => {
                     });
                 }
                 else {
-                    throw new Error("Error occurred when analyze images.")
+                    throw new Error("Lỗi khi kiểm duyệt hình ảnh")
                 }
             }
         } catch (error) {
-            Alert.alert("Error", error.message)
+            Alert.alert("Lỗi", error.message)
         }
     }
 
-
-    // upload files with appwrite and save file in appwritedb, then return urls and save urls to mongodb
     const handleAddFeed = async () => {
         setIsVisibleModal(true)
         try {
@@ -94,7 +92,7 @@ const NewFeedPage = () => {
                 })
             }
 
-            Alert.alert("Posted successfully!")
+            Alert.alert("Đăng thành công!")
             router.back()
         } catch (error) {
             Alert.alert('Error', error.message);
@@ -111,10 +109,10 @@ const NewFeedPage = () => {
         <SafeAreaView className="flex bg-[#fff] h-full dark:bg-slate-950">
             <View className="flex bg-[#fff] h-full p-4 dark:bg-slate-950">
                 <View className="flex-1">
-                    <Text className="font-pbold text-[16px]">New Feed</Text>
+                    <Text className="font-pbold text-[16px]">Bài đăng mới</Text>
                     <TextInput
                         multiline
-                        placeholder='Share your story here ...'
+                        placeholder='Chia sẽ câu chuyện của bạn ...'
                         onChangeText={(text) => setForm({ ...form, content: text })}
                     />
                     <View className="mt-4 flex-1">
@@ -165,13 +163,13 @@ const NewFeedPage = () => {
                                 />
                                 :
                                 <TouchableOpacity onPress={() => openPicker()}>
-                                    <Text className="font-pmedium text-[#ccc]">Change Images</Text>
+                                    <Text className="font-pmedium text-[#ccc]">Thay đổi ảnh</Text>
                                 </TouchableOpacity>
                         }
                     </TouchableOpacity>
                     <View className="flex mt-4">
                         <View className="flex flex-row justify-between items-center">
-                            <Text className="font-psemibold text-[16px]">Allows Comment</Text>
+                            <Text className="font-psemibold text-[16px]">Cho phép bình luận</Text>
                             <Switch
                                 trackColor={{ false: '#767577', true: '#4040d6' }}
                                 thumbColor={colorScheme == 'dark' ? '#020617' : '#f0f0f0'}
@@ -181,7 +179,7 @@ const NewFeedPage = () => {
                         </View>
                         <View className="flex flex-row">
                             <CustomButton
-                                text={"Post"}
+                                text={"Đăng"}
                                 onPress={handleAddFeed}
                             />
                         </View>

@@ -50,6 +50,46 @@ const RootLayout = () => {
                     }}
                 />
                 <Stack.Screen
+                    name='ChooseGoal'
+                    options={{
+                        headerShown: false,
+                        title: "",
+                        headerStyle: {
+                            backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name='ChooseOrm'
+                    options={{
+                        headerShown: false,
+                        title: "",
+                        headerStyle: {
+                            backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name='ChooseHeight'
+                    options={{
+                        headerShown: false,
+                        title: "",
+                        headerStyle: {
+                            backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name='ChooseFocusBodyPart'
+                    options={{
+                        headerShown: false,
+                        title: "",
+                        headerStyle: {
+                            backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
+                        }
+                    }}
+                />
+                <Stack.Screen
                     name='createexercisepage'
                     options={{
                         headerShown: false,

@@ -13,8 +13,6 @@ import { useUserStore } from '../../../store'
 async function generatePrompt(trainingRecord) {
     try {
 
-        console.log("Chay trainingRecord .user >>> ", trainingRecord.user);
-
 
         const training = JSON.parse(trainingRecord.training);
         const exercises = training.exercises;

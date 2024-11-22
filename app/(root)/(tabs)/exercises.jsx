@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput, Activity
 import { Image } from 'expo-image'
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons'
+import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import { images } from '../../../constants/image'
 import { useColorScheme } from 'nativewind'
@@ -25,6 +25,7 @@ const Exercises = () => {
     const { colorScheme } = useColorScheme()
     const [skip, setSkip] = useState(0)
     const limit = 10
+    const refTextInput = useRef(null)
 
     const handlePresentModalSheet = useCallback((item) => {
         bottomSheetRef.current?.present()
@@ -80,6 +81,7 @@ const Exercises = () => {
                             value={searchQuery}
                             placeholder='Tìm kiếm tên bài tập...'
                             onChangeText={onChangeSearchQuery}
+                            autoFocus={true}
                         />
                         <View>
                             <TouchableOpacity onPress={handleToggleSearching}>
@@ -121,7 +123,7 @@ const Exercises = () => {
                         ListFooterComponent={
                             !smallLoading ?
                                 <TouchableOpacity className='p-4 flex flex-row justify-center items-center' onPress={() => fetchDataByQuery(false)}>
-                                    <Text className='text-center'>Tải thêm</Text>
+                                    <Ionicons name='reload' size={30} />
                                 </TouchableOpacity>
                                 :
                                 <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />

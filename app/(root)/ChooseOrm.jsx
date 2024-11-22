@@ -1,16 +1,16 @@
-import { AntDesign, Entypo, Feather } from '@expo/vector-icons'
-import { router } from 'expo-router'
-import { useColorScheme } from 'nativewind'
-import React, { useState } from 'react'
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { AntDesign, Entypo } from '@expo/vector-icons'
 import { Image } from 'expo-image'
+import { useColorScheme } from 'nativewind'
+import React, { useEffect, useState } from 'react'
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
-import LoadingModal from '../../components/LoadingModal'
-import { handleUpdateUser } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
 import { calculate1RM } from '../../utils/index'
+import { handleUpdateUser } from '../../libs/mongodb'
+import { router } from 'expo-router'
+import LoadingModal from '../../components/LoadingModal'
 
 const seedData = [
     {
@@ -40,59 +40,56 @@ function urlSelected(name) {
     return selected.url
 }
 
-const Update1rm = () => {
-    const { colorScheme } = useColorScheme()
+const ChooseOrm = () => {
     const [selected, setSelected] = useState(seedData[0].name)
     const [isLbs, setIsLbs] = useState(false)
     const [weight, setWeight] = useState(Number(0))
     const [reps, setReps] = useState(Number(1))
-    const user = useUserStore((state) => state.user)
-    const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
+    const user = useUserStore.getState().user;
+    const setUser = useUserStore.getState().setUser;
+    const { colorScheme } = useColorScheme()
+    const [isLoading, setIsLoading] = useState(false)
 
-    const updateUser = async () => {
-        setIsVisibleLoadingModal(true)
-        const orm = calculate1RM(weight, reps, selected)
+    const handleNext = async () => {
+        setIsLoading(true)
         try {
-            if (orm) {
-                const res = await handleUpdateUser({
-                    ...user,
-                    orm: orm
-                })
-                if (res) {
-                    setIsVisibleLoadingModal(false)
-                    Alert.alert("Thông tin đã được cập nhật!")
-                    router.replace('/(root)/myprofile')
-                } else {
-                    throw new Error()
-                }
-            } else {
-                setIsVisibleLoadingModal(false)
-            }
+            let ormValue = calculate1RM(weight, reps, selected)
+
+            setUser({
+                ...user,
+                orm: ormValue
+            })
+
+            const updatedUser = await handleUpdateUser({
+                ...user,
+                orm: ormValue
+            })
+
+            // tao plan ngay tai day
+
+            router.replace('/(root)/(tabs)/training')
 
         } catch (error) {
-            setIsVisibleLoadingModal(false)
-            console.log(error);
-
+            Alert.alert("Lỗi", error.message)
+        } finally {
+            setIsLoading(false)
         }
     }
 
+    useEffect(() => {
+
+    }, [])
+
     return (
         <>
-            <SafeAreaView className="h-full p-4 pb-8 bg-[#fff] dark:bg-slate-950">
-                <ScrollView showsVerticalScrollIndicator={false}>
-                    <View className="flex flex-row justify-start items-center">
-                        <TouchableOpacity
-                            onPress={() => router.back()}
-                            className="pr-4"
-                            style={{
-                                backgroundColor: 'transparent'
-                            }}
-                        >
-                            <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                        </TouchableOpacity>
-                        <Text className="font-pextrabold text-[28px] dark:text-white">1RM của tôi</Text>
+            <SafeAreaView className="flex flex-col flex-1 h-full bg-[#fff]">
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{
+                    padding: 16
+                }}>
+                    <View className="flex flex-row justify-center items-center">
+                        <Text className="font-pextrabold text-[28px] dark:text-white text-center">Estimate your 1RM</Text>
                     </View>
-                    <View className="flex justify-start items-center">
+                    <View className="flex justify-start items-center mt-4">
                         <Image
                             source={{
                                 uri: urlSelected(selected)
@@ -121,11 +118,7 @@ const Update1rm = () => {
                                         borderColor: colorScheme == 'dark' ? "#fff" : "#000",
                                     }}
                                     arrowicon={
-                                        <AntDesign
-                                            name='arrowdown'
-                                            color={colorScheme == 'dark' ? '#fff' : "#000"}
-                                            size={18}
-                                        />
+                                        <Entypo name="select-arrows" size={20} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                                     }
                                     dropdownTextStyles={{
                                         color: colorScheme == 'dark' ? '#fff' : '#000'
@@ -147,10 +140,12 @@ const Update1rm = () => {
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                         <TextInput
                                             className={`bg-[#ccc] mr-2 font-bold my-2 dark:text-white rounded-lg p-2 text-lg flex-1 text-left`}
-                                            keyboardType='numeric'
-                                            value={isLbs ? (weight * 2.20462) : weight}
-                                            onChangeText={(weight) => setWeight(weight)}
-                                            placeholder={user?.orm.toString()}
+                                            keyboardType="numeric"
+                                            value={(isLbs ? (weight * 2.20462) : weight || 0).toString()}
+                                            onChangeText={(text) => {
+                                                const numericValue = parseFloat(text);
+                                                if (!isNaN(numericValue)) setWeight(numericValue);
+                                            }}
                                         />
                                     </TouchableWithoutFeedback>
                                 </KeyboardAvoidingView>
@@ -171,7 +166,7 @@ const Update1rm = () => {
                                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                         <TextInput
-                                            className={`bg-[#ccc] mr-2 font-bold my-2 dark:text-white rounded-lg p-2 text-lg flex-1 text-left`}
+                                            className={`bg-[#ccc] font-bold my-2 dark:text-white rounded-lg p-2 text-lg flex-1 text-left`}
                                             keyboardType='numeric'
                                             value={reps}
                                             placeholder={`${reps}`}
@@ -183,7 +178,7 @@ const Update1rm = () => {
                                     className="flex flex-row justify-center items-center w-[40px]"
                                 >
                                     <Text className="font-pmedium dark:text-white">
-                                        Hiệp
+                                        Lần
                                     </Text>
                                 </View>
                             </View>
@@ -197,8 +192,8 @@ const Update1rm = () => {
                                 <Text className="font-pregular text-[12px] dark:text-white">({selected})</Text>
                             </View>
                             <View className='flex flex-row justify-end items-center flex-1'>
-                                <Text className="font-pbold text-lg mr-2 dark:text-white">
-                                    {calculate1RM(weight, reps, selected)}
+                                <Text className="font-pextrabold text-lg mr-2 dark:text-white">
+                                    {calculate1RM(weight, reps, selected).toFixed(0)}
                                 </Text>
                                 <Text className="font-pregular dark:text-white">{isLbs ? 'lbs' : 'kg'}</Text>
                             </View>
@@ -206,14 +201,17 @@ const Update1rm = () => {
                     </View>
                 </ScrollView>
 
-                <CustomButton onPress={updateUser} text={'Cập nhật'} />
-
+                <View className="absolute bottom-0 m-4">
+                    <CustomButton onPress={handleNext} text="Tiếp theo" textStyle={{
+                        fontFamily: "Roboto-Bold"
+                    }} />
+                </View>
+                <LoadingModal visible={isLoading} />
             </SafeAreaView>
-            <LoadingModal visible={isVisibleLoadingModal} />
         </>
     )
 }
 
-export default Update1rm
+export default ChooseOrm
 
 const styles = StyleSheet.create({})

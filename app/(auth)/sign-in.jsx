@@ -4,6 +4,7 @@ import { router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import InputField from '../../components/InputField'
 import CustomButton from '../../components/CustomButton'
+import { useSignIn } from '@clerk/clerk-expo'
 import { MaterialIcons } from '@expo/vector-icons'
 import { getUserByEmail } from '../../libs/mongodb'
 import LoadingModal from '../../components/LoadingModal'
@@ -11,14 +12,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios'
 import useUserStore from '../../store/userStore'
 const SignIn = () => {
+    const { signIn, setActive, isLoaded } = useSignIn()
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
     const [form, setForm] = useState({
-        email: '',
-        password: ''
+        email: 'nhpn2003@gmail.com',
+        password: 'nhpn2003'
     })
     const setUser = useUserStore((state) => state.setUser)
 
     const onSignInPress = useCallback(async () => {
+
+        if (!isLoaded) {
+            return
+        }
+
         try {
             setIsVisibleLoadingModal(true)
             const response = await axios.post(`${process.env.EXPO_PUBLIC_URL_SERVER}/api/auth/login`, {
@@ -43,7 +50,7 @@ const SignIn = () => {
                 }
                 setIsVisibleLoadingModal(false)
                 // router.replace('/(root)/(tabs)/training')
-                router.replace('/(root)/ChooseGender')
+                router.push('/(root)/ChooseGender')
 
             } else {
                 Alert.alert("Can't login, have some error while login", data.message);
@@ -54,7 +61,7 @@ const SignIn = () => {
             Alert.alert("Error", err.message);
         }
 
-    }, [form.email, form.password])
+    }, [isLoaded, form.email, form.password])
     return (
         <SafeAreaView className="p-8 bg-[#fff] h-full">
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -78,7 +85,7 @@ const SignIn = () => {
                             <Text className="font-psemibold text-[#00008B] text-[15px]"> Đăng ký</Text>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity onPress={() => router.push('/(root)/ForgotPasswordPage')} className='mt-2'>
+                    <TouchableOpacity onPress={() => router.push('/(root)/ForgotPasswordPage')}>
                         <Text className="text-center italic font-pmedium text-[#00008B]">Quên mật khẩu?</Text>
                     </TouchableOpacity>
                 </View>
