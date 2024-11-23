@@ -47,7 +47,7 @@ const CustomPage = () => {
   return (
     <SafeAreaView className="flex bg-[#fff] h-full px-4 pt-4 dark:bg-slate-950">
       <View className="flex flex-row justify-between items-center mb-4">
-        <Text className="dark:text-white font-pextrabold text-[32px]">Tùy chỉnh</Text>
+        <Text className="dark:text-white font-pextrabold text-[32px]">Tạo mới</Text>
         <TouchableOpacity onPress={() => router.push('/(root)/createexercisepage')}>
           <AntDesign name='pluscircle' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
         </TouchableOpacity>

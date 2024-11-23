@@ -20,7 +20,7 @@ const createUser = async ({ username, email, password, clerkId }) => {
 
 const fetchTrainingsByUserId = async (userId) => {
     try {
-        const response = await axios.get(`${URL}/api/customtrainings/getByUserId/${userId}`)
+        const response = await axios.get(`${URL}/api/customtrainings/getByUserId/${userId}?isCustom=${true}`)
         return response.data;
     } catch (error) {
         if (error.response) {
@@ -37,7 +37,7 @@ const fetchTrainingsByUserId = async (userId) => {
     }
 }
 
-const createTrainings = async (trainings) => {
+const createCustomTrainings = async (trainings) => {
     try {
         const response = await axios.post(`${URL}/api/customtrainings/create`, trainings, {
             headers: {
@@ -416,6 +416,22 @@ const updateLastMessageForRoomChatById = async (roomId, lastMessage) => {
     }
 }
 
+const getAllExercises = async () => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.get(`${URL}/api/exercises/getAllExercises`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 const getAllExercisesByBodyPart = async (bodyPart, { limit, skip }) => {
     const token = await getToken()
 
@@ -479,7 +495,42 @@ const getAllBodyPart = async () => {
     }
 }
 
+const createTrainings = async (trainings) => {
+    const token = await getToken();
+
+    try {
+        const res = await axios.post(`${URL}/api/trainings/create`, trainings, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getAllTrainingsByUserId = async () => {
+    const token = await getToken();
+
+    try {
+        const res = await axios.get(`${URL}/api/trainings/getByUserId?isCustom=${false}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export {
+    getAllTrainingsByUserId,
+    createTrainings,
+    getAllExercises,
     getAllBodyPart,
     getAllExercisesByBodyPart,
     getAllExercisesBySearchQueryName,
@@ -502,7 +553,7 @@ export {
     createFeedback,
     getTrainingRecord,
     getTrainingRecordById,
-    createTrainings,
+    createCustomTrainings,
     getUserByEmail,
     fetchTrainingsByUserId,
     fetchTrainingById,

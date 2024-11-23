@@ -1,14 +1,15 @@
 import { AntDesign, Feather } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
-import React, { useCallback, useEffect, useState } from 'react'
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Alert, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
 import LoadingModal from '../../../components/LoadingModal'
 import TrainingCard from '../../../components/TrainingCard'
 import { createTrainingRecord, fetchTrainingById } from '../../../libs/mongodb'
 import { useUserStore } from '../../../store'
+import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 
 async function generatePrompt(trainingRecord) {
     try {
@@ -57,6 +58,14 @@ const BeginTrainingId = () => {
     const { colorScheme } = useColorScheme()
     const [backModalVisible, setBackModalVisible] = useState(false)
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
+
+    const bottomSheetRef = useRef(null)
+    const [selectedExercise, setSelectedExercise] = useState({})
+
+    const toggleBottomSheetModal = useCallback((ex) => {
+        setSelectedExercise(ex)
+        bottomSheetRef?.current?.present()
+    }, [])
 
     const pad = (number) => {
         return number < 10 ? `0${number}` : number;
@@ -245,9 +254,17 @@ const BeginTrainingId = () => {
     }
 
     useEffect(() => {
+
         const fetchData = async () => {
-            const data = await fetchTrainingById(id)
-            setDataTraining(data)
+            setIsVisibleLoadingModal(true)
+            try {
+                const data = await fetchTrainingById(id)
+                setDataTraining(data)
+            } catch (error) {
+                Alert.alert("Lỗi", error.message)
+            } finally {
+                setIsVisibleLoadingModal(false)
+            }
         }
 
         fetchData()
@@ -287,7 +304,10 @@ const BeginTrainingId = () => {
             <View className={`flex flex-row border-b-[1px] border-[${colorScheme == 'dark' ? '000' : '#eaecef'}] w-full`}>
                 <View className="p-4 flex justify-center items-center">
                     <TouchableOpacity
-                        onPress={() => setBackModalVisible(true)}
+                        onPress={() => {
+                            bottomSheetRef?.current?.dismiss()
+                            setBackModalVisible(true)
+                        }}
                         style={{
                             backgroundColor: 'transparent'
                         }}
@@ -326,7 +346,7 @@ const BeginTrainingId = () => {
                 data={dataTraining?.exercises}
                 renderItem={({ item }) => (
                     <View className="bg-[#fff] flex p-4 dark:bg-slate-800">
-                        <TrainingCard handleUpdateIsCheck={handleUpdateIsCheck} hasCheck={true} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
+                        <TrainingCard toggleBottomSheetModal={toggleBottomSheetModal} handleUpdateIsCheck={handleUpdateIsCheck} hasCheck={true} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
                         <View className="flex flex-row justify-between items-center">
                             <CustomButton
                                 containerStyle="mt-4 flex-1 mr-2 border-[1px] border-[#000]"
@@ -418,7 +438,8 @@ const BeginTrainingId = () => {
                     </View>
                 </View>
             </Modal>
-            <LoadingModal visible={isVisibleLoadingModal} message={'Loading'} />
+            <BottomSheetModalComponent snapPoints={["95%"]} selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
+            <LoadingModal visible={isVisibleLoadingModal} message={''} />
         </SafeAreaView>
     )
 }

@@ -67,8 +67,12 @@ const Exercises = () => {
 
 
     useEffect(() => {
-        fetchDataByQuery(true)
-    }, [searchQuery])
+        const debounceTimeout = setTimeout(() => {
+            fetchDataByQuery(true);
+        }, 1000);
+
+        return () => clearTimeout(debounceTimeout);
+    }, [searchQuery]);
 
     return (
         <SafeAreaView className="px-4 pt-4 bg-[#fff] h-full dark:bg-slate-950">
@@ -102,7 +106,7 @@ const Exercises = () => {
             {
                 isLoading ? (
                     <View className="h-full flex justify-center items-center">
-                        <ActivityIndicator color={"#000"} size={'large'} />
+                        <ActivityIndicator color={colorScheme == 'dark' ? '#fff' : '#000'} size={'large'} />
                     </View>
                 ) : (
                     <FlatList
@@ -123,7 +127,7 @@ const Exercises = () => {
                         ListFooterComponent={
                             !smallLoading ?
                                 <TouchableOpacity className='p-4 flex flex-row justify-center items-center' onPress={() => fetchDataByQuery(false)}>
-                                    <Ionicons name='reload' size={30} />
+                                    <Ionicons name='reload' size={30} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                                 </TouchableOpacity>
                                 :
                                 <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />

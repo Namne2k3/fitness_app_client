@@ -45,18 +45,18 @@ const ChooseGoal = () => {
                         }
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSelected("Tăng sức bền")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Tăng sức bền' && 'border-[4px] border-[#000]'} `}>
-                    <Feather name='smile' size={45} />
-                    <Text className="flex-1 ml-4 font-pextrabold text-lg">Tăng sức bền</Text>
+                <TouchableOpacity onPress={() => setSelected("Cân đối tổng thể")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Cân đối tổng thể' && 'border-[4px] border-[#000]'}`}>
+                    <MaterialCommunityIcons name='fire' size={45} />
+                    <Text className="flex-1 ml-4 font-pextrabold text-lg">Cân đối</Text>
                     {
-                        selected == 'Tăng sức bền' && <AntDesign name={'checkcircle'} size={28} />
+                        selected == 'Cân đối tổng thể' && <AntDesign name={'checkcircle'} size={28} />
                     }
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSelected("Cải thiện sức khỏe tổng thể")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Cải thiện sức khỏe tổng thể' && 'border-[4px] border-[#000]'}`}>
-                    <MaterialCommunityIcons name='fire' size={45} />
-                    <Text className="flex-1 ml-4 font-pextrabold text-lg">Cải thiện sức khỏe</Text>
+                <TouchableOpacity onPress={() => setSelected("Sức mạnh")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Sức mạnh' && 'border-[4px] border-[#000]'} `}>
+                    <Feather name='smile' size={45} />
+                    <Text className="flex-1 ml-4 font-pextrabold text-lg">Sức mạnh</Text>
                     {
-                        selected == 'Cải thiện sức khỏe tổng thể' && <AntDesign name={'checkcircle'} size={28} />
+                        selected == 'Sức mạnh' && <AntDesign name={'checkcircle'} size={28} />
                     }
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setSelected("Giảm mỡ")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Giảm mỡ' && 'border-[4px] border-[#000]'}`}>

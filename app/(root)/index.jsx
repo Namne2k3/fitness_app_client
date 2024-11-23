@@ -63,7 +63,7 @@ const WelcomePage = () => {
 
                 setTimeout(() => {
                     const updatedUser = useUserStore.getState().user;
-                    if (!updatedUser?.age || !updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee) {
+                    if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee) {
                         router.replace(`/(root)/FillInformation/${updatedUser?.email}`);
                     } else {
                         router.replace('/(root)/(tabs)/training');

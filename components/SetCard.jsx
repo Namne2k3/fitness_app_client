@@ -3,7 +3,7 @@ import React from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import { useColorScheme } from 'nativewind'
 
-const SetCard = ({ index, item: { kilogram, reps, isCheck }, handleUpdateIsCheck, handleUpdateKilogramAndReps, itemParent, hasCheck, setIsCheck }) => {
+const SetCard = ({ index, item: { kilogram, reps, isCheck }, handleUpdateIsCheck, handleUpdateKilogramAndReps, itemParent, hasCheck, setIsCheck, isNeedKg }) => {
 
     const { colorScheme } = useColorScheme()
 
@@ -24,15 +24,20 @@ const SetCard = ({ index, item: { kilogram, reps, isCheck }, handleUpdateIsCheck
             }
 
             <Text className={`font-pextrabold text-lg dark:text-white ${isCheck && 'text-white'}`}>{index + 1}</Text>
-            <View className='flex flex-[0.5] mx-4'>
-                <TextInput
-                    value={`${Number(kilogram)}`}
-                    className={`font-bold my-2 dark:text-white rounded-[16px] p-4 text-[15px] ${isCheck ? 'bg-[#2ba818]' : 'bg-[#e6e4e8]'} flex-1 text-left ${isCheck ? 'text-white' : 'text-black'}`}
-                    keyboardType='numeric'
-                    onChangeText={(text) => handleUpdateKilogramAndReps(itemParent, index, Number(text), Number(reps))}
-                />
-            </View>
-            <Text className={`font-bold text-md dark:text-white ${isCheck && 'text-white'}`}>KG</Text>
+            {
+                isNeedKg &&
+                <>
+                    <View className='flex flex-[0.5] mx-4'>
+                        <TextInput
+                            value={`${Number(kilogram)}`}
+                            className={`font-bold my-2 dark:text-white rounded-[16px] p-4 text-[15px] ${isCheck ? 'bg-[#2ba818]' : 'bg-[#e6e4e8]'} flex-1 text-left ${isCheck ? 'text-white' : 'text-black'}`}
+                            keyboardType='numeric'
+                            onChangeText={(text) => handleUpdateKilogramAndReps(itemParent, index, Number(text), Number(reps))}
+                        />
+                    </View>
+                    <Text className={`font-bold text-md dark:text-white ${isCheck && 'text-white'}`}>KG</Text>
+                </>
+            }
             <View className='flex flex-[0.5] mx-4'>
                 <TextInput
                     value={`${Number(reps)}`}

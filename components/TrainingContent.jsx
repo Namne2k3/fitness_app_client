@@ -1,29 +1,27 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getAllBodyParts } from "../libs/exerciseDb";
-import { getAllBodyPart } from '../libs/mongodb'
+import { getAllBodyPart, getAllTrainingsByUserId } from '../libs/mongodb'
 import BodyPartList from "./BodyPartList";
 
 const TrainingContent = () => {
 
 
     const [bodyParts, setBodyParts] = useState([])
-
-    useEffect(() => {
-        const fetchBodyParts = async () => {
-            const res = await getAllBodyPart()
-            if (res.data) {
-
-                setBodyParts(res.data)
-            }
+    const fetchBodyParts = useCallback(async () => {
+        const res = await getAllTrainingsByUserId()
+        if (res.data) {
+            setBodyParts(res.data)
         }
+    }, [])
+    useEffect(() => {
 
         fetchBodyParts();
     }, [])
 
     return (
-        <SafeAreaView className="flex justify-center items-start px-4 bg-[#fff] dark:bg-slate-950 h-full" >
-            <BodyPartList bodyParts={bodyParts} />
+        <SafeAreaView className=" border-[#fff] flex justify-center items-start px-4 bg-[#fff] dark:bg-slate-950 h-full" >
+            <BodyPartList fetchBodyParts={fetchBodyParts} bodyParts={bodyParts} />
         </SafeAreaView >
 
     );

@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useUserStore } from '@/store'
 import { AntDesign, FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons } from '@expo/vector-icons'
-import { router } from 'expo-router'
+import { Link, router } from 'expo-router'
 import CustomButton from '@/components/CustomButton'
 import { createFeedback } from '@/libs/mongodb'
 import { useColorScheme } from 'nativewind'
@@ -19,6 +19,9 @@ const Me = () => {
     const clearUser = useUserStore((state) => state.clearUser)
     const [isVisibleModalEdit, setIsVisibleModalEdit] = useState(false)
     const { colorScheme } = useColorScheme()
+
+    console.log("User >>> ", user);
+
 
     const handleRating = useCallback(async () => {
         try {
@@ -91,7 +94,10 @@ const Me = () => {
                         <Text className="dark:text-white font-psemibold text-md capitalize">Phản hồi</Text>
                     </TouchableOpacity>
                 </View>
-                <Text className="text-center my-2 font-pmedium text-[#878686]">Phiên bản {packageInfo.version}</Text>
+                <Text className="text-center mt-2 font-pmedium text-[#878686]">Phiên bản {packageInfo.version}</Text>
+                <Text className="text-center font-pmedium text-[#878686]">bởi
+                    <Link href={`https://github.com/Namne2k3`} className="text-center font-pextrabold text-[#000] dark:text-white"> @namne</Link>
+                </Text>
             </SafeAreaView >
             <Modal
                 animationType="fade"

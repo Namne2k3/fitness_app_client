@@ -3,7 +3,7 @@ import { Image } from 'expo-image'
 import React from 'react'
 import { AntDesign } from '@expo/vector-icons'
 
-const ExerciseDetailSelectCard = ({ exerciseSelections, handleAddExerciseToSelection, exercise, handlePresentModalSheet }) => {
+const ExerciseDetailSelectCard = ({ colorScheme, exerciseSelections, handleAddExerciseToSelection, exercise, handlePresentModalSheet }) => {
 
     const selected = exerciseSelections.find((element) => element.id === exercise.id)
     return (
@@ -22,22 +22,24 @@ const ExerciseDetailSelectCard = ({ exerciseSelections, handleAddExerciseToSelec
                 />
             </View>
 
-            <View className="flex justify-center items-start p-3 flex-[1]">
-                <Text className="font-pextrabold capitalize text-[13px]">{exercise.name}</Text>
-                <Text className="font-pregular capitalize text-[12px]">Mục tiêu: {exercise.target}</Text>
+            <View className="flex justify-center items-start p-3 flex-[1] dark:bg-[#000]">
+                <Text className="font-pextrabold capitalize text-[13px] dark:text-white">{exercise.name}</Text>
+                <Text className="font-pregular capitalize text-[12px] dark:text-white">Mục tiêu: {exercise.target}</Text>
             </View>
 
-            <View className="flex justify-center items-center p-2">
+            <View className="flex justify-center items-center p-2 dark:bg-[#000]">
                 {
                     selected ?
                         <AntDesign
                             name='checkcircle'
                             size={20}
+                            color={colorScheme == 'dark' ? '#fff' : '#000'}
                         />
                         :
                         <AntDesign
                             name='checkcircleo'
                             size={20}
+                            color={colorScheme == 'dark' ? '#fff' : '#000'}
                         />
                 }
             </View>

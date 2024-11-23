@@ -7,7 +7,7 @@ import { router } from 'expo-router'
 import CustomButton from '../../components/CustomButton'
 import ExerciseDetailSelectCard from '../../components/ExerciseDetailSelectCard'
 import LoadingModal from '../../components/LoadingModal'
-import { createTrainings, getAllExercisesBySearchQueryName } from '../../libs/mongodb'
+import { createCustomTrainings, getAllExercisesBySearchQueryName } from '../../libs/mongodb'
 import { useUserStore } from '../../store';
 import { images } from '../../constants/image'
 import BottomSheetModalComponent from '../../components/BottomSheetModal';
@@ -64,13 +64,16 @@ const CreateExercisePage = () => {
                         sets: [
                             {
                                 kilogram: 0,
-                                reps: 1
+                                reps: 12
                             }
                         ]
                     })
                 }
             })
-            await createTrainings(updatedTrainingData)
+            await createCustomTrainings({
+                ...updatedTrainingData,
+                isCustom: true
+            })
             setTrainingData((previous) => ({
                 title: 'New Training',
                 exercises: [
@@ -126,17 +129,21 @@ const CreateExercisePage = () => {
 
 
     useEffect(() => {
-        fetchDataByQuery(true)
-    }, [searchQuery])
+        const debounceTimeout = setTimeout(() => {
+            fetchDataByQuery(true); // Thực hiện tìm nạp dữ liệu sau 1 giây
+        }, 1000); // Thời gian debounce: 1 giây
+
+        return () => clearTimeout(debounceTimeout); // Xóa timeout nếu người dùng tiếp tục nhập
+    }, [searchQuery]);
 
     return (
         <>
-            <SafeAreaView className="bg-[#fff] h-full relative">
+            <SafeAreaView className="bg-[#fff] h-full relative dark:bg-slate-950">
 
                 <View className="flex flex-row justify-between items-center px-4 my-2">
                     <View>
                         <TouchableOpacity onPress={() => router.back()}>
-                            <AntDesign name='arrowleft' size={24} />
+                            <AntDesign name='arrowleft' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                         </TouchableOpacity>
                     </View>
                     <View className="flex flex-row p-2 bg-[#ccc] rounded-lg" >
@@ -157,7 +164,7 @@ const CreateExercisePage = () => {
                 <View className="p-4">
                     <View className="shadow-lg flex flex-row justify-between items-center mb-2">
                         <TextInput
-                            className="p-3 rounded-lg bg-[#f4f5f6] flex-1"
+                            className="p-3 rounded-lg bg-[#f4f5f6] flex-1 dark:bg-[#000] dark:border-[0.5px] dark:border-[#fff] dark:text-white"
                             color={'#000'}
                             value={searchQuery}
                             placeholder='Tìm kiếm tên bài tập'
@@ -168,13 +175,14 @@ const CreateExercisePage = () => {
                     {
                         isLoading ? (
                             <View className="h-full flex justify-center items-center">
-                                <ActivityIndicator color={"#000"} size={'large'} />
+                                <ActivityIndicator color={colorScheme == 'dark' ? '#fff' : '#000'} size={'large'} />
                             </View>
                         ) : (
                             <FlatList
                                 data={exercises}
                                 renderItem={({ item }) => (
                                     <ExerciseDetailSelectCard
+                                        colorScheme={colorScheme}
                                         exerciseSelections={exerciseSelections}
                                         exercise={item}
                                         handleAddExerciseToSelection={(ex) => handleAddExerciseToSelection(ex)}
@@ -182,12 +190,12 @@ const CreateExercisePage = () => {
                                     />
                                 )}
                                 ItemSeparatorComponent={() =>
-                                    <View className="h-[10px] bg-[#fff]" />
+                                    <View className="h-[10px] bg-[#fff] dark:bg-slate-950" />
                                 }
                                 ListFooterComponent={
                                     !smallLoading ?
                                         <TouchableOpacity className='p-4 flex flex-row justify-center items-center' onPress={() => fetchDataByQuery(false)}>
-                                            <Ionicons name='reload' size={30} />
+                                            <Ionicons name='reload' size={30} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                                         </TouchableOpacity>
                                         :
                                         <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />
@@ -213,7 +221,7 @@ const CreateExercisePage = () => {
                     }
                 </View>
                 <View className="absolute bottom-0 m-4">
-                    <CustomButton text="Save" onPress={handleSaveAddExerciseToTraining} />
+                    <CustomButton text="Tạo mới" onPress={handleSaveAddExerciseToTraining} />
                 </View>
                 <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
                 <LoadingModal visible={isVisibleLoadingModal} />

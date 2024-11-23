@@ -1,15 +1,25 @@
 import { Feather } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
 import TrainingCard from '../../../components/TrainingCard'
 import { fetchTrainingById, updateTraining } from '../../../libs/mongodb'
+import { useColorScheme } from 'nativewind'
+import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 const EditCustomTraining = () => {
 
     const { id } = useLocalSearchParams()
     const [dataTraining, setDataTraining] = useState({})
+    const { colorScheme } = useColorScheme()
+    const bottomSheetRef = useRef(null)
+    const [selectedExercise, setSelectedExercise] = useState({})
+
+    const toggleBottomSheetModal = useCallback((ex) => {
+        setSelectedExercise(ex)
+        bottomSheetRef?.current?.present()
+    }, [])
 
     const handleAddSet = useCallback((item) => {
         setDataTraining(prevTrainings => {
@@ -109,7 +119,7 @@ const EditCustomTraining = () => {
     }, [])
 
     return (
-        <SafeAreaView className="bg-[#00008B] h-full relative pb-16">
+        <SafeAreaView className="h-full relative bg-[#fff] dark:bg-slate-950">
             <View className="p-4 w-full flex flex-row justify-between items-center">
                 <View>
                     <TouchableOpacity
@@ -118,11 +128,14 @@ const EditCustomTraining = () => {
                             backgroundColor: 'transparent'
                         }}
                     >
-                        <Feather name='arrow-left' size={24} color='#fff' />
+                        <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                     </TouchableOpacity>
                 </View>
 
-                <View className="flex items-center justify-between flex-row">
+                <View className="flex items-center justify-between flex-row bg-[#ccc] rounded-lg px-4">
+                    <View className="">
+                        <Feather name='edit-3' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                    </View>
                     <View>
                         <TextInput
                             onChangeText={(text) => setDataTraining({
@@ -130,50 +143,45 @@ const EditCustomTraining = () => {
                                 title: text
                             })}
                             value={dataTraining?.title}
-                            className="text-[#fff] font-psemibold text-left ml-4 text-[18px]"
+                            className="text-[#000] dark:text-white font-pbold text-left text-[18px]"
                         />
                     </View>
-
-                    <View className="ml-2">
-                        <Feather name='edit-3' size={24} color={"#fff"} />
-                    </View>
-
                 </View>
             </View>
 
-            <View className="bg-[#fff] h-full rounded-t-lg">
-                <FlatList
-                    data={dataTraining?.exercises}
-                    renderItem={({ item }) => (
-                        <View className="bg-[#fff] flex p-4">
-                            <TrainingCard handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
-                            <View className="flex flex-row justify-between items-center">
-                                <CustomButton
-                                    containerStyle="mt-4 flex-1 mr-2 border-[1px] border-[#000]"
-                                    textStyle={{ color: 'black' }}
-                                    bgColor='#fff'
-                                    text="-"
-                                    onPress={() => handleRemoveLastSet(item)}
-                                />
-                                <CustomButton
-                                    containerStyle="mt-4 flex-1 ml-2 border-[1px] border-[#000]"
-                                    textStyle={{ color: 'black' }}
-                                    bgColor='#fff'
-                                    text="+"
-                                    onPress={() => handleAddSet(item)}
-                                />
-                            </View>
+
+            <FlatList
+                data={dataTraining?.exercises}
+                renderItem={({ item }) => (
+                    <View className="bg-[#fff] flex p-4">
+                        <TrainingCard toggleBottomSheetModal={(ex) => toggleBottomSheetModal(ex)} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
+                        <View className="flex flex-row justify-between items-center">
+                            <CustomButton
+                                containerStyle="mt-4 flex-1 mr-2 border-[1px] border-[#000]"
+                                textStyle={{ color: 'black' }}
+                                bgColor='#fff'
+                                text="-"
+                                onPress={() => handleRemoveLastSet(item)}
+                            />
+                            <CustomButton
+                                containerStyle="mt-4 flex-1 ml-2 border-[1px] border-[#000]"
+                                textStyle={{ color: 'black' }}
+                                bgColor='#fff'
+                                text="+"
+                                onPress={() => handleAddSet(item)}
+                            />
                         </View>
-                    )}
-                    ItemSeparatorComponent={() => (
-                        <View className="bg-[#eaecef] h-[10px]" />
-                    )}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{
-                        paddingBottom: 80
-                    }}
-                />
-            </View>
+                    </View>
+                )}
+                ItemSeparatorComponent={() => (
+                    <View className="bg-[#eaecef] h-[10px]" />
+                )}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{
+                    paddingBottom: 80
+                }}
+            />
+
 
             <View className="absolute bottom-0 left-0 right-0 m-4">
                 <CustomButton
@@ -181,6 +189,8 @@ const EditCustomTraining = () => {
                     onPress={handleSaveEditTraining}
                 />
             </View>
+
+            <BottomSheetModalComponent selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
         </SafeAreaView>
     )
 }

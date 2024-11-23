@@ -37,7 +37,7 @@ const TrainingPage = () => {
       }}
     >
       <Tab.Screen name="LỘ TRÌNH" component={Plan} />
-      <Tab.Screen name="NHÓM CƠ" component={TrainingContent} />
+      <Tab.Screen name="BÀI TẬP" component={TrainingContent} />
     </Tab.Navigator>
 
   )

@@ -5,13 +5,16 @@ import { StyleSheet } from 'react-native';
 
 const BottomSheet = ({ bottomSheetRef, children, snapPoints = ['25%'] }) => {
     const { colorScheme } = useColorScheme()
+
     return (
-        <BottomSheetModalProvider>
+        <BottomSheetModalProvider enableDismissOnClose={true}>
             <BottomSheetModal
+                enableBackdropPress={true}
                 ref={bottomSheetRef}
                 index={0}
                 snapPoints={[...snapPoints ?? '25%']}
                 stackBehavior='replace'
+
                 enableDismissOnClose={true}
                 handleIndicatorStyle={{
                     backgroundColor: colorScheme == 'dark' ? "#fff" : 'rgb(2,6,23)',

@@ -9,8 +9,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#000',
-        tabBarInactiveTintColor: colorScheme === 'dark' ? '#ccc' : 'gray',
+        tabBarActiveTintColor: colorScheme == 'dark' ? '#fff' : '#000',
+        // tabBarInactiveTintColor: colorScheme === 'dark' ? '#ccc' : 'gray',
         tabBarStyle: {
           height: 60,
           backgroundColor: colorScheme === 'dark' ? '#020617' : '#fff',
@@ -22,7 +22,7 @@ export default function TabLayout() {
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center',
-          alignItems: 'center',
+          alignItems: 'center'
         },
         tabBarShowLabel: false,
       }}

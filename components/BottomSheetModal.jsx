@@ -4,7 +4,7 @@ import React from 'react'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useColorScheme } from 'nativewind';
 
-const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef }) => {
+const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoints = ['95%'] }) => {
 
     const { colorScheme } = useColorScheme()
 
@@ -14,7 +14,7 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef }) => {
             <BottomSheetModal
                 ref={bottomSheetRef}
                 index={0}
-                snapPoints={['65%', '95%']}
+                snapPoints={snapPoints}
                 stackBehavior='replace'
                 enableDismissOnClose={true}
                 handleIndicatorStyle={{
@@ -25,10 +25,11 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef }) => {
                     backgroundColor: colorScheme == 'dark' ? "rgb(2,6,23)" : '#fff',
                     borderTopRightRadius: 12,
                     borderTopLeftRadius: 12,
-                    borderWidth: 0
+                    borderWidth: 1
                 }}
                 style={{
-                    borderWidth: 1,
+                    borderWidth: 0.5,
+                    borderColor: colorScheme == 'dark' ? '#fff' : '#000',
                     borderRadius: 12,
                     zIndex: 100,
                     backgroundColor: colorScheme == 'dark' ? 'rgb(2,6,23)' : '#fff'
@@ -55,25 +56,25 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef }) => {
                     </View>
                     <Text className="font-pextrabold text-lg capitalize mt-4 dark:text-white">{selectedExercise?.name}</Text>
                     <Text className="font-pbold text-lg mt-2 dark:text-white">
-                        * Mục tiêu: <Text className="font-pregular">{selectedExercise?.target} {selectedExercise?.secondaryMuscles?.map((mus, index) =>
-                            <Text key={index}>
+                        ● Mục tiêu: <Text className="font-pregular capitalize">{selectedExercise?.target} {selectedExercise?.secondaryMuscles?.map((mus, index) =>
+                            <Text key={index} className='font-pregular capitalize'>
                                 , {mus}
                             </Text>)}
                         </Text>
                     </Text>
                     <Text className="font-pbold text-lg mt-2 dark:text-white">
-                        * Thiết bị:
-                        <Text className="font-pregular">
+                        ● Thiết bị:
+                        <Text className="font-pregular capitalize">
                             {` ${selectedExercise?.equipment}`}
                         </Text>
                     </Text>
 
                     <View>
-                        <Text className="font-pextrabold text-lg mt-3 dark:text-white">* Hướng dẫn</Text>
+                        <Text className="font-pextrabold text-lg mt-2 dark:text-white">● Các bước</Text>
                         {
                             selectedExercise?.instructions?.map((ins, index) => (
-                                <View className="flex flex-row mt-3" key={index}>
-                                    <Text className="flex-[10%] font-pextrabold text-lg dark:text-white">{index + 1}</Text>
+                                <View className="flex flex-row mt-3 justify-center items-center" key={index}>
+                                    <Text className="flex-[10%] font-pextrabold text-[24px] border-[0.5px] text-center rounded-lg mr-4 dark:text-white dark:border-[#fff]">{index + 1}</Text>
                                     <Text className="flex-[90%] font-pmedium dark:text-white">{ins}</Text>
                                 </View>
                             ))

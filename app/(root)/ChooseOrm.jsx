@@ -7,8 +7,8 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
 import useUserStore from '../../store/userStore'
-import { calculate1RM } from '../../utils/index'
-import { handleUpdateUser } from '../../libs/mongodb'
+import { calculate1RM, generateExercisePlan, sendJSONByEmail, generateTrainings } from '../../utils/index'
+import { createTrainings, getAllExercises, handleUpdateUser } from '../../libs/mongodb'
 import { router } from 'expo-router'
 import LoadingModal from '../../components/LoadingModal'
 
@@ -49,6 +49,7 @@ const ChooseOrm = () => {
     const setUser = useUserStore.getState().setUser;
     const { colorScheme } = useColorScheme()
     const [isLoading, setIsLoading] = useState(false)
+    const [exercises, setExercises] = useState([])
 
     const handleNext = async () => {
         setIsLoading(true)
@@ -66,6 +67,15 @@ const ChooseOrm = () => {
             })
 
             // tao plan ngay tai day
+            // const createdPlans = await generateExercisePlan(updatedUser, exercises)
+            const createdPlans = await generateTrainings(updatedUser, exercises)
+            // sendJSONByEmail(createdPlans)
+
+            // luu plan vo db tai day
+            const savedPlan = await createTrainings(createdPlans)
+
+            // tao plan 30 ngay tai day
+
 
             router.replace('/(root)/(tabs)/training')
 
@@ -77,7 +87,16 @@ const ChooseOrm = () => {
     }
 
     useEffect(() => {
+        const fetchAllExercises = async () => {
+            try {
+                const res = await getAllExercises();
+                setExercises(res.data)
+            } catch (error) {
+                Alert.alert("Lỗi", error.message)
+            }
+        }
 
+        fetchAllExercises()
     }, [])
 
     return (
@@ -202,7 +221,7 @@ const ChooseOrm = () => {
                 </ScrollView>
 
                 <View className="absolute bottom-0 m-4">
-                    <CustomButton onPress={handleNext} text="Tiếp theo" textStyle={{
+                    <CustomButton onPress={handleNext} text="Tiến hành thiết lập" textStyle={{
                         fontFamily: "Roboto-Bold"
                     }} />
                 </View>

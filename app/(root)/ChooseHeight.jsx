@@ -12,7 +12,7 @@ const ChooseHeight = () => {
     const user = useUserStore.getState().user
     const setUser = useUserStore.getState().setUser
 
-    const [level, setLevel] = useState("người mới bắt đầu")
+    const [level, setLevel] = useState("Người mới bắt đầu")
 
     const handleSetWeightHeight = async (value, type) => {
         const numericValue = parseFloat(value);
@@ -82,8 +82,8 @@ const ChooseHeight = () => {
                 <Text className="font-pbold text-[28px] text-center mb-4">Trình độ của bạn?</Text>
 
                 <TouchableOpacity
-                    onPress={() => setLevel("người mới bắt đầu")}
-                    className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${level == 'người mới bắt đầu' && 'border-[4px] border-[#000]'}`}
+                    onPress={() => setLevel("Người mới bắt đầu")}
+                    className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${level == 'Người mới bắt đầu' && 'border-[4px] border-[#000]'}`}
                 >
                     <View className="flex flex-row justify-center items-center">
                         <FontAwesome name='battery-1' size={28} />
@@ -93,13 +93,13 @@ const ChooseHeight = () => {
                         <Text>Luyện tập ít hơn 6 tháng</Text>
                     </View>
                     {
-                        level == 'người mới bắt đầu' && <AntDesign name={'checkcircle'} size={28} />
+                        level == 'Người mới bắt đầu' && <AntDesign name={'checkcircle'} size={28} />
                     }
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => setLevel("trung cấp")}
-                    className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${level == 'trung cấp' && 'border-[4px] border-[#000]'}`}
+                    onPress={() => setLevel("Trung cấp")}
+                    className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${level == 'Trung cấp' && 'border-[4px] border-[#000]'}`}
                 >
                     <View className="flex flex-row justify-center items-center">
                         <FontAwesome name='battery-2' size={28} />
@@ -109,13 +109,13 @@ const ChooseHeight = () => {
                         <Text>Luyện tập hơn 6 tháng và ít hơn 2 năm</Text>
                     </View>
                     {
-                        level == 'trung cấp' && <AntDesign name={'checkcircle'} size={28} />
+                        level == 'Trung cấp' && <AntDesign name={'checkcircle'} size={28} />
                     }
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => setLevel("thâm niên")}
-                    className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${level == 'thâm niên' && 'border-[4px] border-[#000]'}`}
+                    onPress={() => setLevel("Thâm niên")}
+                    className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${level == 'Thâm niên' && 'border-[4px] border-[#000]'}`}
                 >
                     <View className="flex flex-row justify-center items-center">
                         <FontAwesome name='battery-4' size={28} />
@@ -125,7 +125,7 @@ const ChooseHeight = () => {
                         <Text>Hơn 2 năm luyện tập</Text>
                     </View>
                     {
-                        level == 'thâm niên' && <AntDesign name={'checkcircle'} size={28} />
+                        level == 'Thâm niên' && <AntDesign name={'checkcircle'} size={28} />
                     }
                 </TouchableOpacity>
             </View>

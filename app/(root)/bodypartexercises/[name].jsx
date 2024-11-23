@@ -107,7 +107,7 @@ const BodyPartExercisesDetails = () => {
         ListFooterComponent={
           !smallLoading ?
             <TouchableOpacity className='p-4 flex flex-row justify-center items-center' onPress={() => fetchDataByQuery(false)}>
-              <Ionicons name='reload' size={30} />
+              <Ionicons name='reload' size={30} color={colorScheme == 'dark' ? '#fff' : '#000'} />
             </TouchableOpacity>
             :
             <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />
