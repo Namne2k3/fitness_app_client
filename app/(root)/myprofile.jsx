@@ -76,7 +76,7 @@ const MyProfile = () => {
                     width={120}
                     height={120}
                     className="rounded-full"
-                    resizeMode='cover'
+                    contentFit='cover'
                 />
                 <TouchableOpacity onPress={openPicker} className="absolute">
                     <Feather name='camera' size={24} color={"#000"} />

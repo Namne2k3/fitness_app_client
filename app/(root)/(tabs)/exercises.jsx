@@ -75,7 +75,7 @@ const Exercises = () => {
     }, [searchQuery]);
 
     return (
-        <SafeAreaView className="px-4 pt-4 bg-[#fff] h-full dark:bg-slate-950">
+        <SafeAreaView className="px-4 pt-4 h-full dark:bg-slate-950">
             {
                 isSearching ? (
                     <View className="shadow-lg flex flex-row justify-between items-center mb-4">
@@ -118,7 +118,7 @@ const Exercises = () => {
                             />
                         )}
                         ItemSeparatorComponent={() =>
-                            <View className="h-[16px] bg-[#fff] dark:bg-slate-950" />
+                            <View className="h-[16px] bg-[#f3f2f3] dark:bg-slate-950" />
                         }
                         showsVerticalScrollIndicator={false}
                         ListHeaderComponentStyle={{
@@ -143,9 +143,6 @@ const Exercises = () => {
                                 <Text className="text-sm">No exercises found!</Text>
                             </View>
                         )}
-                        contentContainerStyle={{
-                            paddingBottom: 16
-                        }}
 
                     />
                 )

@@ -76,7 +76,7 @@ const FinishTrainingId = () => {
 
                     <Image
                         source={images.golden_cup}
-                        resizeMode="contain"
+                        contentFit="contain"
                         style={{
                             width: 100,
                             height: 100,

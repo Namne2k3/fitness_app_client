@@ -178,7 +178,7 @@ const DetailFeed = () => {
                         <Image
                             source={{ uri: blog?.author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
                             className="w-10 h-10 rounded-full"
-                            resizeMode='cover'
+                            contentFit='cover'
                         />
                     </TouchableOpacity>
                     <View className="flex-1">
@@ -206,7 +206,7 @@ const DetailFeed = () => {
                                             <Image
                                                 source={{ uri: med.fileUrl }}
                                                 className="w-full h-full rounded-lg"
-                                                resizeMode="contain"
+                                                contentFit="contain"
                                             />
                                             :
                                             <Video
@@ -266,7 +266,7 @@ const DetailFeed = () => {
                                     width={35}
                                     height={35}
                                     className="rounded-full"
-                                    resizeMode='contain'
+                                    contentFit='contain'
                                 />
                             </View>
                             <View className="ml-2 border-[0.5px] dark:border-[#fff] p-2 pr-4 text-md flex-1 flex-row justify-between items-center rounded-lg ">

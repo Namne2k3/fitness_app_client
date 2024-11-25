@@ -8,7 +8,7 @@ const CustomTrainingCard = ({ item }) => {
     return (
         <TouchableOpacity
             onPress={() => router.push(`/(root)/TrainingDetails/${item._id}`)}
-            className="flex p-4 bg-[#edeff0] rounded-lg mb-3 dark:bg-[#292727]"
+            className="flex p-4 bg-[#fff] rounded-lg mb-3 dark:bg-[#292727]"
         >
             <View className="flex flex-row justify-between">
                 <View className="flex">
@@ -31,8 +31,8 @@ const CustomTrainingCard = ({ item }) => {
                 {
                     item?.exercises?.map((ex, index) => (
                         <View key={index} className="flex flex-row justify-between items-start mb-2">
-                            <Text className="dark:text-white flex-1 font-pmedium capitalize">{ex.exercise.name}</Text>
-                            <Text className="dark:text-white flex-[0.4] text-right font-pextrabold">{ex.sets.length} Hiệp</Text>
+                            <Text className="dark:text-white flex-1 font-pmedium capitalize">{ex?.exercise?.name}</Text>
+                            <Text className="dark:text-white flex-[0.4] text-right font-pextrabold">{ex?.sets?.length} Hiệp</Text>
                         </View>
                     ))
                 }

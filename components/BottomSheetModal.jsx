@@ -4,7 +4,7 @@ import React from 'react'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useColorScheme } from 'nativewind';
 
-const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoints = ['95%'] }) => {
+const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoints = ['60%', '95%'] }) => {
 
     const { colorScheme } = useColorScheme()
 
@@ -51,7 +51,7 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoint
                                 uri: selectedExercise?.gifUrl
                             }}
                             className="w-full min-h-[300px]"
-                            resizeMode="contain"
+                            contentFit="contain"
                         />
                     </View>
                     <Text className="font-pextrabold text-lg capitalize mt-4 dark:text-white">{selectedExercise?.name}</Text>

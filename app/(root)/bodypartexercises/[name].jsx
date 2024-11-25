@@ -22,7 +22,7 @@ const ListHeaderComponent = ({ name }) => {
         <Image
           source={images[name]}
           className="w-[100px] h-[100px] rounded-full"
-          resizeMode='cover'
+          contentFit='cover'
         />
       </View>
     </View>

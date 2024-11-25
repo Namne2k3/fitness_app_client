@@ -15,22 +15,22 @@ const BodyPartList = ({ fetchBodyParts, bodyParts }) => {
         }, 1000);
     }, []);
     return (
-        <View className="">
-            <FlatList
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-                data={bodyParts}
-                renderItem={({ item }) => (
-                    <BodyPartExercisesCard item={item} />
-                )}
-                ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{
-                    paddingBottom: 16
-                }}
-            />
-        </View>
+
+        <FlatList
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            data={bodyParts}
+            renderItem={({ item }) => (
+                <BodyPartExercisesCard item={item} />
+            )}
+            ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+                paddingVertical: 16
+            }}
+        />
+
     )
 }
 

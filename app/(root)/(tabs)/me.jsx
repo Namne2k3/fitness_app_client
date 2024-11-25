@@ -20,9 +20,6 @@ const Me = () => {
     const [isVisibleModalEdit, setIsVisibleModalEdit] = useState(false)
     const { colorScheme } = useColorScheme()
 
-    console.log("User >>> ", user);
-
-
     const handleRating = useCallback(async () => {
         try {
             if (rate === 0) {

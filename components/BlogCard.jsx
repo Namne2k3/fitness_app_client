@@ -36,7 +36,7 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
                     <Image
                         source={{ uri: author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
                         className="w-10 h-10 rounded-full"
-                        resizeMode='cover'
+                        contentFit='cover'
                     />
                 </TouchableOpacity>
                 <View className="flex-1">
@@ -74,7 +74,7 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
                                                 <Image
                                                     source={{ uri: med.fileUrl }}
                                                     className="w-full h-full rounded-lg"
-                                                    resizeMode="cover"
+                                                    contentFit="cover"
                                                 />
                                             </Pressable>
                                             :

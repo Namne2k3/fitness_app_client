@@ -138,7 +138,7 @@ const CreateExercisePage = () => {
 
     return (
         <>
-            <SafeAreaView className="bg-[#fff] h-full relative dark:bg-slate-950">
+            <SafeAreaView className=" h-full relative dark:bg-slate-950">
 
                 <View className="flex flex-row justify-between items-center px-4 my-2">
                     <View>
@@ -190,7 +190,7 @@ const CreateExercisePage = () => {
                                     />
                                 )}
                                 ItemSeparatorComponent={() =>
-                                    <View className="h-[10px] bg-[#fff] dark:bg-slate-950" />
+                                    <View className="h-[16px] dark:bg-slate-950" />
                                 }
                                 ListFooterComponent={
                                     !smallLoading ?

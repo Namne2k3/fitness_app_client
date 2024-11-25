@@ -43,9 +43,9 @@ const SignIn = () => {
                 await AsyncStorage.setItem('jwt_token', data.token);
                 const userData = await getUserByEmail(form.email)
                 setUser(userData)
-                if (!userData.age || !userData.weight || !userData.height && userData.height == "0" || !userData.orm || !userData.tdee) {
+                if (!userData.weight || !userData.height && userData.height == "0" || !userData.orm || !userData.tdee) {
                     setIsVisibleLoadingModal(false)
-                    router.replace(`/(root)/FillInformation/${userData?.email}`)
+                    router.replace(`/(root)/ChooseGender`)
                     return;
                 }
                 setIsVisibleLoadingModal(false)

@@ -7,8 +7,8 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
 import useUserStore from '../../store/userStore'
-import { calculate1RM, generateExercisePlan, sendJSONByEmail, generateTrainings } from '../../utils/index'
-import { createTrainings, getAllExercises, handleUpdateUser } from '../../libs/mongodb'
+import { calculate1RM, generateExercisePlan, sendJSONByEmail, generateTrainings, createPlansForUser } from '../../utils/index'
+import { createTrainings, getAllExercises, handleUpdateUser, createPlans } from '../../libs/mongodb'
 import { router } from 'expo-router'
 import LoadingModal from '../../components/LoadingModal'
 
@@ -68,16 +68,21 @@ const ChooseOrm = () => {
 
             // tao plan ngay tai day
             // const createdPlans = await generateExercisePlan(updatedUser, exercises)
-            const createdPlans = await generateTrainings(updatedUser, exercises)
-            // sendJSONByEmail(createdPlans)
-
+            const createdTrainings = await generateTrainings(updatedUser, exercises)
             // luu plan vo db tai day
-            const savedPlan = await createTrainings(createdPlans)
+            const savedTrainings = await createTrainings(createdTrainings)
+            // sendJSONByEmail(savedTrainings)
 
-            // tao plan 30 ngay tai day
+            // // tao plan 30 ngay tai day
+            const createdPlans = await createPlansForUser(user, savedTrainings.data);
+            // // sendJSONByEmail(createdPlans)
+            // // luu plan vo db
+            const saved = await createPlans(createdPlans)
+            // console.log("Check saved >>> ", saved);
 
 
-            router.replace('/(root)/(tabs)/training')
+            // sendJSONByEmail(createdPlans)
+            router.navigate('/(root)/(tabs)/training')
 
         } catch (error) {
             Alert.alert("Lỗi", error.message)
@@ -114,7 +119,7 @@ const ChooseOrm = () => {
                                 uri: urlSelected(selected)
                             }}
                             className="w-[320px] max-w-full h-[250px]"
-                            resizeMode='contain'
+                            contentFit='contain'
                         />
                     </View>
                     <View className="border-b-[0.5px] border-[#ccc]">

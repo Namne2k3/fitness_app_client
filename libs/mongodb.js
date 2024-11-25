@@ -31,7 +31,6 @@ const fetchTrainingsByUserId = async (userId) => {
 
             console.log('No response received:', error.request);
         } else {
-
             console.log('Axios error:', error.message);
         }
     }
@@ -515,7 +514,39 @@ const getAllTrainingsByUserId = async () => {
     const token = await getToken();
 
     try {
-        const res = await axios.get(`${URL}/api/trainings/getByUserId?isCustom=${false}`, {
+        const res = await axios.get(`${URL}/api/trainings/getByUserId?isCustom=${false}&isInPlan=${false}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const createPlans = async (data) => {
+    const token = await getToken();
+
+    try {
+        const res = await axios.post(`${URL}/api/plan/createPlans`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getAllPlansByUserId = async () => {
+    const token = await getToken();
+
+    try {
+        const res = await axios.get(`${URL}/api/plan/getAllPlansByUserId`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -528,6 +559,8 @@ const getAllTrainingsByUserId = async () => {
 }
 
 export {
+    getAllPlansByUserId,
+    createPlans,
     getAllTrainingsByUserId,
     createTrainings,
     getAllExercises,

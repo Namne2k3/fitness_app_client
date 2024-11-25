@@ -58,7 +58,7 @@ const InputField = ({
                             label === 'Mật khẩu' || label === 'Nhập lại mật khẩu' ? (
                                 <TouchableOpacity onPress={() => setShowPassword(!showPassword)} className="p-4">
                                     <Image
-                                        className="w-6 h-6" resizeMode='contain'
+                                        className="w-6 h-6" contentFit='contain'
                                         source={!showPassword ? icons.eye_hide : icons.eye}
                                     />
                                 </TouchableOpacity>

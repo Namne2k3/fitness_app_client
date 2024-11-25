@@ -646,3 +646,123 @@ export const seedMessages = [
     },
 ];
 
+// export const seedPlanData = {
+
+//     male: {
+//         'xây dựng cơ bắp': [
+//             "ngực", "lưng", "chân", "nghỉ ngơi", "vai", "chân", "tay",
+//             "nghỉ ngơi", "ngực", "lưng", "mông", "nghỉ ngơi", "vai", "chân", "tay",
+//             "nghỉ ngơi", "ngực", "lưng", "chân", "nghỉ ngơi", "vai", "chân", "vai",
+//             "nghỉ ngơi", "ngực", "lưng", "mông", "nghỉ ngơi", "vai", "chân"
+//         ],
+//         'xây dựng sức bền': [
+//             "toàn thân", "thân trên", "nghỉ ngơi", "toàn thân", "ngực", "nghỉ ngơi",
+//             "toàn thân", "lưng", "nghỉ ngơi", "chân", "tay", "nghỉ ngơi", "toàn thân",
+//             "thân trên", "nghỉ ngơi", "toàn thân", "ngực", "nghỉ ngơi", "toàn thân",
+//             "lưng", "nghỉ ngơi", "chân", "vai", "nghỉ ngơi", "toàn thân", "thân trên",
+//             "nghỉ ngơi", "toàn thân", "ngực", "lưng"
+//         ],
+//         'sức mạnh': [
+//             "ngực", "lưng", "chân", "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "ngực",
+//             "lưng", "chân", "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "ngực", "lưng",
+//             "chân", "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "ngực", "lưng", "chân",
+//             "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "ngực", "lưng"
+//         ],
+//         'thẩm mỹ cân đối': [
+//             "thân trên", "chân", "ngực", "nghỉ ngơi", "thân trên", "toàn thân", "nghỉ ngơi",
+//             "thân trên", "chân", "ngực", "nghỉ ngơi", "thân trên", "toàn thân", "nghỉ ngơi",
+//             "thân trên", "chân", "vai", "nghỉ ngơi", "thân trên", "toàn thân", "nghỉ ngơi",
+//             "thân trên", "chân", "ngực", "nghỉ ngơi", "thân trên", "toàn thân"
+//         ]
+//     },
+//     female: {
+//         'xây dựng cơ bắp': [
+//             "chân", "thân trên", "toàn thân", "nghỉ ngơi", "mông", "lưng", "bụng",
+//             "nghỉ ngơi", "chân", "thân trên", "mông", "nghỉ ngơi", "toàn thân",
+//             "vai", "mông", "nghỉ ngơi", "chân", "thân trên", "toàn thân", "nghỉ ngơi",
+//             "mông", "ngực", "lưng", "nghỉ ngơi", "chân", "thân trên", "toàn thân",
+//             "nghỉ ngơi", "mông", "bụng"
+//         ],
+//         'xây dựng sức bền': [
+//             "toàn thân", "chân", "nghỉ ngơi", "toàn thân", "mông", "nghỉ ngơi",
+//             "toàn thân", "lưng", "nghỉ ngơi", "thân trên", "bụng", "nghỉ ngơi",
+//             "toàn thân", "chân", "nghỉ ngơi", "toàn thân", "mông", "nghỉ ngơi",
+//             "toàn thân", "lưng", "nghỉ ngơi", "thân trên", "bụng", "nghỉ ngơi",
+//             "toàn thân", "chân", "nghỉ ngơi", "toàn thân", "mông"
+//         ],
+//         'sức mạnh': [
+//             "chân", "lưng", "ngực", "mông", "vai", "nghỉ ngơi", "nghỉ ngơi",
+//             "chân", "lưng", "tay", "mông", "vai", "nghỉ ngơi", "nghỉ ngơi", "chân",
+//             "lưng", "ngực", "mông", "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "chân",
+//             "lưng", "tay", "mông", "vai", "nghỉ ngơi", "nghỉ ngơi", "chân", "lưng"
+//         ],
+//         'thẩm mỹ cân đối': [
+//             "chân", "thân trên", "mông", "nghỉ ngơi", "chân", "toàn thân", "nghỉ ngơi",
+//             "chân", "thân trên", "lưng", "nghỉ ngơi", "chân", "toàn thân", "nghỉ ngơi",
+//             "chân", "thân trên", "bụng", "nghỉ ngơi", "chân", "toàn thân", "nghỉ ngơi",
+//             "chân", "thân trên", "mông", "nghỉ ngơi", "chân", "toàn thân"
+//         ]
+//     }
+// };
+
+export const seedPlanData = {
+
+    male: {
+        'xây dựng cơ bắp': [
+            "ngực", "lưng", "chân", "nghỉ ngơi", "vai", "chân", "tay",
+            "nghỉ ngơi", "ngực", "lưng", "mông", "nghỉ ngơi", "vai", "chân", "tay",
+            "nghỉ ngơi", "ngực", "lưng", "chân", "nghỉ ngơi", "vai", "chân", "vai",
+            "nghỉ ngơi", "ngực", "lưng", "mông", "nghỉ ngơi", "vai", "chân"
+        ],
+        'xây dựng sức bền': [
+            "toàn thân", "thân trên", "nghỉ ngơi", "toàn thân", "ngực", "nghỉ ngơi",
+            "toàn thân", "lưng", "nghỉ ngơi", "chân", "tay", "nghỉ ngơi", "toàn thân",
+            "thân trên", "nghỉ ngơi", "toàn thân", "ngực", "nghỉ ngơi", "toàn thân",
+            "lưng", "nghỉ ngơi", "chân", "vai", "nghỉ ngơi", "toàn thân", "thân trên",
+            "nghỉ ngơi", "toàn thân", "ngực", "lưng"
+        ],
+        'sức mạnh': [
+            "ngực", "lưng", "chân", "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "ngực",
+            "lưng", "chân", "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "ngực", "lưng",
+            "chân", "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "ngực", "lưng", "chân",
+            "vai", "tay", "nghỉ ngơi", "nghỉ ngơi", "ngực", "lưng"
+        ],
+        'thẩm mỹ cân đối': [
+            "thân trên", "chân", "ngực", "nghỉ ngơi", "thân trên", "toàn thân", "nghỉ ngơi",
+            "thân trên", "chân", "ngực", "nghỉ ngơi", "thân trên", "toàn thân", "nghỉ ngơi",
+            "thân trên", "chân", "vai", "nghỉ ngơi", "thân trên", "toàn thân", "nghỉ ngơi",
+            "thân trên", "chân", "ngực", "nghỉ ngơi", "thân trên", "toàn thân", "nghỉ ngơi",
+            "thân trên", "chân"
+        ]
+    },
+    female: {
+        'xây dựng cơ bắp': [
+            "chân", "thân trên", "toàn thân", "nghỉ ngơi", "mông", "lưng", "bụng",
+            "nghỉ ngơi", "chân", "thân trên", "mông", "nghỉ ngơi", "toàn thân",
+            "vai", "mông", "nghỉ ngơi", "chân", "thân trên", "toàn thân", "nghỉ ngơi",
+            "mông", "ngực", "lưng", "nghỉ ngơi", "chân", "thân trên", "toàn thân",
+            "nghỉ ngơi", "mông", "bụng"
+        ],
+        'xây dựng sức bền': [
+            "toàn thân", "chân", "nghỉ ngơi", "toàn thân", "mông", "nghỉ ngơi",
+            "toàn thân", "lưng", "nghỉ ngơi", "thân trên", "bụng", "nghỉ ngơi",
+            "toàn thân", "chân", "nghỉ ngơi", "toàn thân", "mông", "nghỉ ngơi",
+            "toàn thân", "lưng", "nghỉ ngơi", "thân trên", "bụng", "nghỉ ngơi",
+            "toàn thân", "chân", "nghỉ ngơi", "toàn thân", "mông", "lưng"
+        ],
+        'sức mạnh': [
+            "chân", "lưng", "ngực", "mông", "vai", "nghỉ ngơi", "nghỉ ngơi",
+            "chân", "lưng", "tay", "mông", "vai", "nghỉ ngơi", "nghỉ ngơi", "chân",
+            "lưng", "ngực", "mông", "vai", "nghỉ ngơi", "nghỉ ngơi", "chân",
+            "lưng", "tay", "mông", "vai", "nghỉ ngơi", "nghỉ ngơi", "mông", "lưng"
+        ],
+        'thẩm mỹ cân đối': [
+            "chân", "thân trên", "mông", "nghỉ ngơi", "chân", "toàn thân", "nghỉ ngơi",
+            "chân", "thân trên", "lưng", "nghỉ ngơi", "chân", "toàn thân", "nghỉ ngơi",
+            "chân", "thân trên", "bụng", "nghỉ ngơi", "chân", "toàn thân", "nghỉ ngơi",
+            "chân", "thân trên", "mông", "nghỉ ngơi", "chân", "toàn thân", "nghỉ ngơi",
+            "chân", "thân trên"
+        ]
+    }
+};
+

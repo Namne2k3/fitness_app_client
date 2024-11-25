@@ -126,7 +126,7 @@ const FeedProfile = () => {
                         width={120}
                         height={120}
                         className="rounded-full"
-                        resizeMode='cover'
+                        contentFit='cover'
                     />
                 </View>
                 <View className="flex flex-row p-2 justify-center items-center">

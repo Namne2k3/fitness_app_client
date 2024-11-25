@@ -6,17 +6,17 @@ import { Link, router } from 'expo-router'
 const BodyPartExercisesCard = ({ item }) => {
 
     return (
-        <TouchableOpacity className="flex bg-[#f4f5f6] dark:bg-[#292727]  rounded-2xl p-4" onPress={() => router.push(`/(root)/TrainingDetails/${item?._id}`)}>
+        <TouchableOpacity className="flex bg-[#fff] dark:bg-[#292727]  rounded-2xl p-4 shadow-lg" onPress={() => router.push(`/(root)/TrainingDetails/${item?._id}`)}>
             <View className="flex flex-row justify-between items-center w-full">
                 <View className="flex justify-start items-start">
-                    <Text className="dark:text-white capitalize text-lg font-pextrabold">{item?.title}</Text>
-                    <Text className=" dark:text-white font-pmedium font-md">Số bài tập: {item?.exercises?.length}</Text>
+                    <Text className="dark:text-white capitalize text-[24px] font-pextrabold">{item?.title}</Text>
+                    <Text className=" dark:text-white font-pregular font-md mt-1">Số bài tập: {item?.exercises?.length}</Text>
                 </View>
                 <View className="flex justify-center items-center">
                     <Image
                         source={images[item?.title.toLowerCase()]}
                         className="w-[70px] h-[70px] rounded-full border-[0.5px] dark:border-[#ccc]"
-                        resizeMode='cover'
+                        contentFit='cover'
                     />
                 </View>
             </View>

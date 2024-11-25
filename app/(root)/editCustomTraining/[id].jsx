@@ -119,7 +119,7 @@ const EditCustomTraining = () => {
     }, [])
 
     return (
-        <SafeAreaView className="h-full relative bg-[#fff] dark:bg-slate-950">
+        <SafeAreaView className="h-full relative dark:bg-slate-950">
             <View className="p-4 w-full flex flex-row justify-between items-center">
                 <View>
                     <TouchableOpacity
@@ -174,7 +174,7 @@ const EditCustomTraining = () => {
                     </View>
                 )}
                 ItemSeparatorComponent={() => (
-                    <View className="bg-[#eaecef] h-[10px]" />
+                    <View className="h-[16px]" />
                 )}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{

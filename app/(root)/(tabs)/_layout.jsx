@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome5, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 
 export default function TabLayout() {
@@ -9,7 +9,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: colorScheme == 'dark' ? '#fff' : '#000',
+        tabBarActiveTintColor: colorScheme == 'dark' ? '#fff' : '#3749db',
         // tabBarInactiveTintColor: colorScheme === 'dark' ? '#ccc' : 'gray',
         tabBarStyle: {
           height: 60,
@@ -17,6 +17,7 @@ export default function TabLayout() {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          shadowColor: "#fff"
         },
         tabBarItemStyle: {
           display: 'flex',
@@ -24,16 +25,16 @@ export default function TabLayout() {
           justifyContent: 'center',
           alignItems: 'center'
         },
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
       }}
     >
       <Tabs.Screen
         name="training"
         options={{
-          title: 'Kế hoạch',
+          title: 'Luyện tập',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons size={32} name='barbell' color={color} />
+            <FontAwesome6 size={24} name='dumbbell' color={color} />
           ),
         }}
       />
@@ -43,7 +44,7 @@ export default function TabLayout() {
           title: 'Tùy chỉnh',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcons size={32} name='dashboard-customize' color={color} />
+            <FontAwesome5 size={24} name='pen' color={color} />
           ),
         }}
       />
@@ -53,7 +54,7 @@ export default function TabLayout() {
           title: 'Bài tập',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons size={32} name='weight-lifter' color={color} />
+            <MaterialIcons size={26} name='space-dashboard' color={color} />
           ),
         }}
       />
@@ -63,7 +64,7 @@ export default function TabLayout() {
           title: 'Thống kê',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons size={32} name='google-analytics' color={color} />
+            <MaterialCommunityIcons size={26} name='google-analytics' color={color} />
           ),
         }}
       />
@@ -73,7 +74,7 @@ export default function TabLayout() {
           title: 'Feed',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <MaterialIcons size={32} name='article' color={color} />
+            <MaterialIcons size={26} name='article' color={color} />
           ),
         }}
       />
@@ -83,7 +84,7 @@ export default function TabLayout() {
           title: 'Me',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <Ionicons size={32} name='person' color={color} />
+            <Ionicons size={26} name='person' color={color} />
           ),
         }}
       />

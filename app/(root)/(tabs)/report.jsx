@@ -18,7 +18,7 @@ const Report = () => {
 
     const [monthRecords, setMonthRecords] = useState([])
     const { colorScheme } = useColorScheme()
-    const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
+
     const [recordDatas, setRecordDatas] = useState([])
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef();
@@ -49,19 +49,19 @@ const Report = () => {
     const fetchData = async () => {
         let isMounted = true;
         setLoading(true);
-        setIsVisibleLoadingModal(true);
+
         try {
             await Promise.all([
                 fetchTrainingRecordsByMonth(new Date().getMonth() + 1),
                 fetchAllTrainingRecord(),
             ]);
             if (isMounted) {
-                setIsVisibleLoadingModal(false);
+
                 setLoading(false);
             }
         } catch (error) {
             if (isMounted) {
-                setIsVisibleLoadingModal(false);
+
                 setLoading(false);
             }
             console.error("Error fetching data:", error);
@@ -207,7 +207,7 @@ const Report = () => {
                     </View>
                 </ReportComponent>
             </ScrollView>
-            {/* <LoadingModal visible={isVisibleLoadingModal} message={"Analyzing Data ..."} /> */}
+
         </SafeAreaView>
     )
 }

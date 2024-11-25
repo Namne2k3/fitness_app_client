@@ -23,7 +23,7 @@ const MessageComponent = ({ item, user, roomImage }) => {
                                 width={30}
                                 height={30}
                                 className="rounded-full mr-2"
-                                resizeMode='cover'
+                                contentFit='cover'
                             />
                         </> : <>
                             <Image
@@ -31,7 +31,7 @@ const MessageComponent = ({ item, user, roomImage }) => {
                                 width={30}
                                 height={30}
                                 className="rounded-full mr-2"
-                                resizeMode='cover'
+                                contentFit='cover'
                             />
                         </>
                     }

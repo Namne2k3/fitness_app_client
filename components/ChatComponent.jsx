@@ -24,7 +24,7 @@ const ChatComponent = ({ item, handlePressChatComponent, index }) => {
                 width={50}
                 height={50}
                 className='rounded-full'
-                resizeMode='cover'
+                contentFit='cover'
             />
 
             <View style={styles.crightContainer}>

@@ -39,7 +39,7 @@ const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpd
                                 uri: exercise.gifUrl
                             }}
                             className="w-[70px] h-[70px] mr-2"
-                            resizeMode="contain"
+                            contentFit="contain"
                         />
                     </TouchableOpacity>
                 </View>
@@ -66,7 +66,7 @@ const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpd
                         <SetCard isNeedKg={isNeedKg} handleUpdateIsCheck={handleUpdateIsCheck} hasCheck={hasCheck} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} itemParent={{ exercise, sets }} index={index} item={item} />
                     )}
                     ItemSeparatorComponent={() => (
-                        <View className="bg-[#fff] h-[10px] dark:bg-slate-800" />
+                        <View className="h-[16px] dark:bg-slate-800" />
                     )}
                     showsVerticalScrollIndicator={false}
                 />

@@ -3,6 +3,7 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import TrainingContent from "../../../components/TrainingContent";
 import Plan from "../../../components/Plan";
 import { useColorScheme } from "nativewind";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -10,35 +11,31 @@ const TrainingPage = () => {
 
   const { colorScheme } = useColorScheme()
   return (
-
-    <Tab.Navigator
-      screenOptions={{
-        tabBarIndicatorStyle: {
-          backgroundColor: '#00008B',
-          padding: 3,
-          borderRadius: 4,
-        },
-        tabBarActiveTintColor: colorScheme == 'dark' ? '#fff' : '#000',
-        tabBarInactiveTintColor: 'gray',
-        tabBarLabelStyle: {
-          fontSize: 16,
-          alignSelf: 'center',
-          fontFamily: 'Roboto-Bold',
-          marginTop: 32
-        },
-        tabBarStyle: {
-          display: 'flex',
-          backgroundColor: '#fff',
-          shadowColor: '#fff',
-        },
-        tabBarContentContainerStyle: {
-          backgroundColor: colorScheme == 'dark' ? 'rgb(2 6 23)' : '#fff'
-        }
-      }}
-    >
-      <Tab.Screen name="LỘ TRÌNH" component={Plan} />
-      <Tab.Screen name="BÀI TẬP" component={TrainingContent} />
-    </Tab.Navigator>
+    <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarIndicatorStyle: {
+            backgroundColor: '#3749db',
+            padding: 2,
+            borderRadius: 4
+          },
+          tabBarActiveTintColor: colorScheme == 'dark' ? '#fff' : '#000',
+          tabBarInactiveTintColor: 'gray',
+          tabBarLabelStyle: {
+            fontSize: 18,
+            fontFamily: 'Roboto-Bold',
+          },
+          tabBarStyle: {
+            shadowColor: '#fff',
+            backgroundColor: '#f3f2f3'
+          },
+          swipeEnabled: false
+        }}
+      >
+        <Tab.Screen name="KẾ HOẠCH" component={Plan} />
+        <Tab.Screen name="LUYỆN TẬP" component={TrainingContent} />
+      </Tab.Navigator>
+    </SafeAreaView>
 
   )
 }

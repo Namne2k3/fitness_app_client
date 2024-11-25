@@ -15,6 +15,7 @@ export const images = {
     "tay": require('../assets/images/upper_arms.jpg'),
     "chân": require('../assets/images/lower_legs.jpg'),
     vai: require('../assets/images/shoulders.jpg'),
+    plan_background: require('../assets/images/plan_background.jpg'),
     "vai": require('../assets/images/shoulders.jpg'),
     "bắp tay": require('../assets/images/upper_arms.jpg'),
     "đùi": require('../assets/images/upper_legs.jpg'),

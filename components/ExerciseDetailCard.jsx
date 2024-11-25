@@ -10,15 +10,15 @@ const ExerciseDetailCard = ({ exercise, handlePresentModalSheet, containerStyle 
                 handlePresentModalSheet(exercise)
 
             }}
-            className={`flex flex-row shadow-2xl bg-[#f4f5f6] rounded-lg ${containerStyle} border-[0.5px] dark:border-[#ccc]`}
+            className={`flex flex-row shadow-2xl bg-[#fff] rounded-lg ${containerStyle} dark:border-[#ccc]`}
         >
-            <View>
+            <View className=''>
                 <Image
                     source={{
                         uri: exercise.gifUrl
                     }}
                     className="w-[100px] h-[100px] rounded-l-lg"
-                    resizeMode="contain"
+                    contentFit="contain"
                 />
             </View>
 

@@ -1,7 +1,51 @@
 
 import { images } from '@/constants/image';
+import { seedPlanData } from '@/constants/seeds'
+import { createTrainings } from '@/libs/mongodb';
 import * as FileSystem from 'expo-file-system';
 import * as MailComposer from 'expo-mail-composer';
+
+const createPlansForUser = async (user, createdTrainings) => {
+    const planData = seedPlanData
+
+    const createPlanForGender = async (gender) => {
+        const plans = [];
+        for (const planName in planData[gender]) {
+            const planDays = planData[gender][planName];
+            const trainings = planDays.map((day, index) => {
+
+                const training = createdTrainings.find(t => t.title.toLowerCase() === day && t.user === user._id);
+                if (training) {
+                    return {
+                        title: training.name ? 'Ngày nghỉ' : `Ngày ${index + 1}`,
+                        name: training.title ?? 'Nghỉ ngơi',
+                        exercises: training.exercises ?? [],
+                        user: user._id,
+                        isInPlan: true
+                    };
+                }
+            }).filter(Boolean)
+
+            const savedTrainings = await createTrainings(trainings)
+
+            plans.push({
+                name: planName,
+                user: user._id,
+                gender: gender == 'male' ? 'nam' : 'nữ',
+                trainings: savedTrainings?.data?.map((item) => item._id),
+            });
+        }
+        return plans;
+    };
+
+    // Trả về 8 kế hoạch cho từng giới tính và loại plan
+    const malePlans = await createPlanForGender('male');
+    const femalePlans = await createPlanForGender('female');
+
+    // return null
+    return [...malePlans, ...femalePlans];
+};
+
 const getSortedExercisesByName = (exercises) => {
     return exercises.sort((a, b) => {
         if (a.name < b.name) {
@@ -298,36 +342,6 @@ const sendJSONByEmail = async (plan) => {
 };
 
 
-// day1: thân dưới
-// day2: thân trên
-// day3: toàn thân
-// day4: nghỉ ngơi
-// day5: mông
-// day6: lưng
-// day7: eo
-// day8: nghỉ ngơi
-// day9: thân dưới
-// day10: thân trên
-// day11: mông
-// day12: nghỉ ngơi,
-// day13: toàn thân
-// day14: vai
-// day15: mông
-// day16: nghỉ ngơi
-// day17: thân dưới
-// day18: thân trên
-// day19: toàn thân
-// day20: nghỉ ngơi
-// day21: mông
-// day22: ngực
-// day23: lưng
-// day24: nghỉ ngơi
-// day25: thân dưới
-// day26: thân trên
-// day27: toàn than
-// day28: nghỉ ngơi
-// day29: mông
-// day30: eo
 
 // const generateExercisePlan = async (user, exercises) => {
 //     const { level, focusBodyPart, healthGoal, orm, gender } = user;
@@ -789,6 +803,7 @@ const generateTrainings = async (userData, exerciseData) => {
         "Vai",
         "Chân",
         "Toàn thân",
+        "Mông",
         "Thân trên",
         "Bụng",
         "StrongLift A",
@@ -860,16 +875,17 @@ const generateTrainings = async (userData, exerciseData) => {
             .slice(0, 4 + Math.floor(Math.random() * 3));
 
         const exercises = limitedExercises.map((exercise) => ({
-            exercise: {
-                name: exercise.name,
-                target: exercise.target,
-                gifUrl: exercise.gifUrl,
-                id: exercise.id,
-                bodyPart: exercise.bodyPart,
-                equipment: exercise.equipment,
-                instructions: exercise.instructions,
-                secondaryMuscles: exercise.secondaryMuscles,
-            },
+            // exercise: {
+            //     name: exercise.name,
+            //     target: exercise.target,
+            //     gifUrl: exercise.gifUrl,
+            //     id: exercise.id,
+            //     bodyPart: exercise.bodyPart,
+            //     equipment: exercise.equipment,
+            //     instructions: exercise.instructions,
+            //     secondaryMuscles: exercise.secondaryMuscles,
+            // },
+            exercise: exercise._id,
             sets: Array.from({ length: getSetsAndReps().sets }, () => ({
                 kilogram: getSetsAndReps().kilogram,
                 reps: getSetsAndReps().reps,
@@ -895,6 +911,7 @@ export {
     generateTrainings,
     sendJSONByEmail,
     // generateExercisePlan,
+    createPlansForUser,
     kgToLbs,
     calculate1RM,
     getTotalTimeDurationThisWeek,

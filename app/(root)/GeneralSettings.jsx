@@ -32,7 +32,7 @@ const GeneralSettings = () => {
     };
 
     return (
-        <SafeAreaView className="bg-[#fff] dark:bg-slate-950 h-full p-4">
+        <SafeAreaView className="dark:bg-slate-950 h-full p-4">
             <View className="flex flex-row justify-start items-center">
                 <TouchableOpacity
                     onPress={() => router.back()}
@@ -46,7 +46,7 @@ const GeneralSettings = () => {
                 <Text className="font-pextrabold text-[24px] dark:text-white">Thiết lập hệ thống</Text>
             </View>
 
-            <View className="bg-[#e4e5e6] dark:bg-[#292727] mt-4 rounded-lg flex flex-row justify-between items-center px-4 py-2">
+            <View className="bg-[#fff] dark:bg-[#292727] mt-4 rounded-lg flex flex-row justify-between items-center px-4 py-2">
                 <Text className="dark:text-white font-psemibold capitalize">Chế độ tối</Text>
                 <Switch
                     trackColor={{ false: '#767577', true: '#ccc' }}

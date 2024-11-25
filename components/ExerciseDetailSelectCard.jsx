@@ -10,7 +10,7 @@ const ExerciseDetailSelectCard = ({ colorScheme, exerciseSelections, handleAddEx
         <TouchableOpacity
             onLongPress={() => handlePresentModalSheet(exercise)}
             onPress={() => handleAddExerciseToSelection(exercise)}
-            className="flex flex-row shadow-2xl bg-[#f4f5f6] rounded-lg border-[0.5px]"
+            className="flex flex-row shadow-2xl bg-[#fff] rounded-lg"
         >
             <View className="flex-[0.5] mr-2">
                 <Image
@@ -18,7 +18,7 @@ const ExerciseDetailSelectCard = ({ colorScheme, exerciseSelections, handleAddEx
                         uri: exercise.gifUrl
                     }}
                     className="w-[100px] h-[100px] rounded-l-lg"
-                    resizeMode="contain"
+                    contentFit="contain"
                 />
             </View>
 

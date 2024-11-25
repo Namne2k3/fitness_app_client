@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { getAllBodyParts } from "../libs/exerciseDb";
 import { getAllBodyPart, getAllTrainingsByUserId } from '../libs/mongodb'
 import BodyPartList from "./BodyPartList";
+import { View } from "react-native";
 
 const TrainingContent = () => {
 
@@ -20,9 +21,9 @@ const TrainingContent = () => {
     }, [])
 
     return (
-        <SafeAreaView className=" border-[#fff] flex justify-center items-start px-4 bg-[#fff] dark:bg-slate-950 h-full" >
+        <View className="flex justify-center items-start px-4  dark:bg-slate-950 h-full" >
             <BodyPartList fetchBodyParts={fetchBodyParts} bodyParts={bodyParts} />
-        </SafeAreaView >
+        </View >
 
     );
 }

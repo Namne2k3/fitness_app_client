@@ -10,6 +10,7 @@ import * as Progress from 'react-native-progress';
 import axios from 'axios';
 import { getUserByEmail } from '@/libs/mongodb';
 import { useUserStore } from '@/store';
+import { getToken } from '@/libs/token';
 
 const WelcomePage = () => {
     const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -32,7 +33,7 @@ const WelcomePage = () => {
 
         const fetchUserByToken = async () => {
             try {
-                const token = await AsyncStorage.getItem('jwt_token');
+                const token = await getToken();
                 if (!token) return false;
 
                 const res = await axios.get(`${process.env.EXPO_PUBLIC_URL_SERVER}/api/user/getCurrentUser`, {
@@ -45,8 +46,10 @@ const WelcomePage = () => {
                 }
 
                 const data = res.data;
-                const { email } = data.user;
-                const userData = await getUserByEmail(email);
+
+
+                const userData = await getUserByEmail(data.user._doc.email);
+
                 setUser(userData);
                 return true;
             } catch (error) {
@@ -63,8 +66,9 @@ const WelcomePage = () => {
 
                 setTimeout(() => {
                     const updatedUser = useUserStore.getState().user;
+
                     if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee) {
-                        router.replace(`/(root)/FillInformation/${updatedUser?.email}`);
+                        router.replace(`/(root)/ChooseGender`);
                     } else {
                         router.replace('/(root)/(tabs)/training');
                     }
@@ -96,7 +100,7 @@ const WelcomePage = () => {
                 <Image
                     source={images.welcome_image}
                     className="w-[300px] h-[300px] rounded-full"
-                    resizeMode="contain"
+                    contentFit="contain"
                 />
             </View>
             <View className="mt-8 flex justify-center items-center">

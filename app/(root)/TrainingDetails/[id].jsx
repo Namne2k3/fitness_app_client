@@ -1,8 +1,8 @@
 import { Entypo, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View, Image, Dimensions } from 'react-native'
+import React, { useCallback, useEffect, useRef, useState, memo } from 'react'
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View, Image, Modal, Dimensions } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomSheet from '../../../components/BottomSheet'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
@@ -12,9 +12,12 @@ import { deleteTrainingById, fetchTrainingById } from '../../../libs/mongodb'
 import { formatDate, getAbbreviation, randomColor } from '../../../utils/index'
 import { images } from '../../../constants/image'
 import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
+import LoadingModal from '../../../components/LoadingModal'
 
 const TrainingDetails = () => {
     const { id } = useLocalSearchParams()
+    const { index } = useLocalSearchParams()
+
     const [isEdit, setIsEdit] = useState(false)
     const [trainingData, setTrainingData] = useState({})
     const [selectedExercise, setSelectedExercise] = useState({})
@@ -22,6 +25,7 @@ const TrainingDetails = () => {
     const bottomSheetRef = useRef(null)
     const bottomEditSheetRef = useRef(null)
     const [isVisibleModalEdit, setIsVisibleModalEdit] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     let color = randomColor()
 
     const handleExeTrainingCardPress = useCallback(async (exercise) => {
@@ -36,11 +40,16 @@ const TrainingDetails = () => {
 
     useEffect(() => {
         const getTrainingById = async () => {
+            setIsLoading(true)
             try {
                 const data = await fetchTrainingById(id)
+                console.log("Check data >>> ", data);
+
                 setTrainingData(data)
             } catch (err) {
                 console.log("Error: ", err.message);
+            } finally {
+                setIsLoading(false)
             }
         }
 
@@ -64,13 +73,64 @@ const TrainingDetails = () => {
                     <View>
                         <TouchableOpacity
                             onPress={() => {
-                                bottomEditSheetRef.current?.present()
+                                // bottomEditSheetRef.current?.present()
+                                setIsVisibleModalEdit(!isVisibleModalEdit);
                                 setIsEdit(true)
                             }}
-                            className="relative"
+                            className="relative p-2"
                         >
-                            <Entypo name='dots-three-vertical' size={18} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                            <Entypo name='dots-three-vertical' size={22} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                         </TouchableOpacity>
+                        <Modal
+                            animationType="fade"
+                            transparent={true}
+                            visible={isVisibleModalEdit}
+                            onRequestClose={() => {
+                                setIsVisibleModalEdit(!isVisibleModalEdit);
+                            }}
+                        >
+                            <TouchableOpacity
+                                className="flex-1"
+                                onPress={() => setIsVisibleModalEdit(false)}
+                            />
+                            <View className="absolute top-[50px] right-[10px] bg-[#000] dark:bg-white rounded-lg">
+                                {
+                                    trainingData?.isCustom &&
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            Alert.alert(
+                                                "Delete Training",
+                                                "Are you sure you want to delete this training?",
+                                                [
+                                                    {
+                                                        text: "Cancel",
+                                                        style: "cancel",
+                                                    },
+                                                    {
+                                                        text: "Delete",
+                                                        onPress: async () => {
+                                                            await handleDeleteTrainingById(id)
+                                                            setIsVisibleModalEdit(false);
+                                                            router.replace('/(root)/(tabs)/custom')
+                                                        },
+                                                        style: "destructive",
+                                                    },
+                                                ]
+                                            );
+                                        }}
+                                        className='py-3 px-4'
+                                    >
+                                        <Text className="text-left text-[#fff] text-[14px] dark:text-black">Xóa</Text>
+                                    </TouchableOpacity>
+                                }
+                                <TouchableOpacity
+                                    className="py-3 px-4"
+                                    onPress={() => router.push(`/(root)/editCustomTraining/${id}`)}
+                                >
+                                    <Text className="text-left text-[#fff] text-[14px] dark:text-black">Chỉnh sửa</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
                     </View>
                 </View >
                 <View className="pl-4 pr-3 flex flex-row items-center justify-between">
@@ -119,7 +179,7 @@ const TrainingDetails = () => {
                         backgroundColor: colorScheme == 'dark' ? "rgb(2, 6 ,23)" : '#f4f5f6"',
                     }}
                     ItemSeparatorComponent={() => (
-                        <View className="h-[10px] bg-[#f4f5f6] dark:bg-slate-950" />
+                        <View className="h-[16px]  dark:bg-slate-950" />
                     )}
                 />
 
@@ -129,11 +189,11 @@ const TrainingDetails = () => {
                 </View> */}
                 {/* <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} /> */}
                 <View className="p-4 flex bg-transparent">
-                    <CustomButton onPress={() => router.push(`/(root)/beginTraining/${id}`)} text={'Bắt đầu'} />
+                    <CustomButton onPress={() => router.push(`/(root)/beginTraining/${id}?index=${index}`)} text={'Bắt đầu'} />
                 </View>
             </SafeAreaView>
             <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
-            <BottomSheet snapPoints={["20%"]} bottomSheetRef={bottomEditSheetRef}>
+            {/* <BottomSheet snapPoints={["20%"]} bottomSheetRef={bottomEditSheetRef}>
                 <View className="flex">
                     <TouchableOpacity onPress={() => router.push(`/(root)/editCustomTraining/${id}`)} className="flex flex-row w-full justify-start items-start px-1 py-3 mx-2 border-b-[0.5px] border-[#ccc]">
                         <Feather name='edit-3' size={22} color={colorScheme == 'dark' ? '#fff' : "#000"} style={{ paddingRight: 8 }} />
@@ -169,12 +229,13 @@ const TrainingDetails = () => {
                         </TouchableOpacity>
                     }
                 </View>
-            </BottomSheet>
+            </BottomSheet> */}
+            <LoadingModal visible={isLoading} />
         </>
     )
 }
 const { width } = Dimensions.get('window');
-export default TrainingDetails
+export default memo(TrainingDetails)
 
 const styles = StyleSheet.create({
     modalOverlay: {

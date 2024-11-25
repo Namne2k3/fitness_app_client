@@ -20,7 +20,7 @@ const CommentCard = ({ comment, handlePresentModalSheet, setSelectedComment, ind
                                 className="rounded-full"
                                 width={30}
                                 height={30}
-                                resizeMode='cover'
+                                contentFit='cover'
                             />
                         </TouchableOpacity>
                         <View className="">

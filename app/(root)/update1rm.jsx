@@ -98,7 +98,7 @@ const Update1rm = () => {
                                 uri: urlSelected(selected)
                             }}
                             className="w-[320px] max-w-full h-[250px]"
-                            resizeMode='contain'
+                            contentFit='contain'
                         />
                     </View>
                     <View className="border-b-[0.5px] border-[#ccc]">
