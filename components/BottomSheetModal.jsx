@@ -4,7 +4,7 @@ import React from 'react'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useColorScheme } from 'nativewind';
 
-const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoints = ['60%', '95%'] }) => {
+const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoints = ['85%'] }) => {
 
     const { colorScheme } = useColorScheme()
 
@@ -56,21 +56,21 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoint
                     </View>
                     <Text className="font-pextrabold text-lg capitalize mt-4 dark:text-white">{selectedExercise?.name}</Text>
                     <Text className="font-pbold text-lg mt-2 dark:text-white">
-                        ● Mục tiêu: <Text className="font-pregular capitalize">{selectedExercise?.target} {selectedExercise?.secondaryMuscles?.map((mus, index) =>
+                        Mục tiêu: <Text className="font-pregular capitalize">{selectedExercise?.target} {selectedExercise?.secondaryMuscles?.map((mus, index) =>
                             <Text key={index} className='font-pregular capitalize'>
                                 , {mus}
                             </Text>)}
                         </Text>
                     </Text>
                     <Text className="font-pbold text-lg mt-2 dark:text-white">
-                        ● Thiết bị:
+                        Thiết bị:
                         <Text className="font-pregular capitalize">
                             {` ${selectedExercise?.equipment}`}
                         </Text>
                     </Text>
 
                     <View>
-                        <Text className="font-pextrabold text-lg mt-2 dark:text-white">● Các bước</Text>
+                        <Text className="font-pextrabold text-lg mt-2 dark:text-white">Các bước</Text>
                         {
                             selectedExercise?.instructions?.map((ins, index) => (
                                 <View className="flex flex-row mt-3 justify-center items-center" key={index}>

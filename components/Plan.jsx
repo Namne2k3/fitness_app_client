@@ -13,24 +13,25 @@ const Plan = () => {
 
     const [plans, setPlans] = useState([])
     const { user, setUser } = useUserStore()
-    const [active, setActive] = useState(2)
     const [isLoading, setIsLoading] = useState(false)
 
-    const handleNavigateDetail = useCallback((id, index) => {
+    // const handleNavigateDetail = useCallback((id, index) => {
 
-        if (active < index) {
-            Alert.alert("Bạn cần phải hoàn thành các bài tập trước!")
-        }
-        else {
-            router.push(`/(root)/TrainingDetails/${id}?index=${index}`)
-        }
-    }, [])
+    //     if (active < index) {
+    //         Alert.alert("Bạn cần phải hoàn thành các bài tập trước!")
+    //     }
+    //     else {
+    //         router.push(`/(root)/TrainingDetails/${id}?index=${index}`)
+    //     }
+    // }, [])
 
     const fetchAllPlansByUserId = async () => {
         setIsLoading(true)
         try {
             const res = await getAllPlansByUserId();
             if (res.data) {
+                console.log("Check plan length >>> ", res.data.length);
+
                 setPlans(res.data)
             }
         } catch (error) {
@@ -58,7 +59,7 @@ const Plan = () => {
 
                     return (
                         <React.Fragment key={`${plan?.name}_${index}`}>
-                            <View className="p-4 pb-8">
+                            <View className="m-4">
                                 <ImageBackground
                                     source={images.plan_background}
                                     resizeMode="cover"
@@ -76,7 +77,7 @@ const Plan = () => {
                             <FlatList
                                 data={plan?.trainings}
                                 renderItem={({ item, index }) => (
-                                    <PlanCard handleNavigateDetail={(id, index) => handleNavigateDetail(id, index)} index={index} active={active} isActive={active == index} item={item} />
+                                    <PlanCard planId={plan?._id} current={plan.current} index={index} item={item} />
                                 )}
                                 keyExtractor={(item) => `${item?.title}_${index}`}
                                 ItemSeparatorComponent={

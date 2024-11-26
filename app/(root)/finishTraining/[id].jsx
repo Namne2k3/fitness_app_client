@@ -1,22 +1,31 @@
 import { router, useLocalSearchParams } from 'expo-router'
 import React, { useEffect, useState } from 'react'
-import { FlatList, StyleSheet, Text, View } from 'react-native'
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native'
 import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
 import { images } from '../../../constants/image'
 import { getTrainingRecordById } from '../../../libs/mongodb'
 import { formatDateWithMonth, formatTime } from '../../../utils/index'
+import LoadingModal from '../../../components/LoadingModal'
 const FinishTrainingId = () => {
 
     const { id } = useLocalSearchParams()
     const [trainingRecord, setTrainingRecord] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         const fetchTrainingRecordById = async () => {
-            const data = await getTrainingRecordById(id)
+            setIsLoading(true)
+            try {
+                const data = await getTrainingRecordById(id)
 
-            setTrainingRecord(data)
+                setTrainingRecord(data)
+            } catch (error) {
+                Alert.alert("Lỗi", error.message)
+            } finally {
+                setIsLoading(false)
+            }
         }
 
         fetchTrainingRecordById()
@@ -89,19 +98,19 @@ const FinishTrainingId = () => {
             <View className="flex flex-1 bg-[#fff] rounded-t-[16px] p-4">
                 <View className="flex justify-center items-start border-b-[1px] pb-3 border-[#ccc]">
                     <Text className="text-black font-pextrabold text-[24px]">{trainingRecord?.training?.title}</Text>
-                    <View className="flex flex-row mt-2 justify-between">
+                    <View className="flex flex-row mt-2 justify-between mb-1">
                         <View className="flex-1">
-                            <Text className="text-lg font-psemibold">{`${trainingRecord?.duration}`}</Text>
-                            <Text className="text-md mt-[-6px] font-pmedium">Duration</Text>
+                            <Text className="text-lg font-psemibold mb-1">{`${trainingRecord?.duration}`}</Text>
+                            <Text className="text-md mt-[-6px] font-pmedium">Thời gian</Text>
                         </View>
                         <View className="flex-1">
-                            <Text className="text-lg font-psemibold">{`${formatDateWithMonth(trainingRecord?.created_at)}`}</Text>
+                            <Text className="text-lg font-psemibold mb-1">{`${formatDateWithMonth(trainingRecord?.created_at)}`}</Text>
                             <Text className="text-md mt-[-6px] font-pmedium">{formatTime(trainingRecord?.created_at)}</Text>
                         </View>
 
                     </View>
                     <View className="">
-                        <Text className="text-lg font-psemibold">{`Burned Calories`}</Text>
+                        <Text className="text-lg font-psemibold mb-1">Calories đã tiêu hao</Text>
                         <Text className="text-md mt-[-6px] font-pmedium">{trainingRecord?.caloriesBurned} calories</Text>
                     </View>
                 </View>
@@ -110,9 +119,18 @@ const FinishTrainingId = () => {
                 <FlatList
                     data={trainingRecord?.training?.exercises}
                     renderItem={({ item }) => (
-                        <View className="mb-4">
-                            <Text className="capitalize font-pextrabold text-lg">{item?.exercise?.name}</Text>
-                            <Text className="font-psemibold text-md text-black capitalize">{item?.sets?.length} set</Text>
+                        <View className="mb-4 flex flex-row justify-center items-center">
+                            <Image
+                                source={{
+                                    uri: item.exercise.gifUrl
+                                }}
+                                className="w-[100px] h-[100px] rounded-lg"
+                                contentFit="contain"
+                            />
+                            <View className="flex-1 ml-2">
+                                <Text className="capitalize font-pextrabold text-lg">{item?.exercise?.name}</Text>
+                                <Text className="font-psemibold text-md text-black capitalize">{item?.sets?.length} set</Text>
+                            </View>
                         </View>
                     )}
                     showsVerticalScrollIndicator={false}
@@ -131,6 +149,7 @@ const FinishTrainingId = () => {
                     />
                 </View>
             </View>
+            <LoadingModal visible={isLoading} />
         </SafeAreaView>
     )
 }

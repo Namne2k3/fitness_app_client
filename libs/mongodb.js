@@ -59,6 +59,7 @@ const createCustomTrainings = async (trainings) => {
 }
 
 const fetchTrainingById = async (trainingId) => {
+
     try {
         const res = await axios.get(`${URL}/api/customtrainings/${trainingId}`)
         const data = await res.data;
@@ -70,8 +71,13 @@ const fetchTrainingById = async (trainingId) => {
 }
 
 const updateTraining = async (training) => {
+    const token = await getToken()
     try {
-        const res = await axios.put(`${URL}/api/customtrainings/${training?._id}/update`, training)
+        const res = await axios.put(`${URL}/api/customtrainings/${training?._id}/update`, training, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         const data = await res.data;
 
         return data;
@@ -82,8 +88,13 @@ const updateTraining = async (training) => {
 }
 
 const deleteTrainingById = async (id) => {
+    const token = await getToken()
     try {
-        const deleted = await axios.delete(`${URL}/api/customtrainings/${id}/delete`)
+        const deleted = await axios.delete(`${URL}/api/customtrainings/${id}/delete`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return deleted.data
     } catch (error) {
         console.log(error.message);
@@ -91,26 +102,42 @@ const deleteTrainingById = async (id) => {
 }
 
 const getTrainingRecordById = async (id) => {
+    const token = await getToken()
     try {
-        const res = await axios.get(`${URL}/api/trainingrecord/${id}`)
+        const res = await axios.get(`${URL}/api/trainingrecord/getDetail/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return res.data;
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const getTrainingRecordsByMonth = async (month, userId) => {
+const getTrainingRecordsByMonth = async (month) => {
+    const token = await getToken()
     try {
-        const res = await axios.get(`${URL}/api/trainingrecord/${userId}/getTrainingsByMonth/${month}`)
+        const res = await axios.get(`${URL}/api/trainingrecord/getTrainingsByMonth/${month}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return res.data;
     } catch (error) {
         console.log(error.message);
     }
 }
 
-const getTrainingRecord = async (userId) => {
+const getTrainingRecord = async () => {
+    const token = await getToken()
+
     try {
-        const res = await axios.get(`${URL}/api/trainingrecord/${userId}/getAllTrainingRecords`)
+        const res = await axios.get(`${URL}/api/trainingrecord/getAllTrainingRecords`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
 
         return res.data;
     } catch (error) {
@@ -119,10 +146,15 @@ const getTrainingRecord = async (userId) => {
 }
 
 const createTrainingRecord = async (recordData) => {
+
+    console.log("Check recordData >> ", recordData);
+
+
+    const token = await getToken()
     try {
         const response = await axios.post(`${URL}/api/trainingrecord/create`, recordData, {
             headers: {
-                'Content-Type': 'application/json'
+                Authorization: `Bearer ${token}`
             }
         })
         const data = await response.data;
@@ -558,7 +590,24 @@ const getAllPlansByUserId = async () => {
     }
 }
 
+const updateCurrentPlanById = async (planId, index) => {
+    const token = await getToken()
+    try {
+
+        const res = await axios.put(`${URL}/api/plan/updateCurrentPlanById/${planId}?current=${index}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return res.data
+
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export {
+    updateCurrentPlanById,
     getAllPlansByUserId,
     createPlans,
     getAllTrainingsByUserId,

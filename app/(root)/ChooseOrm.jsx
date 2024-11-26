@@ -56,6 +56,9 @@ const ChooseOrm = () => {
         try {
             let ormValue = calculate1RM(weight, reps, selected)
 
+            console.log("Check user truoc khi luu db >> ", user);
+
+
             setUser({
                 ...user,
                 orm: ormValue
@@ -226,7 +229,7 @@ const ChooseOrm = () => {
                 </ScrollView>
 
                 <View className="absolute bottom-0 m-4">
-                    <CustomButton onPress={handleNext} text="Tiến hành thiết lập" textStyle={{
+                    <CustomButton bgColor='bg-[#3749db]' onPress={handleNext} text="Tiến hành thiết lập" textStyle={{
                         fontFamily: "Roboto-Bold"
                     }} />
                 </View>

@@ -8,10 +8,13 @@ import TrainingCard from '../../../components/TrainingCard'
 import { fetchTrainingById, updateTraining } from '../../../libs/mongodb'
 import { useColorScheme } from 'nativewind'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
+import LoadingModal from '../../../components/LoadingModal'
 const EditCustomTraining = () => {
 
-    const { id } = useLocalSearchParams()
-    const [dataTraining, setDataTraining] = useState({})
+    const { id, data } = useLocalSearchParams()
+    const parsed = JSON.parse(data)
+    const [isLoading, setIsLoading] = useState(false)
+    const [dataTraining, setDataTraining] = useState(JSON.parse(parsed))
     const { colorScheme } = useColorScheme()
     const bottomSheetRef = useRef(null)
     const [selectedExercise, setSelectedExercise] = useState({})
@@ -96,6 +99,7 @@ const EditCustomTraining = () => {
 
 
     const handleSaveEditTraining = async () => {
+        setIsLoading(true)
         try {
             const savedData = await updateTraining(dataTraining);
 
@@ -106,17 +110,21 @@ const EditCustomTraining = () => {
         } catch (error) {
             Alert.alert('Error: ', error.message)
         }
-
+        finally {
+            setIsLoading(false)
+        }
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await fetchTrainingById(id);
-            setDataTraining(data)
-        }
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         const data = await fetchTrainingById(id);
+    //         console.log("Check data fetching >>> ", data);
 
-        fetchData()
-    }, [])
+    //         setDataTraining(data)
+    //     }
+
+    //     fetchData()
+    // }, [])
 
     return (
         <SafeAreaView className="h-full relative dark:bg-slate-950">
@@ -154,7 +162,11 @@ const EditCustomTraining = () => {
                 data={dataTraining?.exercises}
                 renderItem={({ item }) => (
                     <View className="bg-[#fff] flex p-4">
-                        <TrainingCard toggleBottomSheetModal={(ex) => toggleBottomSheetModal(ex)} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
+                        <TrainingCard
+                            toggleBottomSheetModal={(ex) => toggleBottomSheetModal(ex)}
+                            handleUpdateKilogramAndReps={handleUpdateKilogramAndReps}
+                            item={item}
+                        />
                         <View className="flex flex-row justify-between items-center">
                             <CustomButton
                                 containerStyle="mt-4 flex-1 mr-2 border-[1px] border-[#000]"
@@ -185,12 +197,13 @@ const EditCustomTraining = () => {
 
             <View className="absolute bottom-0 left-0 right-0 m-4">
                 <CustomButton
-                    text="Save"
+                    text="Lưu"
                     onPress={handleSaveEditTraining}
                 />
             </View>
 
             <BottomSheetModalComponent selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
+            <LoadingModal visible={isLoading} />
         </SafeAreaView>
     )
 }

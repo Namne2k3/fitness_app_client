@@ -80,6 +80,16 @@ const RootLayout = () => {
                     }}
                 />
                 <Stack.Screen
+                    name='ChooseTdee'
+                    options={{
+                        headerShown: false,
+                        title: "",
+                        headerStyle: {
+                            backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
+                        }
+                    }}
+                />
+                <Stack.Screen
                     name='ChooseFocusBodyPart'
                     options={{
                         headerShown: false,

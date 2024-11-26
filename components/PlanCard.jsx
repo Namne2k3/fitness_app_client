@@ -1,40 +1,53 @@
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import React, { memo } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { router } from 'expo-router';
+import React from 'react';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 
-const PlanCard = ({ item, isActive, active, handleNavigateDetail, index }) => {
+const PlanCard = ({ planId, item, index, current }) => {
+
     return (
         <TouchableOpacity
-            onPress={() => handleNavigateDetail(item?._id, index)}
-            className={`bg-[#fff] rounded-lg ${isActive && 'bg-[#3749db]'} flex flex-row justify-between p-4`}
+            onPress={() => {
+                if (current < index) {
+                    Alert.alert("Bạn cần phải hoàn thành các bài tập trước!")
+                } else {
+                    router.push({
+                        pathname: `/(root)/TrainingDetails/${item?._id}`,
+                        params: { index: index, planId: planId, data: JSON.stringify(item) }
+                    })
+                }
+            }}
+            className={`bg-[#fff] rounded-lg ${current == index && 'bg-[#3749db]'} flex flex-row justify-between p-4`}
         >
             <View className="flex">
-                <Text className={`text-black font-pextrabold text-lg ${isActive && 'text-white'}`}>
+                <Text className={`text-black font-pextrabold text-lg ${current == index && 'text-white'}`}>
                     {item?.title}
                 </Text>
-                <Text className={`text-black font-pmedium text-md ${isActive && 'text-white'}`}>
+                <Text className={`text-black font-pmedium text-md ${current == index && 'text-white'}`}>
                     {item?.name}
                 </Text>
             </View>
 
             {
-                active < index ?
-                    <View className="flex justify-center items-center px-2">
-                        <MaterialIcons name='lock-outline' size={28} color={'#000'} />
-                    </View>
-                    :
-                    isActive ?
-                        <View className="px-6 py-4 bg-[#fff] rounded-lg">
-                            <Text className="text-[#3749db] font-pextrabold text-md">Start</Text>
-                        </View>
-                        :
-                        <View className="flex justify-center items-center px-2">
-                            <AntDesign name='checkcircle' size={28} color={'#3749db'} />
-                        </View>
-
+                current == index &&
+                <View className="px-6 py-4 bg-[#fff] rounded-lg">
+                    <Text className="text-[#3749db] font-pextrabold text-[16px]">Start</Text>
+                </View>
+            }
+            {
+                current < index &&
+                <View className="flex justify-center items-center px-2">
+                    <MaterialIcons name='lock-outline' size={28} color={'#000'} />
+                </View>
+            }
+            {
+                current > index &&
+                <View className="flex justify-center items-center px-2">
+                    <AntDesign name='checkcircle' size={28} color={'#3749db'} />
+                </View>
             }
         </TouchableOpacity>
     );
 };
 
-export default memo(PlanCard); // Bao bọc với React.memo
+export default PlanCard; // Bao bọc với React.memo

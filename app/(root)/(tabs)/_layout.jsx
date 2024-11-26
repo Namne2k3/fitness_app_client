@@ -44,7 +44,7 @@ export default function TabLayout() {
           title: 'Tùy chỉnh',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <FontAwesome5 size={24} name='pen' color={color} />
+            <FontAwesome5 size={22} name='pen' color={color} />
           ),
         }}
       />

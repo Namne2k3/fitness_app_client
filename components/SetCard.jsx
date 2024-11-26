@@ -12,7 +12,7 @@ const SetCard = ({ index, item: { kilogram, reps, isCheck }, handleUpdateIsCheck
 
             {
                 hasCheck &&
-                <TouchableOpacity className="pr-3 pt-3 pb-3" onPress={() => handleUpdateIsCheck(itemParent, index, !isCheck)}>
+                <TouchableOpacity className="p-3" onPress={() => handleUpdateIsCheck(itemParent, index, !isCheck)}>
                     {
                         isCheck
                             ?

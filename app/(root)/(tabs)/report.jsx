@@ -1,9 +1,9 @@
 import { router, useFocusEffect } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useRef, useState } from 'react'
-import { Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Image } from 'expo-image'
-import { LineChart } from 'react-native-chart-kit'
+import { LineChart, BarChart } from 'react-native-chart-kit'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HistoryRecordCard from '../../../components/HistoryRecordCard'
 import ReportComponent from '../../../components/ReportComponent'
@@ -15,6 +15,30 @@ import { countDataByDaysInMonth, formatDate, getAverageTimeDurationThisWeek, get
 const screenWidth = Dimensions.get('window').width
 
 const Report = () => {
+    const chartConfig = {
+        backgroundGradientFrom: colorScheme === 'dark' ? '#1E1E1E' : '#ffffff', // Màu gradient nền bắt đầu
+        backgroundGradientTo: colorScheme === 'dark' ? '#292929' : '#f2f2f2',   // Màu gradient nền kết thúc
+        color: (opacity = 1) => colorScheme === 'dark'
+            ? `rgba(255, 255, 255, ${opacity})` // Màu đường và nhãn trong chế độ tối
+            : `rgba(0, 0, 0, ${opacity})`,      // Màu đường và nhãn trong chế độ sáng
+        labelColor: (opacity = 1) => colorScheme === 'dark'
+            ? `rgba(255, 255, 255, ${opacity})` // Màu nhãn (label)
+            : `rgba(0, 0, 0, ${opacity})`,
+        propsForDots: {
+            r: '4',                             // Bán kính của chấm
+            strokeWidth: '2',                   // Độ dày của đường viền quanh chấm
+            stroke: colorScheme === 'dark' ? '#3749db' : '#5e72eb', // Màu đường viền quanh chấm
+        },
+        propsForLabels: {
+            fontSize: 10,                       // Kích thước font của nhãn
+            fontWeight: 'bold',
+        },
+        propsForBackgroundLines: {
+            stroke: colorScheme === 'dark' ? '#333' : '#e3e3e3', // Màu đường lưới nền
+            strokeDasharray: '',               // Dùng nét liền thay vì nét đứt
+        },
+        strokeWidth: 2,                        // Độ dày của đường biểu đồ
+    }
 
     const [monthRecords, setMonthRecords] = useState([])
     const { colorScheme } = useColorScheme()
@@ -28,7 +52,8 @@ const Report = () => {
     const monthDays = getCurrentMonthDays()
 
     const filteredLabels = monthDays
-        .map((day, index) => formatDate(day))
+        .map((day, index) => (index % 2 === 0 ? formatDate(day) : '')); // Chỉ hiển thị nhãn mỗi 3 ngày
+
 
     const data = {
         labels: filteredLabels,
@@ -37,13 +62,13 @@ const Report = () => {
         }]
     }
     const fetchTrainingRecordsByMonth = async (month) => {
-        const data = await getTrainingRecordsByMonth(month, user?._id)
+        const data = await getTrainingRecordsByMonth(month)
         setMonthRecords(data)
     }
 
     const fetchAllTrainingRecord = async () => {
-        const data = await getTrainingRecord(user?._id)
-        setRecordDatas(data)
+        const res = await getTrainingRecord()
+        setRecordDatas(res.data)
     }
 
     const fetchData = async () => {
@@ -52,7 +77,7 @@ const Report = () => {
 
         try {
             await Promise.all([
-                fetchTrainingRecordsByMonth(new Date().getMonth() + 1),
+                // fetchTrainingRecordsByMonth(new Date().getMonth() + 1),
                 fetchAllTrainingRecord(),
             ]);
             if (isMounted) {
@@ -64,7 +89,7 @@ const Report = () => {
 
                 setLoading(false);
             }
-            console.error("Error fetching data:", error);
+            Alert.alert("Lỗi", error.message)
         }
         return () => {
             isMounted = false;
@@ -74,6 +99,7 @@ const Report = () => {
 
     useFocusEffect(
         useCallback(() => {
+            fetchTrainingRecordsByMonth(new Date().getMonth() + 1)
             fetchData();
         }, [])
     );
@@ -90,7 +116,7 @@ const Report = () => {
 
 
     return (
-        <SafeAreaView className="flex h-full  dark:bg-slate-950">
+        <SafeAreaView className="flex h-full dark:bg-slate-950">
             <ScrollView
                 nestedScrollEnabled={true}
                 showsVerticalScrollIndicator={false}
@@ -99,20 +125,20 @@ const Report = () => {
                 }
             >
                 <View className="pt-4 px-4">
-                    <Text className="capitalize font-pextrabold text-[32px] dark:text-white">thống kê</Text>
+                    <Text className="uppercase font-pextrabold text-[32px] dark:text-white">thống kê</Text>
                 </View>
                 <ReportComponent title={'Toàn bộ'}>
                     <View className="bg-[#fff] rounded-lg mt-2 p-4 w-full dark:bg-[#292727]" >
                         <View className="flex flex-row ">
                             <View className="flex justify-center items-start flex-1">
                                 <Text className="text-[13px] font-pmedium dark:text-white">Đã luyện tập</Text>
-                                <Text className="text-[#4040d6] font-pextrabold text-[22px]">
+                                <Text className="text-[#3749db] font-pextrabold text-[26px]">
                                     {recordDatas?.length}
                                 </Text>
                             </View>
                             <View className="flex justify-center items-start flex-1">
                                 <Text className="text-[13px] font-pmedium dark:text-white">Thời gian (phút)</Text>
-                                <Text className="text-[#4040d6] font-pextrabold text-[22px]">
+                                <Text className="text-[#3749db] font-pextrabold text-[26px]">
                                     {getTotalTimeDuration(recordDatas && recordDatas)}
                                 </Text>
                             </View>
@@ -127,24 +153,40 @@ const Report = () => {
                                 horizontal={true}
                                 showsHorizontalScrollIndicator={false}
                             >
-                                {monthRecords.length > 0 && (
-                                    <LineChart
-                                        data={data}
-                                        width={Math.min(screenWidth * 3, 1000)}
-                                        height={220}
-                                        chartConfig={{
-                                            color: (opacity = 0.5) => colorScheme == 'dark' ? '#fff' : `rgba(255, 255, 255, ${opacity})`,
-                                            style: {
-                                                borderRadius: 16,
+                                <BarChart
+                                    data={{
+                                        labels: filteredLabels,
+                                        datasets: [
+                                            {
+                                                data: countDataByDaysInMonth(monthRecords ?? []), // Đảm bảo tất cả ngày đều có dữ liệu
                                             },
-                                        }}
-                                        bezier
-                                        style={{
-                                            marginVertical: 8,
+                                        ],
+                                    }}
+                                    width={Math.min(screenWidth * 3, 1000)} // Chiều rộng của biểu đồ
+                                    height={220} // Chiều cao của biểu đồ
+                                    chartConfig={{
+                                        backgroundColor: '#ffffff',
+                                        backgroundGradientFrom: '#ffffff',
+                                        backgroundGradientTo: '#ffffff',
+                                        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                        barPercentage: 0.5,
+                                        labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+                                        style: {
                                             borderRadius: 16,
-                                        }}
-                                    />
-                                )}
+                                        },
+                                        gridLines: {
+                                            drawBorder: false,
+                                            drawOnChart: false,
+                                            drawTicks: false,
+                                        },
+                                    }}
+                                    showValuesOnTopOfBars={true} // Hiển thị giá trị trên các cột
+                                    style={{
+                                        marginVertical: 8,
+                                        borderRadius: 16,
+                                    }}
+                                />
+
                             </ScrollView>
 
                         </View>
@@ -166,17 +208,17 @@ const Report = () => {
                         <View className="p-4 bg-[#fff] flex flex-row dark:bg-[#292727]">
                             <View className="flex justify-start items-start flex-1">
                                 <Text className='dark:text-white font-psemibold text-[12px]'>Hôm nay (phút)</Text>
-                                <Text className="text-[#4040d6] font-pextrabold text-[22px]">
+                                <Text className="text-[#3749db] font-pextrabold text-[26px]">
                                     {
                                         recordDatas?.filter(
                                             (record) => new Date(record.created_at).getDate() === new Date().getDate()
-                                        ).length
+                                        )?.length
                                     }
                                 </Text>
                             </View>
                             <View className="flex justify-start items-start flex-1">
                                 <Text className='dark:text-white font-psemibold text-[12px]'>Trung bình trong tuần (phút)</Text>
-                                <Text className="text-[#4040d6] font-pextrabold text-[22px]">
+                                <Text className="text-[#3749db] font-pextrabold text-[26px]">
                                     {getAverageTimeDurationThisWeek(recordDatas && recordDatas)}
                                 </Text>
                             </View>
@@ -187,11 +229,11 @@ const Report = () => {
 
                 <ReportComponent title={`lịch sử`} rightComponent={
                     <TouchableOpacity onPress={() => router.push('/(root)/allHistoryRecords')}>
-                        <Text className="text-[#4040d6] font-psemibold">Tất cả</Text>
+                        <Text className="text-[#3749db] font-pbold text-lg">Tất cả</Text>
                     </TouchableOpacity>
                 }>
-                    <View className="rounded-lg p-4 bg-[#fff] dark:bg-[#292727]">
-                        {recordDatas && recordDatas.length > 0 ? (
+                    <View className="rounded-lg p-4 bg-[#fff] dark:bg-[#292727] mt-2">
+                        {recordDatas && recordDatas?.length > 0 ? (
                             recordDatas.slice(0, 3).map((item, index) => <HistoryRecordCard key={index} item={item} />)
                         ) : (
                             <View className="flex flex-col items-center justify-center bg-transparent">

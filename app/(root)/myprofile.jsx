@@ -28,7 +28,7 @@ const MyProfile = () => {
 
 
         if (result.canceled) {
-            Alert.alert('You did not select any image.')
+
         } else {
 
             setProfileImage(result.assets[0])

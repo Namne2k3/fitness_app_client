@@ -14,7 +14,7 @@ const ChooseGoal = () => {
     const handleNext = async () => {
         try {
             if (!selected) {
-                throw new Error("Bạn phải chọn mục tiêu!")
+                throw new Error("Bạn phải điền đầy đủ thông tin!")
             }
 
             setUser({

@@ -158,7 +158,7 @@ const NewFeedPage = () => {
                                     }}
                                     width={100}
                                     height={100}
-                                    resizeMode="cover"
+                                    contentFit="cover"
                                     className="ml-[-7px]"
                                 />
                                 :

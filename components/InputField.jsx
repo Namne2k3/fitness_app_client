@@ -33,7 +33,7 @@ const InputField = ({
     return (
         <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View className={`my-2 w-full ${className}`}>
+                <View className={`my-2 ${className}`}>
                     {
                         label && (
                             <Text className={`text-lg font-JakartaSemiBold mb-3 ${labelStyle}`}>

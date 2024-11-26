@@ -8,18 +8,18 @@ import CustomButton from '@/components/CustomButton'
 import { createFeedback } from '@/libs/mongodb'
 import { useColorScheme } from 'nativewind'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-
+import { useAuth } from '@clerk/clerk-expo'
+import { removeToken } from '../../../libs/token'
 const Me = () => {
     // const userData = useUserStore.getState().user
     const { user, setUser } = useUserStore();
-
+    const { signOut } = useAuth()
     const packageInfo = require('../../../package.json');
     const [isRated, setIsRated] = useState(false)
     const [rate, setRate] = useState(0)
     const clearUser = useUserStore((state) => state.clearUser)
     const [isVisibleModalEdit, setIsVisibleModalEdit] = useState(false)
     const { colorScheme } = useColorScheme()
-
     const handleRating = useCallback(async () => {
         try {
             if (rate === 0) {
@@ -40,7 +40,8 @@ const Me = () => {
 
     const handleLogOut = async () => {
         try {
-            await AsyncStorage.removeItem('jwt_token');
+            await signOut()
+            await removeToken()
             clearUser()
             Alert.alert('Đăng xuất thành công!');
             router.replace('/(auth)/sign-in')

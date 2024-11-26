@@ -5,6 +5,76 @@ import { createTrainings } from '@/libs/mongodb';
 import * as FileSystem from 'expo-file-system';
 import * as MailComposer from 'expo-mail-composer';
 
+export function generatePrompt(trainingRecord) {
+    try {
+
+
+        const training = JSON.parse(trainingRecord.training);
+        const exercises = training.exercises;
+        const totalTime = trainingRecord.duration;
+
+        let prompt = `Giúp tôi tính calo tiêu hao cho buổi tập:\n`;
+
+        exercises.forEach((exerciseData, index) => {
+            const exercise = exerciseData.exercise;
+            const sets = exerciseData.sets;
+
+            // Tạo thông tin bài tập
+            let exerciseInfo = `- ${exercise.name}: `;
+            let setsInfo = sets
+                .map((set, setIndex) => {
+                    return `${set.reps} reps x ${set.kilogram} kg${setIndex === sets.length - 1 ? '' : ', '}`;
+                })
+                .join("");
+            exerciseInfo += `${sets.length} sets (${setsInfo}).`;
+
+            prompt += exerciseInfo + `\n`;
+        });
+
+        prompt += `- Tổng thời gian: ${totalTime}, chia đều cho ${exercises.length} bài tập.\n`;
+
+        return prompt;
+    } catch (error) {
+        console.log("error prompt >>> ", error.message);
+
+    }
+}
+
+export const calculateCaloriesBurned = (time, trainingData, bodyWeightKg) => {
+    if (trainingData) {
+        const [hours, minutes, seconds] = time.split(':').map(Number);
+        const totalDurationInMinutes = (hours * 60) + minutes + (seconds / 60);
+        const totalExercises = trainingData?.exercises?.length;
+        const timePerExerciseInMinutes = totalDurationInMinutes / totalExercises;
+
+        let totalCaloriesBurned = 0;
+
+        trainingData?.exercises.forEach(exercise => {
+            const sets = exercise.sets;
+            const timePerSetInMinutes = timePerExerciseInMinutes / sets.length;
+            let exerciseCaloriesBurned = 0;
+            sets.forEach(set => {
+                let MET;
+
+                if (set.reps < 5) {
+                    MET = 6 + (set.kilogram * 0.05);
+                } else if (set.reps >= 6 && set.reps <= 12) {
+                    MET = 4 + (set.kilogram * 0.03);
+                } else {
+                    MET = 3 + (set.kilogram * 0.02);
+                }
+
+
+                const caloriesBurnedPerSet = MET * bodyWeightKg * (timePerSetInMinutes / 60) * 1.05;
+                exerciseCaloriesBurned += caloriesBurnedPerSet;
+            });
+
+            totalCaloriesBurned += exerciseCaloriesBurned;
+        });
+
+        return totalCaloriesBurned;
+    }
+}
 const createPlansForUser = async (user, createdTrainings) => {
     const planData = seedPlanData
 
@@ -110,7 +180,6 @@ function randomColor() {
 }
 
 function countDataByDaysInMonth(data) {
-
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
@@ -136,6 +205,35 @@ function countDataByDaysInMonth(data) {
 
     return daysCount;
 }
+
+
+// function countDataByDaysInMonth(data) {
+
+//     const today = new Date();
+//     const currentYear = today.getFullYear();
+//     const currentMonth = today.getMonth();
+
+//     // Tính tổng số ngày của tháng hiện tại
+//     const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+//     // Tạo mảng với độ dài bằng số ngày trong tháng, ban đầu tất cả là 0
+//     const daysCount = Array(daysInMonth).fill(0);
+
+//     // Duyệt qua dữ liệu và đếm số lượng cho từng ngày
+//     data?.forEach(item => {
+//         const createdAt = new Date(item.created_at);
+//         const year = createdAt.getFullYear();
+//         const month = createdAt.getMonth();
+//         const day = createdAt.getDate();
+
+//         // Kiểm tra xem dữ liệu có nằm trong tháng và năm hiện tại không
+//         if (year === currentYear && month === currentMonth) {
+//             daysCount[day - 1]++; // Tăng số lượng tại ngày tương ứng
+//         }
+//     });
+
+//     return daysCount;
+// }
 
 // function countDataByDaysInMonth(data) {
 //     const today = new Date(); // Lấy ngày hiện tại

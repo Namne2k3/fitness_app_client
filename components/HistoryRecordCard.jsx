@@ -4,8 +4,14 @@ import { router } from 'expo-router'
 import { formatTime, formatDateWithMonth } from '../utils'
 
 const HistoryRecordCard = ({ item }) => {
+
     return (
-        <TouchableOpacity className="bg-[#fff] dark:bg-[#292727] p-2 flex" onPress={() => router.push(`/(root)/TrainingDetails/${item?.training?._id}`)}>
+        <TouchableOpacity className="bg-[#fff] dark:bg-[#292727] p-2 flex" onPress={() => router.push({
+            pathname: `/(root)/TrainingDetails/${item?.training?._id}`,
+            params: {
+                data: JSON.stringify(item?.training)
+            }
+        })}>
             <View className="flex flex-row justify-between items-center">
                 <Text className="dark:text-white text-[16px] font-pextrabold">{item?.training?.title}</Text>
             </View>

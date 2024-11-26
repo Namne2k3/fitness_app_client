@@ -7,7 +7,12 @@ const CustomTrainingCard = ({ item }) => {
 
     return (
         <TouchableOpacity
-            onPress={() => router.push(`/(root)/TrainingDetails/${item._id}`)}
+            onPress={() => router.push({
+                pathname: `/(root)/TrainingDetails/${item._id}`,
+                params: {
+                    data: JSON.stringify(item)
+                }
+            })}
             className="flex p-4 bg-[#fff] rounded-lg mb-3 dark:bg-[#292727]"
         >
             <View className="flex flex-row justify-between">

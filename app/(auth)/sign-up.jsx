@@ -46,7 +46,7 @@ const SignUp = () => {
             setIsVisibleLoadingModal(false)
         } catch (err) {
             setIsVisibleLoadingModal(false)
-            Alert.alert("Error", err.errors[0].longMessage);
+            Alert.alert("Lỗi", err.errors[0].longMessage);
         }
     }, [isLoaded, form.email, form.password, form.username])
 
@@ -72,7 +72,8 @@ const SignUp = () => {
                     clerkId: completeSignUp.createdUserId
                 })
                 setIsVisibleLoadingModal(false)
-                router.push(`/(root)/FillInformation/${form?.email}`)
+                Alert.alert("Email đã xác thực! Vui lòng đến trang đăng nhập!")
+                router.replace(`/(auth)/sign-in`)
             } else {
                 setIsVisibleLoadingModal(false)
                 console.error(JSON.stringify(completeSignUp, null, 2))
@@ -80,7 +81,7 @@ const SignUp = () => {
 
         } catch (err) {
             setIsVisibleLoadingModal(false)
-            Alert.alert("Error", err.errors[0].longMessage);
+            Alert.alert("Lỗi", err.errors[0].longMessage);
         }
     }
     return (

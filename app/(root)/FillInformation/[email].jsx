@@ -10,6 +10,10 @@ import { getUserByEmail, handleUpdateUser } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import LoadingModal from '../../../components/LoadingModal'
 
+
+// de tinh duoc tdee thi cần 2 thong so
+// bmr và cdhd
+
 function calculateBmr(weight, height, gender, age) {
     if (gender == 'male')
         return 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age

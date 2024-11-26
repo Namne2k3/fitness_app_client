@@ -1,5 +1,5 @@
 import { images } from '@/constants/image';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -47,10 +47,15 @@ const CustomPage = () => {
   return (
     <SafeAreaView className="flex bg-[#f3f2f3] h-full px-4 pt-4 dark:bg-slate-950">
       <View className="flex flex-row justify-between items-center mb-4">
-        <Text className="dark:text-white font-pextrabold text-[32px]">Tạo mới</Text>
-        <TouchableOpacity onPress={() => router.push('/(root)/createexercisepage')}>
-          <AntDesign name='pluscircle' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
-        </TouchableOpacity>
+        <Text className="dark:text-white font-pextrabold text-[32px] uppercase">tùy chỉnh</Text>
+        <View className="flex flex-row">
+          <TouchableOpacity className='' onPress={() => router.push('/(root)/createexercisepage')}>
+            <Ionicons name='calendar-outline' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+          </TouchableOpacity>
+          <TouchableOpacity className='ml-2' onPress={() => router.push('/(root)/createexercisepage')}>
+            <AntDesign name='pluscircleo' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {isLoading ? (

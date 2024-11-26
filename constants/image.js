@@ -22,6 +22,7 @@ export const images = {
     eo: require('../assets/images/waist.jpg'),
     "bụng": require('../assets/images/waist.jpg'),
     butt: require('../assets/images/butt.jpg'),
+    "mông": require('../assets/images/butt.jpg'),
     "stronglift a": require('../assets/images/power_lifting.jpg'),
     "stronglift b": require('../assets/images/power_lifting.jpg'),
     "thân trên": require('../assets/images/upper_body.jpg'),

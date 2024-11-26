@@ -61,7 +61,7 @@ const Feed = () => {
     return (
         <SafeAreaView className="flex h-full pt-4 dark:bg-slate-950">
             <View className="pb-2 flex flex-row justify-between items-center px-4 border-b-[1px] border-[#ccc]">
-                <Text className="dark:text-white font-pextrabold text-[32px] text-center">Bài viết</Text>
+                <Text className="dark:text-white font-pextrabold text-[32px] text-center uppercase">bài viết</Text>
                 <View className="flex flex-row">
                     <TouchableOpacity className="mb-1 px-1" onPress={() => router.push('/(root)/Chat')}>
                         <FontAwesome5 name='facebook-messenger' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />

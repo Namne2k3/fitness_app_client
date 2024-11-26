@@ -10,6 +10,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { tokenCache } from '../libs/clerk';
 import socket from '../utils/socket'
+import store from '../store/reduxStore'
+import { Provider } from 'react-redux'
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -68,17 +70,20 @@ export default function RootLayout() {
 
 
   return (
-    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      <StatusBar style={colorScheme == 'light' ? 'dark' : 'light'} />
-      <GestureHandlerRootView>
+    <Provider store={store}>
 
-        <Stack>
-          <Stack.Screen name="(auth)" options={{ headerShown: false, headerTitle: "", }} />
-          <Stack.Screen name="(root)" options={{ headerShown: false, headerTitle: "", }} />
-        </Stack>
+      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+        <StatusBar style={colorScheme == 'light' ? 'dark' : 'light'} />
+        <GestureHandlerRootView>
 
-      </GestureHandlerRootView>
-    </ClerkProvider>
+          <Stack>
+            <Stack.Screen name="(auth)" options={{ headerShown: false, headerTitle: "", }} />
+            <Stack.Screen name="(root)" options={{ headerShown: false, headerTitle: "", }} />
+          </Stack>
+
+        </GestureHandlerRootView>
+      </ClerkProvider>
+    </Provider>
 
   );
 }

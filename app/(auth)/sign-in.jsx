@@ -18,6 +18,11 @@ const SignIn = () => {
         email: 'nhpn2003@gmail.com',
         password: 'nhpn2003'
     })
+
+
+    console.log("Day la trang sign in");
+
+
     const setUser = useUserStore((state) => state.setUser)
 
     const onSignInPress = useCallback(async () => {
@@ -49,8 +54,8 @@ const SignIn = () => {
                     return;
                 }
                 setIsVisibleLoadingModal(false)
-                // router.replace('/(root)/(tabs)/training')
-                router.push('/(root)/ChooseGender')
+                router.replace('/(root)/(tabs)/training')
+                // router.push('/(root)/ChooseGender')
 
             } else {
                 Alert.alert("Can't login, have some error while login", data.message);

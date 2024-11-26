@@ -95,7 +95,7 @@ const Exercises = () => {
                     </View>
                 ) :
                     <View className="flex flex-row justify-between items-center mb-4">
-                        <Text className="font-pextrabold text-[32px] dark:text-white">Các bài tập</Text>
+                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">các bài tập</Text>
                         <View>
                             <TouchableOpacity onPress={handleToggleSearching}>
                                 <FontAwesome name='search' size={26} color={colorScheme == 'dark' ? '#fff' : '#000'} />

@@ -6,7 +6,12 @@ import { Link, router } from 'expo-router'
 const BodyPartExercisesCard = ({ item }) => {
 
     return (
-        <TouchableOpacity className="flex bg-[#fff] dark:bg-[#292727]  rounded-2xl p-4 shadow-lg" onPress={() => router.push(`/(root)/TrainingDetails/${item?._id}`)}>
+        <TouchableOpacity className="flex bg-[#fff] dark:bg-[#292727]  rounded-2xl p-4 shadow-lg" onPress={() => {
+            router.push({
+                pathname: `/(root)/TrainingDetails/${item?._id}`,
+                params: { data: JSON.stringify(item) }
+            })
+        }}>
             <View className="flex flex-row justify-between items-center w-full">
                 <View className="flex justify-start items-start">
                     <Text className="dark:text-white capitalize text-[24px] font-pextrabold">{item?.title}</Text>
