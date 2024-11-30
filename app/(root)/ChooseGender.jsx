@@ -44,14 +44,14 @@ const ChooseGender = () => {
             </View>
             <View />
             <View style={styles.genderContainer}>
-                <TouchableOpacity onPress={() => setGender('nam')} style={styles.imageContainer}>
+                <TouchableOpacity onPress={() => setGender('male')} style={styles.imageContainer}>
                     <Image
                         source={images["3d_male"]}
                         style={styles.image}
                         resizeMode="cover"
                     />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setGender('nữ')} style={styles.imageContainer}>
+                <TouchableOpacity onPress={() => setGender('female')} style={styles.imageContainer}>
                     <Image
                         source={images["3d_female"]}
                         style={styles.image}
@@ -70,11 +70,11 @@ const ChooseGender = () => {
                 </TouchableOpacity>
             </View>
             <View className="flex flex-row justify-around items-center my-2">
-                <TouchableOpacity onPress={() => setGender('nam')}>
-                    <AntDesign name={gen == 'nam' ? 'checkcircle' : 'checkcircleo'} size={28} />
+                <TouchableOpacity onPress={() => setGender('male')}>
+                    <AntDesign name={gen == 'male' ? 'checkcircle' : 'checkcircleo'} size={28} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setGender('nữ')}>
-                    <AntDesign name={gen == 'nữ' ? 'checkcircle' : 'checkcircleo'} size={28} />
+                <TouchableOpacity onPress={() => setGender('female')}>
+                    <AntDesign name={gen == 'female' ? 'checkcircle' : 'checkcircleo'} size={28} />
                 </TouchableOpacity>
             </View>
             <View className="absolute bottom-0 m-4 ">

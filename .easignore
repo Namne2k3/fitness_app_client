@@ -20,6 +20,6 @@ credential.json
 
 expo-env.d.ts
 # @end expo-cli
-google-services.json
+
 /ios
 /android

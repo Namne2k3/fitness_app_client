@@ -4,6 +4,7 @@ import TrainingContent from "../../../components/TrainingContent";
 import Plan from "../../../components/Plan";
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useLocalSearchParams } from "expo-router";
 
 const Tab = createMaterialTopTabNavigator();
 

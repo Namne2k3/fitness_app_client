@@ -8,10 +8,12 @@ import { images } from '../../../constants/image'
 import { getTrainingRecordById } from '../../../libs/mongodb'
 import { formatDateWithMonth, formatTime } from '../../../utils/index'
 import LoadingModal from '../../../components/LoadingModal'
+import usePlanStore from '../../../store/usePlanStore'
 const FinishTrainingId = () => {
 
     const { id } = useLocalSearchParams()
     const [trainingRecord, setTrainingRecord] = useState({})
+    const { setIsFetched } = usePlanStore()
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
@@ -19,8 +21,8 @@ const FinishTrainingId = () => {
             setIsLoading(true)
             try {
                 const data = await getTrainingRecordById(id)
-
                 setTrainingRecord(data)
+                setIsFetched(false)
             } catch (error) {
                 Alert.alert("Lỗi", error.message)
             } finally {
@@ -37,8 +39,8 @@ const FinishTrainingId = () => {
             <View className="flex flex-row p-4 mt-4">
 
                 <View className="flex-1 justify-center z-10">
-                    <Text className="text-white font-pmedium text-[18px]">Congratulations!</Text>
-                    <Text className="text-white font-pextrabold uppercase text-[24px]">your workout is completed!</Text>
+                    <Text className="text-white font-pmedium text-[18px]">Chúc mừng bạn!</Text>
+                    <Text className="text-white font-pextrabold uppercase text-[24px]">Bạn đã hoàn thành buổi tập!</Text>
                 </View>
 
                 <View style={{
@@ -143,9 +145,9 @@ const FinishTrainingId = () => {
 
                 <View className="absolute bottom-0 left-0 right-0 m-4">
                     <CustomButton
-                        text="Done"
+                        text="Xong"
                         bgColor='bg-[#4040d6]'
-                        onPress={() => router.replace('/(root)/(tabs)/report')}
+                        onPress={() => router.replace('/(root)/(tabs)/training')}
                     />
                 </View>
             </View>

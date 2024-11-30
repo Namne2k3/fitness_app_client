@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    chatemptyText: { fontWeight: "bold", fontSize: 24, paddingBottom: 30 },
+    chatemptyText: { fontWeight: "bold", fontSize: 24, paddingBottom: 30, color: "#ccc" },
     messagingscreen: {
         flex: 1,
     },

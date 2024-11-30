@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Alert, Text, View, StyleSheet, ImageBackground, FlatList } from "react-native";
-import useUserStore from '../store/userStore'
-import { getAllPlansByUserId } from '../libs/mongodb'
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
 import Swiper from 'react-native-swiper';
-import PlanList from "./PlanList";
 import { images } from "../constants/image";
-import PlanCard from "./PlanCard";
+import { getAllPlansByUserId } from '../libs/mongodb';
+import useUserStore from '../store/userStore';
+import usePlanStore from '../store/usePlanStore';
 import LoadingModal from "./LoadingModal";
-import { router } from 'expo-router'
+import PlanCard from "./PlanCard";
 
 const Plan = () => {
 
-    const [plans, setPlans] = useState([])
+
     const { user, setUser } = useUserStore()
+    const { plans, setPlans } = usePlanStore()
     const [isLoading, setIsLoading] = useState(false)
 
     // const handleNavigateDetail = useCallback((id, index) => {
@@ -25,25 +25,24 @@ const Plan = () => {
     //     }
     // }, [])
 
-    const fetchAllPlansByUserId = async () => {
-        setIsLoading(true)
-        try {
-            const res = await getAllPlansByUserId();
-            if (res.data) {
-                console.log("Check plan length >>> ", res.data.length);
-
-                setPlans(res.data)
-            }
-        } catch (error) {
-            Alert.alert("Lỗi", error.message)
-        } finally {
-            setIsLoading(false)
-        }
-    }
     useEffect(() => {
+        const fetchPlans = async () => {
 
-        fetchAllPlansByUserId()
-    }, [])
+            try {
+                setIsLoading(true)
+                console.log("Fetch plans ....");
+                const res = await getAllPlansByUserId();
+                if (res.data) {
+                    setPlans(res.data); // Lưu vào Zustand
+                }
+            } catch (error) {
+                Alert.alert("Lỗi", error.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchPlans()
+    }, []);
 
     return (
         <View className="flex-1">

@@ -1,4 +1,3 @@
-
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native'
 import { Image } from 'expo-image'
 import React, { useState, useCallback, useRef, useEffect } from 'react'
@@ -9,6 +8,7 @@ import { images } from '../../../constants/image'
 import { useColorScheme } from 'nativewind'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 import { getAllExercisesBySearchQueryName } from '@/libs/mongodb'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 
@@ -45,6 +45,18 @@ const Exercises = () => {
                 setExercises([]);
             }
 
+            // const allDatas = await getAllExercisesBySearchQueryName(searchQuery, { limit: 0, skip: 0 })
+            // const DataSaved = await AsyncStorage.getItem('exercisesData')
+            // if (!DataSaved) {
+            //     await AsyncStorage.setItem('exercisesData', JSON.stringify(allDatas.data))
+            //     console.log("Da nap du lieu vao trong async storage");
+            // } else {
+            //     console.log("Du lieu da co san");
+
+            // }
+            // await AsyncStorage.removeItem('exercisesData')
+            // console.log("Check allDatas length >>> ", allDatas?.data?.length);s
+
             const res = await getAllExercisesBySearchQueryName(searchQuery || "", { limit, skip: isSearchReset ? 0 : skip });
             if (res.status === '404') {
                 console.log("Gặp lỗi 404");
@@ -80,7 +92,7 @@ const Exercises = () => {
                 isSearching ? (
                     <View className="shadow-lg flex flex-row justify-between items-center mb-4">
                         <TextInput
-                            className="p-3 rounded-lg bg-[#f4f5f6] flex-1 mr-3"
+                            className="p-3 rounded-lg bg-[#fff] flex-1 mr-3"
                             color={'#000'}
                             value={searchQuery}
                             placeholder='Tìm kiếm tên bài tập...'
@@ -95,7 +107,7 @@ const Exercises = () => {
                     </View>
                 ) :
                     <View className="flex flex-row justify-between items-center mb-4">
-                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">các bài tập</Text>
+                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">tìm kiếm</Text>
                         <View>
                             <TouchableOpacity onPress={handleToggleSearching}>
                                 <FontAwesome name='search' size={26} color={colorScheme == 'dark' ? '#fff' : '#000'} />

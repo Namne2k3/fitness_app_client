@@ -49,7 +49,12 @@ const CustomPage = () => {
       <View className="flex flex-row justify-between items-center mb-4">
         <Text className="dark:text-white font-pextrabold text-[32px] uppercase">tùy chỉnh</Text>
         <View className="flex flex-row">
-          <TouchableOpacity className='' onPress={() => router.push('/(root)/createexercisepage')}>
+          <TouchableOpacity className='' onPress={() => router.push({
+            pathname: '/(root)/CalendarScreen',
+            params: {
+              data: JSON.stringify(trainingDatas)
+            }
+          })}>
             <Ionicons name='calendar-outline' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
           </TouchableOpacity>
           <TouchableOpacity className='ml-2' onPress={() => router.push('/(root)/createexercisepage')}>

@@ -1,52 +1,25 @@
-import { router, useFocusEffect } from 'expo-router'
-import { useColorScheme } from 'nativewind'
-import React, { useCallback, useRef, useState } from 'react'
-import { Alert, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Image } from 'expo-image'
-import { LineChart, BarChart } from 'react-native-chart-kit'
+import { router } from 'expo-router'
+import { useColorScheme } from 'nativewind'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { Alert, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { BarChart } from 'react-native-chart-kit'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HistoryRecordCard from '../../../components/HistoryRecordCard'
 import ReportComponent from '../../../components/ReportComponent'
 import { images } from '../../../constants/image'
 import { getTrainingRecord, getTrainingRecordsByMonth } from '../../../libs/mongodb'
-import { useUserStore } from '../../../store'
 import { countDataByDaysInMonth, formatDate, getAverageTimeDurationThisWeek, getCurrentMonthDays, getCurrentWeekDays, getTotalTimeDuration } from '../../../utils/index'
 
 const screenWidth = Dimensions.get('window').width
 
 const Report = () => {
-    const chartConfig = {
-        backgroundGradientFrom: colorScheme === 'dark' ? '#1E1E1E' : '#ffffff', // Màu gradient nền bắt đầu
-        backgroundGradientTo: colorScheme === 'dark' ? '#292929' : '#f2f2f2',   // Màu gradient nền kết thúc
-        color: (opacity = 1) => colorScheme === 'dark'
-            ? `rgba(255, 255, 255, ${opacity})` // Màu đường và nhãn trong chế độ tối
-            : `rgba(0, 0, 0, ${opacity})`,      // Màu đường và nhãn trong chế độ sáng
-        labelColor: (opacity = 1) => colorScheme === 'dark'
-            ? `rgba(255, 255, 255, ${opacity})` // Màu nhãn (label)
-            : `rgba(0, 0, 0, ${opacity})`,
-        propsForDots: {
-            r: '4',                             // Bán kính của chấm
-            strokeWidth: '2',                   // Độ dày của đường viền quanh chấm
-            stroke: colorScheme === 'dark' ? '#3749db' : '#5e72eb', // Màu đường viền quanh chấm
-        },
-        propsForLabels: {
-            fontSize: 10,                       // Kích thước font của nhãn
-            fontWeight: 'bold',
-        },
-        propsForBackgroundLines: {
-            stroke: colorScheme === 'dark' ? '#333' : '#e3e3e3', // Màu đường lưới nền
-            strokeDasharray: '',               // Dùng nét liền thay vì nét đứt
-        },
-        strokeWidth: 2,                        // Độ dày của đường biểu đồ
-    }
 
     const [monthRecords, setMonthRecords] = useState([])
     const { colorScheme } = useColorScheme()
-
     const [recordDatas, setRecordDatas] = useState([])
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef();
-    const user = useUserStore((state) => state.user)
     const [loading, setLoading] = useState(false)
 
     const monthDays = getCurrentMonthDays()
@@ -54,13 +27,6 @@ const Report = () => {
     const filteredLabels = monthDays
         .map((day, index) => (index % 2 === 0 ? formatDate(day) : '')); // Chỉ hiển thị nhãn mỗi 3 ngày
 
-
-    const data = {
-        labels: filteredLabels,
-        datasets: [{
-            data: countDataByDaysInMonth(monthRecords ?? []).map((num) => num)
-        }]
-    }
     const fetchTrainingRecordsByMonth = async (month) => {
         const data = await getTrainingRecordsByMonth(month)
         setMonthRecords(data)
@@ -97,12 +63,10 @@ const Report = () => {
     };
 
 
-    useFocusEffect(
-        useCallback(() => {
-            fetchTrainingRecordsByMonth(new Date().getMonth() + 1)
-            fetchData();
-        }, [])
-    );
+    useEffect(() => {
+        fetchTrainingRecordsByMonth(new Date().getMonth() + 1)
+        fetchData();
+    }, [])
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);

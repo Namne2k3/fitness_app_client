@@ -1,7 +1,7 @@
 
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
@@ -12,7 +12,10 @@ import { tokenCache } from '../libs/clerk';
 import socket from '../utils/socket'
 import store from '../store/reduxStore'
 import { Provider } from 'react-redux'
+import { NotificationProvider } from '../context/NotificationContext';
+
 SplashScreen.preventAutoHideAsync();
+
 
 export default function RootLayout() {
 
@@ -71,18 +74,19 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
+      <NotificationProvider>
+        <ClerkProvider rkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+          <StatusBar style={colorScheme == 'light' ? 'dark' : 'light'} />
+          <GestureHandlerRootView>
 
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-        <StatusBar style={colorScheme == 'light' ? 'dark' : 'light'} />
-        <GestureHandlerRootView>
+            <Stack>
+              <Stack.Screen name="(auth)" options={{ headerShown: false, headerTitle: "", }} />
+              <Stack.Screen name="(root)" options={{ headerShown: false, headerTitle: "", }} />
+            </Stack>
 
-          <Stack>
-            <Stack.Screen name="(auth)" options={{ headerShown: false, headerTitle: "", }} />
-            <Stack.Screen name="(root)" options={{ headerShown: false, headerTitle: "", }} />
-          </Stack>
-
-        </GestureHandlerRootView>
-      </ClerkProvider>
+          </GestureHandlerRootView>
+        </ClerkProvider>
+      </NotificationProvider>
     </Provider>
 
   );

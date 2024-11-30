@@ -56,9 +56,6 @@ const ChooseOrm = () => {
         try {
             let ormValue = calculate1RM(weight, reps, selected)
 
-            console.log("Check user truoc khi luu db >> ", user);
-
-
             setUser({
                 ...user,
                 orm: ormValue
@@ -77,15 +74,19 @@ const ChooseOrm = () => {
             // sendJSONByEmail(savedTrainings)
 
             // // tao plan 30 ngay tai day
-            const createdPlans = await createPlansForUser(user, savedTrainings.data);
+            const plans = await createPlansForUser(user, savedTrainings.data);
+
             // // sendJSONByEmail(createdPlans)
             // // luu plan vo db
-            const saved = await createPlans(createdPlans)
-            // console.log("Check saved >>> ", saved);
+            const saved = await createPlans(plans)
 
+            if (saved?.data?.length > 0) {
+                router.push('/(root)/(tabs)/training')
+            } else {
+                throw new Error("Lỗi tạo plans")
+            }
 
             // sendJSONByEmail(createdPlans)
-            router.navigate('/(root)/(tabs)/training')
 
         } catch (error) {
             Alert.alert("Lỗi", error.message)

@@ -77,8 +77,7 @@ const Chat = () => {
                     />
                 ) : (
                     <View style={styles.chatemptyContainer}>
-                        <Text style={styles.chatemptyText}>No rooms created!</Text>
-                        <Text>Click the icon above to create a Chat room</Text>
+                        <Text style={styles.chatemptyText}>Bạn chưa có tin nhắn nào!</Text>
                     </View>
                 )}
             </View>

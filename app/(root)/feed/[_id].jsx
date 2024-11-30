@@ -337,15 +337,15 @@ const DetailFeed = () => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
                         Alert.alert(
-                            "Delete Comment",
-                            "Are you sure you want to delete this comment?",
+                            "Xóa bình luận",
+                            "Bạn có chắc chắn muốn xóa bình luận này?",
                             [
                                 {
-                                    text: "Cancel",
+                                    text: "Hủy",
                                     style: "cancel",
                                 },
                                 {
-                                    text: "Delete",
+                                    text: "Xóa",
                                     onPress: handleDeleteComment,
                                     style: "destructive",
                                 },

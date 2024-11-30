@@ -14,14 +14,15 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.namne.myworkout"
+      "bundleIdentifier": "dev.expo.fitbod"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.namne.myworkout"
+      "package": "dev.expo.fitbod",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -30,7 +31,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-video"
+      "expo-video",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/welcome_image.jpg"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -62,6 +69,7 @@
       "eas": {
         "projectId": "b9356908-3a1d-425d-b9d8-b18188bf2645"
       }
-    }
+    },
+    "owner": "namne"
   }
 }

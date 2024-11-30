@@ -52,15 +52,11 @@ const MyProfile = () => {
         }
     }
 
-    useEffect(() => {
-
-    }, [user])
-
     return (
         <SafeAreaView className="h-full p-4 dark:bg-slate-950">
             <View className="flex flex-row justify-start items-center">
                 <TouchableOpacity
-                    onPress={() => router.replace('/(root)/me')}
+                    onPress={() => router.back()}
                     style={{
                         backgroundColor: 'transparent'
                     }}

@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Feather, FontAwesome5, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Feather, FontAwesome, FontAwesome5, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
 
 export default function TabLayout() {
@@ -34,7 +34,8 @@ export default function TabLayout() {
           title: 'Luyện tập',
           headerShown: false,
           tabBarIcon: ({ color }) => (
-            <FontAwesome6 size={24} name='dumbbell' color={color} />
+            <FontAwesome size={28} name='home' color={color} />
+            // <FontAwesome6 size={24} name='dumbbell' color={color} />
           ),
         }}
       />

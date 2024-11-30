@@ -24,7 +24,8 @@ const TrainingDetails = () => {
 
 
     const [isEdit, setIsEdit] = useState(false)
-    const [trainingData, setTrainingData] = useState(JSON.parse(data))
+    const [trainingData, setTrainingData] = useState(data ? JSON.parse(data) : {})
+
     const [selectedExercise, setSelectedExercise] = useState({})
     const { colorScheme } = useColorScheme()
     const bottomSheetRef = useRef(null)
@@ -43,21 +44,31 @@ const TrainingDetails = () => {
         await deleteTrainingById(id)
     }
 
-    // useEffect(() => {
-    //     const getTrainingById = async () => {
-    //         setIsLoading(true)
-    //         try {
-    //             const data = await fetchTrainingById(id)
-    //             setTrainingData(data)
-    //         } catch (err) {
-    //             console.log("Error: ", err.message);
-    //         } finally {
-    //             setIsLoading(false)
-    //         }
-    //     }
+    useEffect(() => {
+        const getTrainingById = async () => {
+            setIsLoading(true)
+            try {
+                const found = await fetchTrainingById(id)
 
-    //     getTrainingById()
-    // }, [])
+                if (found == null) {
+                    throw new Error("Không tìm thấy dữ liệu")
+                }
+                setTrainingData(found)
+            } catch (err) {
+                Alert.alert("Lỗi: ", err.message, [
+                    {
+                        text: "Ok",
+                        onPress: () => router.back()
+                    }
+                ]);
+            } finally {
+                setIsLoading(false)
+            }
+        }
+        if (!data) {
+            getTrainingById()
+        }
+    }, [])
 
     return (
         <>
@@ -65,6 +76,7 @@ const TrainingDetails = () => {
                 <View className="p-4 w-full flex flex-row justify-between items-center">
                     <View>
                         <TouchableOpacity
+                            // onPress={() => router.replace('/(root)/(tabs)/custom')}
                             onPress={() => router.back()}
                             style={{
                                 backgroundColor: 'transparent'
@@ -105,15 +117,15 @@ const TrainingDetails = () => {
                                     <TouchableOpacity
                                         onPress={() => {
                                             Alert.alert(
-                                                "Delete Training",
-                                                "Are you sure you want to delete this training?",
+                                                "Xóa set tập",
+                                                "Bạn có chắc chắn muốn xóa set tập này?",
                                                 [
                                                     {
-                                                        text: "Cancel",
+                                                        text: "Hủy",
                                                         style: "cancel",
                                                     },
                                                     {
-                                                        text: "Delete",
+                                                        text: "Xóa",
                                                         onPress: async () => {
                                                             await handleDeleteTrainingById(id)
                                                             setIsVisibleModalEdit(false);
@@ -145,7 +157,7 @@ const TrainingDetails = () => {
                     </View>
                 </View >
                 <View className="pl-4 pr-3 flex flex-row items-center justify-between">
-                    <Text className="font-pextrabold text-[30px] dark:text-white uppercase flex-1">{trainingData?.title && `Bài tập ${trainingData.title}`}</Text>
+                    <Text className="font-pextrabold text-[30px] dark:text-white uppercase flex-1">{trainingData?.title && `${trainingData.title}`}</Text>
                     <View style={styles.imageContainer} className='rounded-full'>
 
                         {

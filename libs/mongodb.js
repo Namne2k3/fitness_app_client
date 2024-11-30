@@ -606,7 +606,71 @@ const updateCurrentPlanById = async (planId, index) => {
     }
 }
 
+const createCalendarNotify = async (calendarNotify) => {
+    const token = await getToken()
+    try {
+        const res = await axios.post(`${URL}/api/calendar/create`, calendarNotify, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getCalendars = async () => {
+    const token = await getToken()
+    try {
+        const res = await axios.get(`${URL}/api/calendar/getCalendars`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const deleteNotificationById = async (id) => {
+    const token = await getToken()
+    try {
+        const res = await axios.delete(`${URL}/api/calendar/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const deleteAllNotificationPassedByUserId = async () => {
+    const token = await getToken()
+    try {
+        const res = await axios.delete(`${URL}/api/calendar/delete/deleteNotificationsPassed`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export {
+    deleteAllNotificationPassedByUserId,
+    deleteNotificationById,
+    getCalendars,
+    createCalendarNotify,
     updateCurrentPlanById,
     getAllPlansByUserId,
     createPlans,

@@ -164,7 +164,7 @@ const CreateExercisePage = () => {
                 <View className="p-4">
                     <View className="shadow-lg flex flex-row justify-between items-center mb-2">
                         <TextInput
-                            className="p-3 rounded-lg bg-[#f4f5f6] flex-1 dark:bg-[#000] dark:border-[0.5px] dark:border-[#fff] dark:text-white"
+                            className="p-3 rounded-lg bg-[#fff] flex-1 dark:bg-[#000] dark:border-[0.5px] dark:border-[#fff] dark:text-white"
                             color={'#000'}
                             value={searchQuery}
                             placeholder='Tìm kiếm tên bài tập'
@@ -221,7 +221,7 @@ const CreateExercisePage = () => {
                     }
                 </View>
                 <View className="absolute bottom-0 m-4">
-                    <CustomButton text="Tạo mới" onPress={handleSaveAddExerciseToTraining} />
+                    <CustomButton bgColor='bg-[#3749db]' text="Tạo mới" onPress={handleSaveAddExerciseToTraining} />
                 </View>
                 <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
                 <LoadingModal visible={isVisibleLoadingModal} />

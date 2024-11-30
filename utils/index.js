@@ -80,6 +80,7 @@ const createPlansForUser = async (user, createdTrainings) => {
 
     const createPlanForGender = async (gender) => {
         const plans = [];
+
         for (const planName in planData[gender]) {
             const planDays = planData[gender][planName];
             const trainings = planDays.map((day, index) => {
@@ -96,24 +97,24 @@ const createPlansForUser = async (user, createdTrainings) => {
                 }
             }).filter(Boolean)
 
-            const savedTrainings = await createTrainings(trainings)
+            const savedTrainingData = await createTrainings(trainings)
+
 
             plans.push({
                 name: planName,
                 user: user._id,
-                gender: gender == 'male' ? 'nam' : 'nữ',
-                trainings: savedTrainings?.data?.map((item) => item._id),
+                gender: gender,
+                trainings: savedTrainingData?.data?.map((item) => item._id),
             });
+
+
         }
         return plans;
     };
 
-    // Trả về 8 kế hoạch cho từng giới tính và loại plan
-    const malePlans = await createPlanForGender('male');
-    const femalePlans = await createPlanForGender('female');
+    const plans = await createPlanForGender(user.gender);
 
-    // return null
-    return [...malePlans, ...femalePlans];
+    return plans;
 };
 
 const getSortedExercisesByName = (exercises) => {

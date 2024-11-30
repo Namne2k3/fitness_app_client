@@ -11,19 +11,19 @@ const RootLayout = () => {
         <>
             <Stack>
                 <Stack.Screen
-                    name='(tabs)'
+                    name='index'
                     options={{
                         headerShown: false,
+                        title: "welcome",
                         headerStyle: {
                             backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
                         }
                     }}
                 />
                 <Stack.Screen
-                    name='index'
+                    name='(tabs)'
                     options={{
                         headerShown: false,
-                        title: "welcome",
                         headerStyle: {
                             backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
                         }
@@ -91,6 +91,16 @@ const RootLayout = () => {
                 />
                 <Stack.Screen
                     name='ChooseFocusBodyPart'
+                    options={{
+                        headerShown: false,
+                        title: "",
+                        headerStyle: {
+                            backgroundColor: colorScheme == 'dark' && 'rgb(2 6 23)'
+                        }
+                    }}
+                />
+                <Stack.Screen
+                    name='CalendarScreen'
                     options={{
                         headerShown: false,
                         title: "",

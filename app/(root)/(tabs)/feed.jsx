@@ -73,34 +73,37 @@ const Feed = () => {
             </View>
 
             <View className="flex justify-center items-center">
-                <FlatList
-                    data={blogs}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <BlogCard colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
-                        )
-                    }}
-                    ItemSeparatorComponent={
-                        <View className="h-[5px] bg-[#ccc]">
+                {
+                    blogs?.length > 0 ?
+                        <FlatList
+                            data={blogs}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <BlogCard colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
+                                )
+                            }}
+                            ItemSeparatorComponent={
+                                <View className="h-[5px] bg-[#ccc]">
 
-                        </View>
-                    }
-                    showsVerticalScrollIndicator={false}
-                    ListEmptyComponent={() => (
-                        <View className="flex flex-1 items-center justify-center bg-transparent px-8">
+                                </View>
+                            }
+                            showsVerticalScrollIndicator={false}
+
+                            contentContainerStyle={{
+                                paddingBottom: 100
+                            }}
+                        />
+                        :
+                        <View className="flex h-[80%] items-center justify-center bg-transparent px-8">
                             <Image
                                 source={images.no_result}
                                 className="w-40 h-40"
                                 alt="No recent rides found"
                                 resizeMethod="contain"
                             />
-                            <Text className="text-sm dark:text-white">Chưa có ai đăng bài viết, hãy là người đầu tiên đăng viết!</Text>
+                            <Text className="text-sm dark:text-white text-center">Chưa có bài viết</Text>
                         </View>
-                    )}
-                    contentContainerStyle={{
-                        paddingBottom: 100
-                    }}
-                />
+                }
             </View>
         </SafeAreaView>
     )
