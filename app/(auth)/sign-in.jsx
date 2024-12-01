@@ -82,16 +82,16 @@ const SignIn = () => {
                     label={'Mật khẩu'}
                     icon={<MaterialIcons name={`password`} size={24} style={{ marginLeft: 12 }} />}
                 />
-                <CustomButton containerStyle={`mt-4`} text={`Đăng nhập`} onPress={onSignInPress} />
+                <CustomButton bgColor='bg-[#3749db]' containerStyle={`mt-4`} text={`Đăng nhập`} onPress={onSignInPress} />
                 <View className="flex">
                     <View className="flex flex-row justify-center items-center mt-4">
                         <Text className="font-pmedium text-[15px]">Chưa có tài khoản?</Text>
                         <TouchableOpacity onPress={() => router.replace('/(auth)/sign-up')}>
-                            <Text className="font-psemibold text-[#00008B] text-[15px]"> Đăng ký</Text>
+                            <Text className="font-psemibold text-[#3749db] text-[15px]"> Đăng ký</Text>
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity onPress={() => router.push('/(root)/ForgotPasswordPage')}>
-                        <Text className="text-center italic font-pmedium text-[#00008B]">Quên mật khẩu?</Text>
+                        <Text className="text-center italic font-pmedium text-[#3749db]">Quên mật khẩu?</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

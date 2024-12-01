@@ -197,6 +197,7 @@ const EditCustomTraining = () => {
 
             <View className="absolute bottom-0 left-0 right-0 m-4">
                 <CustomButton
+                    bgColor='bg-[#3749db]'
                     text="Lưu"
                     onPress={handleSaveEditTraining}
                 />

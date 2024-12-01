@@ -110,12 +110,12 @@ const SignUp = () => {
                     icon={<MaterialIcons name={`password`} size={24} style={{ marginLeft: 12 }} />}
                 />
 
-                <CustomButton containerStyle={`mt-4`} text={`Đăng ký`} onPress={handleSubmitSignUp} />
+                <CustomButton bgColor='bg-[#3749db]' containerStyle={`mt-4`} text={`Đăng ký`} onPress={handleSubmitSignUp} />
 
                 <View className="flex flex-row justify-center items-center mt-4">
                     <Text className="font-pmedium text-[15px]">Đã có tài khoản?</Text>
                     <TouchableOpacity onPress={() => router.replace('/(auth)/sign-in')}>
-                        <Text className="font-psemibold text-[#00008B] text-[15px]"> Đăng nhập</Text>
+                        <Text className="font-psemibold text-[#3749db] text-[15px]"> Đăng nhập</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -130,7 +130,7 @@ const SignUp = () => {
                             Verification
                         </Text>
                         <Text className={`font-pregular mb-5`}>
-                            We've sent a verification code to {form.email}
+                            Chúng tôi vừa gửi đoạn mã đến {form.email}
                         </Text>
                         <InputField
                             label={`Code`}
@@ -148,7 +148,8 @@ const SignUp = () => {
                             </Text>
                         )}
                         <CustomButton
-                            text={'Verify Email'}
+                            bgColor='bg-[#3749db]'
+                            text={'Xác thục email'}
                             onPress={onPressVerify}
                             containerStyle={`mt-4`}
                         />
@@ -156,7 +157,7 @@ const SignUp = () => {
 
                 </ReactNativeModal>
             </ScrollView>
-            <LoadingModal visible={isVisibleLoadingModal} message={"Loading"} />
+            <LoadingModal visible={isVisibleLoadingModal} />
         </SafeAreaView>
     )
 }

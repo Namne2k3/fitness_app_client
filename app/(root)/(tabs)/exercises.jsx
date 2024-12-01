@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput, ActivityIndicator, Pressable, ScrollView, Alert } from 'react-native'
 import { Image } from 'expo-image'
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -7,10 +7,48 @@ import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import { images } from '../../../constants/image'
 import { useColorScheme } from 'nativewind'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
+import BottomSheet from '../../../components/BottomSheet'
 import { getAllExercisesBySearchQueryName } from '@/libs/mongodb'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import CustomButton from '@/components/CustomButton'
 
+const bodyParts = [
+    'bụng', 'cardio',
+    'chân', 'cơ cổ',
+    'lưng', 'mông',
+    'ngực', 'tay',
+    'vai'
+]
 
+const equipments = [
+    'bóng bosu',
+    'bóng tặp thăng bằng',
+    'máy tập trượt tuyết (skierg)',
+    'bóng y tế',
+    'búa',
+    'con lăn',
+    'con lăn bánh xe',
+    'dây kháng lực',
+    'dây thừng',
+    'lốp xe',
+    'máy cáp',
+    'máy kéo tạ',
+    'máy leo cầu thang',
+    'máy tập elip',
+    'máy tập smith',
+    'máy tập thân trên',
+    'máy tập đòn bẩy',
+    'thanh trap',
+    'thanh tạ',
+    'thanh tạ ez',
+    'trọng lượng cơ thể',
+    'tạ olympic',
+    'tạ tay',
+    'tạ đeo',
+    'tạ ấm',
+    'xe đạp tập cố định'
+]
 
 
 const Exercises = () => {
@@ -21,11 +59,16 @@ const Exercises = () => {
     const [exercises, setExercises] = useState([])
     const [selectedExercise, setSelectedExercise] = useState({})
     const bottomSheetRef = useRef(null)
+    const bottomSheetRefFilter = useRef(null)
     const [searchQuery, onChangeSearchQuery] = useState('')
     const { colorScheme } = useColorScheme()
     const [skip, setSkip] = useState(0)
     const limit = 10
-    const refTextInput = useRef(null)
+
+    const [filter, setFilter] = useState({
+        bodyParts: [],
+        equipments: [],
+    })
 
     const handlePresentModalSheet = useCallback((item) => {
         bottomSheetRef.current?.present()
@@ -34,6 +77,10 @@ const Exercises = () => {
     const handleToggleSearching = () => {
         setIsSearching(!isSearching)
         onChangeSearchQuery('')
+    }
+
+    const handlePresentFilterModal = () => {
+        bottomSheetRefFilter?.current?.present()
     }
 
     const fetchDataByQuery = async (isSearchReset = false) => {
@@ -45,19 +92,13 @@ const Exercises = () => {
                 setExercises([]);
             }
 
-            // const allDatas = await getAllExercisesBySearchQueryName(searchQuery, { limit: 0, skip: 0 })
-            // const DataSaved = await AsyncStorage.getItem('exercisesData')
-            // if (!DataSaved) {
-            //     await AsyncStorage.setItem('exercisesData', JSON.stringify(allDatas.data))
-            //     console.log("Da nap du lieu vao trong async storage");
-            // } else {
-            //     console.log("Du lieu da co san");
+            const res = await getAllExercisesBySearchQueryName(searchQuery || "", {
+                limit,
+                skip: isSearchReset ? 0 : skip,
+                bodyParts: filter?.bodyParts ?? null,
+                equipments: filter?.equipments ?? null
+            });
 
-            // }
-            // await AsyncStorage.removeItem('exercisesData')
-            // console.log("Check allDatas length >>> ", allDatas?.data?.length);s
-
-            const res = await getAllExercisesBySearchQueryName(searchQuery || "", { limit, skip: isSearchReset ? 0 : skip });
             if (res.status === '404') {
                 console.log("Gặp lỗi 404");
                 return;
@@ -69,6 +110,7 @@ const Exercises = () => {
             if (newExercises.length > 0) {
                 setSkip((prevSkip) => prevSkip + limit);
             }
+
         } catch (error) {
             console.log("Error fetching training data:", error);
         } finally {
@@ -77,6 +119,48 @@ const Exercises = () => {
         }
     };
 
+    const handleSaveFilter = async () => {
+        try {
+            bottomSheetRefFilter?.current?.dismiss()
+            await fetchDataByQuery(true)
+        } catch (error) {
+            Alert.alert("Lỗi", error.message)
+        }
+    }
+
+    const handleSelectBodyPart = (item) => {
+        if (!filter?.bodyParts?.includes(item)) {
+            setFilter((filter) => ({
+                ...filter,
+                bodyParts: [
+                    ...filter.bodyParts,
+                    item
+                ]
+            }))
+        } else {
+            setFilter((filter) => ({
+                ...filter,
+                bodyParts: filter.bodyParts.filter(i => i != item)
+            }))
+        }
+    }
+
+    const handleSelectEquipment = (item) => {
+        if (!filter?.equipments?.includes(item)) {
+            setFilter((filter) => ({
+                ...filter,
+                equipments: [
+                    ...filter.equipments,
+                    item
+                ]
+            }))
+        } else {
+            setFilter((filter) => ({
+                ...filter,
+                equipments: filter.equipments.filter(i => i != item)
+            }))
+        }
+    }
 
     useEffect(() => {
         const debounceTimeout = setTimeout(() => {
@@ -90,7 +174,7 @@ const Exercises = () => {
         <SafeAreaView className="px-4 pt-4 h-full dark:bg-slate-950">
             {
                 isSearching ? (
-                    <View className="shadow-lg flex flex-row justify-between items-center mb-4">
+                    <View className="shadow-lg flex flex-row justify-between items-center">
                         <TextInput
                             className="p-3 rounded-lg bg-[#fff] flex-1 mr-3"
                             color={'#000'}
@@ -106,7 +190,7 @@ const Exercises = () => {
                         </View>
                     </View>
                 ) :
-                    <View className="flex flex-row justify-between items-center mb-4">
+                    <View className="flex flex-row justify-between items-center">
                         <Text className="font-pextrabold text-[32px] dark:text-white uppercase">tìm kiếm</Text>
                         <View>
                             <TouchableOpacity onPress={handleToggleSearching}>
@@ -115,6 +199,21 @@ const Exercises = () => {
                         </View>
                     </View>
             }
+            <View className="flex flex-row justify-between items-center my-2">
+                <View>
+                    <TouchableOpacity onPress={() => handlePresentFilterModal()} className="rounded-lg flex flex-row items-center justify-center bg-neutral-200 p-2">
+                        <Ionicons name='filter-sharp' size={20} />
+                        <Text className="font-pmedium ml-1">Lọc</Text>
+                    </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity onPress={() => setFilter({
+                    bodyParts: [],
+                    equipments: [],
+                })}>
+                    <Text>Hủy lọc</Text>
+                </TouchableOpacity>
+            </View>
             {
                 isLoading ? (
                     <View className="h-full flex justify-center items-center">
@@ -160,6 +259,46 @@ const Exercises = () => {
                 )
             }
             <BottomSheetModalComponent selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
+            <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['95%']} bottomSheetRef={bottomSheetRefFilter}>
+                <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] mx-2 mb-2">
+                    <Text className="font-pmedium text-lg mb-1">Phần bộ phận cơ thể</Text>
+                    <View className="flex flex-row flex-wrap">
+                        {
+                            bodyParts.map((item, index) => (
+                                <Pressable
+                                    onPress={() => handleSelectBodyPart(item)}
+                                    key={index}
+                                    className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 ${filter?.bodyParts?.includes(item) && 'bg-[#000]'}`}
+                                >
+                                    <Text className={`font-pbold text-[12px] uppercase ${filter?.bodyParts?.includes(item) && 'text-white'}`}>{item}</Text>
+                                </Pressable>
+                            ))
+                        }
+                    </View>
+                </View>
+
+                <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] mx-2">
+                    <Text className="font-pmedium text-lg mb-1">Thiết bị</Text>
+                    <View className="flex flex-row flex-wrap">
+
+                        {
+                            equipments.map((item, index) => (
+                                <Pressable
+                                    onPress={() => handleSelectEquipment(item)}
+                                    key={index}
+                                    className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 ${filter?.equipments?.includes(item) && 'bg-[#000]'}`}
+                                >
+                                    <Text className={`font-pbold text-[12px] uppercase ${filter?.equipments?.includes(item) && 'text-white'}`}>{item}</Text>
+                                </Pressable>
+                            ))
+                        }
+
+                    </View>
+                </View>
+                <View className="m-2">
+                    <CustomButton onPress={handleSaveFilter} bgColor='bg-[#3749db]' text={'Lưu'} />
+                </View>
+            </BottomSheet>
         </SafeAreaView>
     )
 }

@@ -1,8 +1,8 @@
-import { AntDesign, Feather } from '@expo/vector-icons'
+import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Alert, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, Modal, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
 import LoadingModal from '../../../components/LoadingModal'
@@ -14,8 +14,6 @@ import { generatePrompt, calculateCaloriesBurned } from '../../../utils/index'
 const BeginTrainingId = () => {
 
     const { id, index, planId, data } = useLocalSearchParams()
-
-
     const [dataTraining, setDataTraining] = useState(JSON.parse(data))
     const [time, setTime] = useState('00:00:00');
     const [isCompleted, setIsCompleted] = useState(false)
@@ -159,8 +157,6 @@ const BeginTrainingId = () => {
             }
 
             const saved = await createTrainingRecord(trainingRecord)
-            console.log("Check saved >>> ", saved);
-
 
             if (planId && index) {
                 // cap nhat curernt plan tai day
@@ -189,6 +185,32 @@ const BeginTrainingId = () => {
 
     //     fetchData()
     // }, [])
+
+    const handleCheckAll = () => {
+        try {
+            setDataTraining(prevData => {
+
+                const updatedExercises = prevData.exercises.map(exercise => {
+
+                    const updatedSets = exercise.sets.map((set, setIndex) => {
+
+                        return {
+                            ...set,
+                            isCheck: true
+                        };
+                    });
+                    return { ...exercise, sets: updatedSets };
+
+                });
+
+
+                return { ...prevData, exercises: updatedExercises };
+            });
+            setIsCompleted((previous) => checkAllExercisesCompleted())
+        } catch (error) {
+            Alert.alert("Lỗi", error.message)
+        }
+    }
 
     useEffect(() => {
         let intervalId;
@@ -242,7 +264,7 @@ const BeginTrainingId = () => {
                         !isRunning &&
                         <View className="mr-2">
                             <TouchableOpacity
-                                className="bg-[#00008B] rounded-lg  p-4"
+                                className="bg-[#3749db] rounded-lg  p-4"
                                 onPress={() => handleStart()}
                             >
                                 <Text className="font-psemibold text-lg text-white">Tiếp tục</Text>
@@ -251,15 +273,24 @@ const BeginTrainingId = () => {
                     }
                 </View>
             </View>
-            <View className="p-4">
+
+            {/* <View className="p-4">
                 <Text className="font-psemibold text-yellow-500">Note: </Text>
                 <Text className="font-pregular dark:text-white">
-                    {/* We'll calculate calories based on how many reps you've done, so make sure you get them right for accurate results. */}
                     Chúng tôi tính toán lượng calo tiêu hao dựa vào thông tin luyện tập của bạn, và chỉ mang tính chất tham khảo
                 </Text>
-            </View>
+            </View> */}
 
             <FlatList
+                ListHeaderComponent={
+                    <View className="p-4">
+                        <Text className="font-psemibold text-yellow-500">Note: </Text>
+                        <Text className="font-pregular dark:text-white">
+                            {/* We'll calculate calories based on how many reps you've done, so make sure you get them right for accurate results. */}
+                            Chúng tôi tính toán lượng calo tiêu hao dựa vào thông tin luyện tập của bạn, và chỉ mang tính chất tham khảo
+                        </Text>
+                    </View>
+                }
                 data={dataTraining?.exercises}
                 renderItem={({ item }) => (
                     <View className="bg-[#fff] flex p-4 dark:bg-slate-800">
@@ -289,13 +320,21 @@ const BeginTrainingId = () => {
             />
 
 
-            <View className="absolute bottom-0 left-0 right-0 m-4">
-                <CustomButton
-                    disabled={!isCompleted}
-                    text="Hoàn thành"
-                    onPress={handleFinishedTraining}
-                    bgColor={`${isCompleted ? "bg-[#00008B]" : "bg-[#ccc]"}`}
-                />
+            <View className="absolute bottom-0 left-0 right-0 m-4 flex flex-row">
+
+                <TouchableOpacity onPress={handleCheckAll} className="flex-[0.2] mx-2 justify-center items-center rounded-lg bg-[#f5f5f5]">
+                    <MaterialIcons name='library-add-check' size={20} />
+                    <Text className="font-pregular text-[12px]">Tất cả</Text>
+                </TouchableOpacity>
+
+                <View className="flex-1 mx-2">
+                    <CustomButton
+                        disabled={!isCompleted}
+                        text="Hoàn thành"
+                        onPress={handleFinishedTraining}
+                        bgColor={`${isCompleted ? "bg-[#3749db]" : "bg-[#ccc]"}`}
+                    />
+                </View>
             </View>
 
             <Modal

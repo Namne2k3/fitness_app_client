@@ -78,7 +78,7 @@ const ChooseGender = () => {
                 </TouchableOpacity>
             </View>
             <View className="absolute bottom-0 m-4 ">
-                <CustomButton onPress={handleNext} text="Tiếp theo" textStyle={{
+                <CustomButton bgColor='bg-[#3749db]' onPress={handleNext} text="Tiếp theo" textStyle={{
                     fontFamily: "Roboto-Bold"
                 }} />
             </View>

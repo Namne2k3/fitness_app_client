@@ -66,8 +66,7 @@ const WelcomePage = () => {
                     const res = await axios.get(`${process.env.EXPO_PUBLIC_URL_SERVER}/api/user/getCurrentUser`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
-
-                    if (res.status === 401) {
+                    if (!res.data) {
                         await AsyncStorage.removeItem('jwt_token');
                         return false;
                     }

@@ -48,15 +48,15 @@ const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpd
                     <Text className="font-pregular text-[12px] dark:text-white">Số hiệp: {sets?.length}</Text>
                 </View>
 
-                <View>
+                {/* <View>
                     <Switch
                         trackColor={{ false: '#767577', true: '#ccc' }}
-                        // thumbColor={colorScheme == 'dark' ? '#020617' : '#f4f3f4'}
+                        thumbColor={'#3749db'}
                         ios_backgroundColor="#3e3e3e"
                         onValueChange={() => setIsSetAll((current) => !current)}
                         value={isSetAll}
                     />
-                </View>
+                </View> */}
             </View>
 
             <View className="w-full mt-2">

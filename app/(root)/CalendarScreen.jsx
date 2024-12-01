@@ -88,9 +88,6 @@ const CalendarScreen = () => {
                     body: form?.training?.planName ? `Hôm này là ${form?.training?.title} theo lộ trình ${form?.training?.planName}` : `Hôm nay bạn sẽ tập ${form?.training?.title}`
                 },
                 trigger: notificationTime
-                // trigger: {
-                //     seconds: 10
-                // }
             });
 
             setForm((current) => ({

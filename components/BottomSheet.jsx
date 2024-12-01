@@ -1,20 +1,26 @@
-import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { useColorScheme } from 'nativewind';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import { View, Text, FlatList, Pressable, TouchableOpacity } from 'react-native';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { AntDesign } from '@expo/vector-icons';
+import { useColorScheme } from 'nativewind';
 
-const BottomSheet = ({ bottomSheetRef, children, snapPoints = ['25%'] }) => {
-    const { colorScheme } = useColorScheme()
+const BottomSheet = ({ onDismiss, title, bottomSheetRef, children, snapPoints = ['25%'], enablePanDownToClose }) => {
+    const { colorScheme } = useColorScheme();
+
+    const handleClose = () => {
+        bottomSheetRef?.current?.dismiss();
+    };
 
     return (
         <BottomSheetModalProvider enableDismissOnClose={true}>
             <BottomSheetModal
+                onDismiss={onDismiss}
                 enableBackdropPress={true}
+                enablePanDownToClose={enablePanDownToClose}
                 ref={bottomSheetRef}
                 index={0}
-                snapPoints={[...snapPoints ?? '25%']}
-                stackBehavior='replace'
-
+                snapPoints={snapPoints}
+                stackBehavior="replace"
                 enableDismissOnClose={true}
                 handleIndicatorStyle={{
                     backgroundColor: colorScheme == 'dark' ? "#fff" : 'rgb(2,6,23)',
@@ -22,23 +28,27 @@ const BottomSheet = ({ bottomSheetRef, children, snapPoints = ['25%'] }) => {
                 handleStyle={{
                     borderColor: colorScheme == 'dark' ? "rgb(2,6,23)" : '#000',
                     backgroundColor: colorScheme == 'dark' ? "rgb(2,6,23)" : '#fff',
-                    borderTopWidth: 0.5
+                    borderRadius: 12,
                 }}
                 style={{
                     borderRadius: 12,
                     zIndex: 100,
                     backgroundColor: colorScheme == 'dark' ? 'rgb(2,6,23)' : '#fff',
-                    borderColor: '#000'
+                    borderColor: '#000',
                 }}
             >
-                {children}
+                <View>
+                    <View className="flex flex-row justify-between items-center px-4">
+                        <Text className="font-pbold text-lg uppercase">{title ?? ""}</Text>
+                        <TouchableOpacity onPress={handleClose}>
+                            <AntDesign name="close" size={28} />
+                        </TouchableOpacity>
+                    </View>
+                    {children}
+                </View>
             </BottomSheetModal>
         </BottomSheetModalProvider>
+    );
+};
 
-
-    )
-}
-
-export default BottomSheet
-
-const styles = StyleSheet.create({})
+export default BottomSheet;

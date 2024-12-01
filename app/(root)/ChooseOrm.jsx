@@ -11,6 +11,7 @@ import { calculate1RM, generateExercisePlan, sendJSONByEmail, generateTrainings,
 import { createTrainings, getAllExercises, handleUpdateUser, createPlans } from '../../libs/mongodb'
 import { router } from 'expo-router'
 import LoadingModal from '../../components/LoadingModal'
+import LoadingCreatingModal from '../../components/LoadingCreatingModal'
 
 const seedData = [
     {
@@ -114,8 +115,8 @@ const ChooseOrm = () => {
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{
                     padding: 16
                 }}>
-                    <View className="flex flex-row justify-center items-center">
-                        <Text className="font-pextrabold text-[28px] dark:text-white text-center">Estimate your 1RM</Text>
+                    <View className="flex justify-center items-center">
+                        <Text className="font-pextrabold text-[28px] dark:text-white text-center">Ước lượng ORM</Text>
                     </View>
                     <View className="flex justify-start items-center mt-4">
                         <Image
@@ -126,6 +127,7 @@ const ChooseOrm = () => {
                             contentFit='contain'
                         />
                     </View>
+                    <Text className="text-center font-pregular">Chỉ số sức mạnh cực đại cho 1 lần tập được gọi là ORM (One Repetition Maximum)</Text>
                     <View className="border-b-[0.5px] border-[#ccc]">
                         <View className="flex flex-row items-center p-2">
                             <Text className="font-pmedium text-[16px] flex-1 dark:text-white">Bài tạ</Text>
@@ -216,7 +218,7 @@ const ChooseOrm = () => {
                     <View className="">
                         <View className="flex flex-row justify-between items-center p-2">
                             <View className="flex">
-                                <Text className="font-pbold text-lg dark:text-white">1RM của bạn</Text>
+                                <Text className="font-pbold text-lg dark:text-white">ORM của bạn</Text>
                                 <Text className="font-pregular text-[12px] dark:text-white">({selected})</Text>
                             </View>
                             <View className='flex flex-row justify-end items-center flex-1'>
@@ -227,14 +229,14 @@ const ChooseOrm = () => {
                             </View>
                         </View>
                     </View>
+                    <View className="m-2 mt-4">
+                        <CustomButton bgColor='bg-[#3749db]' onPress={handleNext} text="Tiến hành thiết lập" textStyle={{
+                            fontFamily: "Roboto-Bold"
+                        }} />
+                    </View>
                 </ScrollView>
-
-                <View className="absolute bottom-0 m-4">
-                    <CustomButton bgColor='bg-[#3749db]' onPress={handleNext} text="Tiến hành thiết lập" textStyle={{
-                        fontFamily: "Roboto-Bold"
-                    }} />
-                </View>
-                <LoadingModal visible={isLoading} />
+                <LoadingCreatingModal visible={isLoading} />
+                {/* <LoadingModal visible={isLoading} /> */}
             </SafeAreaView>
         </>
     )

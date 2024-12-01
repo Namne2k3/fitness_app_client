@@ -8,16 +8,22 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import HistoryRecordCard from '../../../components/HistoryRecordCard'
 import ReportComponent from '../../../components/ReportComponent'
 import { images } from '../../../constants/image'
-import { getTrainingRecord, getTrainingRecordsByMonth } from '../../../libs/mongodb'
+import { getTrainingRecord, getTrainingRecordsByMonth, getWeeklyTrainings } from '../../../libs/mongodb'
 import { countDataByDaysInMonth, formatDate, getAverageTimeDurationThisWeek, getCurrentMonthDays, getCurrentWeekDays, getTotalTimeDuration } from '../../../utils/index'
-
+import CircularProgress from 'react-native-circular-progress-indicator';
+import useUserStore from '../../../store/userStore'
+import LoadingModal from '../../../components/LoadingModal'
 const screenWidth = Dimensions.get('window').width
 
 const Report = () => {
 
-    const [monthRecords, setMonthRecords] = useState([])
-    const { colorScheme } = useColorScheme()
     const [recordDatas, setRecordDatas] = useState([])
+    const [monthRecords, setMonthRecords] = useState([])
+    const [weekRecords, setWeekRecords] = useState([])
+    const [totalCaloriesBurned, setTotalCaloriesBurned] = useState(0)
+
+    const { user } = useUserStore()
+    const { colorScheme } = useColorScheme()
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef();
     const [loading, setLoading] = useState(false)
@@ -37,46 +43,50 @@ const Report = () => {
         setRecordDatas(res.data)
     }
 
+    const fetchAllWeekRecord = async () => {
+        const res = await getWeeklyTrainings()
+
+        console.log("Week data >>> ", res.data);
+
+
+        setWeekRecords(res.data)
+        let total = res.data?.reduce((total, record) => {
+            return total + record.caloriesBurned;
+        }, 0);
+        console.log("Check total >>> ", total);
+        setTotalCaloriesBurned(total)
+
+    }
+
     const fetchData = async () => {
-        let isMounted = true;
+
         setLoading(true);
 
         try {
             await Promise.all([
-                // fetchTrainingRecordsByMonth(new Date().getMonth() + 1),
+                fetchAllWeekRecord(),
+                fetchTrainingRecordsByMonth(new Date().getMonth() + 1),
                 fetchAllTrainingRecord(),
             ]);
-            if (isMounted) {
 
-                setLoading(false);
-            }
         } catch (error) {
-            if (isMounted) {
 
-                setLoading(false);
-            }
             Alert.alert("Lỗi", error.message)
         }
-        return () => {
-            isMounted = false;
-        };
+        finally {
+            setLoading(false)
+        }
     };
-
-
-    useEffect(() => {
-        fetchTrainingRecordsByMonth(new Date().getMonth() + 1)
-        fetchData();
-    }, [])
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        setTimeout(() => {
-            fetchData()
-            setRefreshing(false);
-        }, 1000);
+        fetchData()
+        setRefreshing(false);
     }, []);
 
-
+    useEffect(() => {
+        fetchData();
+    }, [])
 
 
     return (
@@ -91,6 +101,32 @@ const Report = () => {
                 <View className="pt-4 px-4">
                     <Text className="uppercase font-pextrabold text-[32px] dark:text-white">thống kê</Text>
                 </View>
+                <ReportComponent title={'Mục tiêu'}>
+                    <View className="bg-[#fff] rounded-lg mt-2 p-4 w-full dark:bg-[#292727] flex">
+                        <View className="flex flex-row">
+                            <View className="flex justify-center items-start flex-1">
+                                <Text className="text-[13px] font-pmedium dark:text-white">Lượng calo cần phải tiêu hao mỗi buổi tập</Text>
+                                <Text className="text-[#3749db] font-pextrabold text-[26px]">
+                                    {user?.caloriesPerTraining} calo
+                                </Text>
+                            </View>
+                            <View className="flex justify-center items-start flex-1">
+                                <Text className="text-[13px] font-pmedium dark:text-white">Tổng số ngày để đạt mục tiêu</Text>
+                                <Text className="text-[#3749db] font-pextrabold text-[26px]">
+                                    {user?.totalDaysToReachTarget} ngày
+                                </Text>
+                            </View>
+                        </View>
+                        <View className="flex flex-row mt-4">
+                            <View className="flex justify-center items-start flex-1">
+                                <Text className="text-[13px] font-pmedium dark:text-white">Số ngày cần luyện tập trong tuần</Text>
+                                <Text className="text-[#3749db] font-pextrabold text-[26px]">
+                                    {user?.daysShouldTraining} ngày
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+                </ReportComponent>
                 <ReportComponent title={'Toàn bộ'}>
                     <View className="bg-[#fff] rounded-lg mt-2 p-4 w-full dark:bg-[#292727]" >
                         <View className="flex flex-row ">
@@ -171,7 +207,7 @@ const Report = () => {
                         </View>
                         <View className="p-4 bg-[#fff] flex flex-row dark:bg-[#292727]">
                             <View className="flex justify-start items-start flex-1">
-                                <Text className='dark:text-white font-psemibold text-[12px]'>Hôm nay (phút)</Text>
+                                <Text className='dark:text-white font-psemibold text-[12px]'>Hôm nay đã tập (lần)</Text>
                                 <Text className="text-[#3749db] font-pextrabold text-[26px]">
                                     {
                                         recordDatas?.filter(
@@ -183,8 +219,32 @@ const Report = () => {
                             <View className="flex justify-start items-start flex-1">
                                 <Text className='dark:text-white font-psemibold text-[12px]'>Trung bình trong tuần (phút)</Text>
                                 <Text className="text-[#3749db] font-pextrabold text-[26px]">
-                                    {getAverageTimeDurationThisWeek(recordDatas && recordDatas)}
+                                    {getAverageTimeDurationThisWeek(recordDatas ?? recordDatas)}
                                 </Text>
+                            </View>
+                        </View>
+                        <View className="flex flex-row">
+                            <View className="flex-1 justify-center items-center">
+                                <CircularProgress
+                                    value={totalCaloriesBurned}
+                                    activeStrokeColor='#3749db'
+                                    valueSuffix=''
+                                    maxValue={user?.caloriesPerTraining * user?.daysShouldTraining}
+                                    inActiveStrokeColor='#fff'
+                                    title='Calo đã đốt'
+                                    titleStyle={{ fontWeight: 'bold' }}
+                                />
+                            </View>
+                            <View className="flex-1 justify-center items-center">
+                                <CircularProgress
+                                    value={weekRecords?.length}
+                                    activeStrokeColor='#3749db'
+                                    inActiveStrokeColor='#fff'
+                                    valueSuffix={`/${user?.daysShouldTraining}`}
+                                    maxValue={user?.daysShouldTraining}
+                                    title='Ngày/Tuần'
+                                    titleStyle={{ fontWeight: 'bold' }}
+                                />
                             </View>
                         </View>
                     </View>
@@ -213,7 +273,7 @@ const Report = () => {
                     </View>
                 </ReportComponent>
             </ScrollView>
-
+            <LoadingModal visible={loading} />
         </SafeAreaView>
     )
 }

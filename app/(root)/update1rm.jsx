@@ -206,7 +206,7 @@ const Update1rm = () => {
                     </View>
                 </ScrollView>
 
-                <CustomButton onPress={updateUser} text={'Cập nhật'} />
+                <CustomButton bgColor='bg-[#3749db]' onPress={updateUser} text={'Cập nhật'} />
 
             </SafeAreaView>
             <LoadingModal visible={isVisibleLoadingModal} />

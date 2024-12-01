@@ -66,11 +66,13 @@ const fetchTrainingById = async (trainingId) => {
 
         return data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
 
 const updateTraining = async (training) => {
+    console.log("Check training params >>> ", training);
+
     const token = await getToken()
     try {
         const res = await axios.put(`${URL}/api/customtrainings/${training?._id}/update`, training, {
@@ -82,7 +84,7 @@ const updateTraining = async (training) => {
 
         return data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
 
     }
 }
@@ -97,7 +99,7 @@ const deleteTrainingById = async (id) => {
         })
         return deleted.data
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
 
@@ -111,9 +113,24 @@ const getTrainingRecordById = async (id) => {
         })
         return res.data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
+
+const getWeeklyTrainings = async () => {
+    const token = await getToken()
+    try {
+        const res = await axios.get(`${URL}/api/trainingrecord/getTrainingByWeek`, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Thay bằng token của bạn
+            },
+        });
+        console.log("Check res data >>> ", res.data);
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+};
 
 const getTrainingRecordsByMonth = async (month) => {
     const token = await getToken()
@@ -125,7 +142,7 @@ const getTrainingRecordsByMonth = async (month) => {
         })
         return res.data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
 
@@ -141,7 +158,7 @@ const getTrainingRecord = async () => {
 
         return res.data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
 
@@ -161,7 +178,7 @@ const createTrainingRecord = async (recordData) => {
 
         return data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
 
@@ -177,7 +194,7 @@ const getUserByEmail = async (email) => {
 
         return data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
 
@@ -192,7 +209,7 @@ const createFeedback = async (feedback) => {
 
         return data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
 
@@ -207,7 +224,7 @@ const handleUpdateUser = async (userBody) => {
         })
         return response.data;
     } catch (error) {
-        console.log(error.message);
+        throw new Error(error)
     }
 }
 
@@ -479,11 +496,11 @@ const getAllExercisesByBodyPart = async (bodyPart, { limit, skip }) => {
     }
 }
 
-const getAllExercisesBySearchQueryName = async (searchQueryName, { limit, skip }) => {
+const getAllExercisesBySearchQueryName = async (searchQueryName, { limit, skip, bodyParts, equipments }) => {
     const token = await getToken()
 
     try {
-        const res = await axios.get(`${URL}/api/exercises/getAllExercisesBySearchQueryName/${searchQueryName}?limit=${limit}&skip=${skip}`, {
+        const res = await axios.get(`${URL}/api/exercises/getAllExercisesBySearchQueryName/${searchQueryName}?limit=${limit}&skip=${skip}&bodyParts=${JSON.stringify(bodyParts)}&equipments=${JSON.stringify(equipments)}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -667,6 +684,7 @@ const deleteAllNotificationPassedByUserId = async () => {
 }
 
 export {
+    getWeeklyTrainings,
     deleteAllNotificationPassedByUserId,
     deleteNotificationById,
     getCalendars,

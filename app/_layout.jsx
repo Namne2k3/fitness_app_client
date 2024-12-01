@@ -34,6 +34,7 @@ export default function RootLayout() {
 
 
     "Roboto-Thin": require('../assets/fonts/Roboto-Thin.ttf'),
+    "Roboto-Italic": require('../assets/fonts/Roboto-Italic.ttf'),
     "Roboto-Bold": require('../assets/fonts/Roboto-Bold.ttf'),
     "Roboto-ExtraBold": require('../assets/fonts/Roboto-Bold.ttf'),
     "Roboto-Light": require('../assets/fonts/Roboto-Light.ttf'),
@@ -41,6 +42,7 @@ export default function RootLayout() {
     "Roboto-Regular": require('../assets/fonts/Roboto-Regular.ttf'),
     "Roboto-SemiBold": require('../assets/fonts/Roboto-Bold.ttf'),
     "Roboto-Black": require('../assets/fonts/Roboto-Black.ttf'),
+    "Roboto-BoldItalic": require('../assets/fonts/Roboto-BoldItalic.ttf'),
 
 
     //     pthin: ["Roboto-Thin"],

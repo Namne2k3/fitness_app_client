@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, TextInput, Alert, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, TextInput, Alert, ActivityIndicator, Pressable } from 'react-native'
 import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState, useCallback, useRef, useEffect } from 'react'
@@ -11,8 +11,44 @@ import { createCustomTrainings, getAllExercisesBySearchQueryName } from '../../l
 import { useUserStore } from '../../store';
 import { images } from '../../constants/image'
 import BottomSheetModalComponent from '../../components/BottomSheetModal';
+import BottomSheet from '../../components/BottomSheet';
 import { useColorScheme } from 'nativewind';
+const bodyParts = [
+    'bụng', 'cardio',
+    'chân', 'cơ cổ',
+    'lưng', 'mông',
+    'ngực', 'tay',
+    'vai'
+]
 
+const equipments = [
+    'bóng bosu',
+    'bóng tặp thăng bằng',
+    'máy tập trượt tuyết (skierg)',
+    'bóng y tế',
+    'búa',
+    'con lăn',
+    'con lăn bánh xe',
+    'dây kháng lực',
+    'dây thừng',
+    'lốp xe',
+    'máy cáp',
+    'máy kéo tạ',
+    'máy leo cầu thang',
+    'máy tập elip',
+    'máy tập smith',
+    'máy tập thân trên',
+    'máy tập đòn bẩy',
+    'thanh trap',
+    'thanh tạ',
+    'thanh tạ ez',
+    'trọng lượng cơ thể',
+    'tạ olympic',
+    'tạ tay',
+    'tạ đeo',
+    'tạ ấm',
+    'xe đạp tập cố định'
+]
 const CreateExercisePage = () => {
 
 
@@ -23,6 +59,7 @@ const CreateExercisePage = () => {
     const [exerciseSelections, setExerciseSelections] = useState([])
     const [selectedExercise, setSelectedExercise] = useState({})
     const bottomSheetRef = useRef(null)
+    const bottomSheetRefFilter = useRef(null)
     const user = useUserStore((state) => state.user)
     const [isLoading, setIsLoading] = useState(true)
     const { colorScheme } = useColorScheme()
@@ -35,6 +72,45 @@ const CreateExercisePage = () => {
 
         ],
         user: user?._id
+    })
+
+    const handleSelectBodyPart = (item) => {
+        if (!filter?.bodyParts?.includes(item)) {
+            setFilter((filter) => ({
+                ...filter,
+                bodyParts: [
+                    ...filter.bodyParts,
+                    item
+                ]
+            }))
+        } else {
+            setFilter((filter) => ({
+                ...filter,
+                bodyParts: filter.bodyParts.filter(i => i != item)
+            }))
+        }
+    }
+
+    const handleSelectEquipment = (item) => {
+        if (!filter?.equipments?.includes(item)) {
+            setFilter((filter) => ({
+                ...filter,
+                equipments: [
+                    ...filter.equipments,
+                    item
+                ]
+            }))
+        } else {
+            setFilter((filter) => ({
+                ...filter,
+                equipments: filter.equipments.filter(i => i != item)
+            }))
+        }
+    }
+
+    const [filter, setFilter] = useState({
+        bodyParts: [],
+        equipments: [],
     })
 
     const handleAddExerciseToSelection = useCallback((exercise) => {
@@ -83,7 +159,7 @@ const CreateExercisePage = () => {
             }))
 
             setIsVisibleLoadingModal(false)
-            router.replace('/(root)/(tabs)/custom')
+            router.back()
             Alert.alert("Đã tạo set bài tập mới!")
 
         } catch (error) {
@@ -107,7 +183,12 @@ const CreateExercisePage = () => {
                 setExercises([]); // Xóa danh sách hiện tại
             }
 
-            const res = await getAllExercisesBySearchQueryName(searchQuery || "", { limit, skip: isSearchReset ? 0 : skip });
+            const res = await getAllExercisesBySearchQueryName(searchQuery || "", {
+                limit,
+                skip: isSearchReset ? 0 : skip,
+                bodyParts: filter?.bodyParts ?? null,
+                equipments: filter?.equipments ?? null
+            });
             if (res.status === '404') {
                 console.log("Gặp lỗi 404");
                 return;
@@ -126,6 +207,19 @@ const CreateExercisePage = () => {
             setIsLoading(false);
         }
     };
+
+    const handleSaveFilter = async () => {
+        try {
+            bottomSheetRefFilter?.current?.dismiss()
+            await fetchDataByQuery(true)
+        } catch (error) {
+            Alert.alert("Lỗi", error.message)
+        }
+    }
+
+    const handlePresentFilterModal = () => {
+        bottomSheetRefFilter?.current?.present()
+    }
 
 
     useEffect(() => {
@@ -170,8 +264,24 @@ const CreateExercisePage = () => {
                             placeholder='Tìm kiếm tên bài tập'
                             onChangeText={onChangeSearchQuery}
                         />
-
                     </View>
+
+                    <View className="flex flex-row justify-between items-center my-2">
+                        <View>
+                            <TouchableOpacity onPress={() => handlePresentFilterModal()} className="rounded-lg flex flex-row items-center justify-center bg-neutral-200 p-2">
+                                <Ionicons name='filter-sharp' size={20} />
+                                <Text className="font-pmedium ml-1">Lọc</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        <TouchableOpacity onPress={() => setFilter({
+                            bodyParts: [],
+                            equipments: [],
+                        })}>
+                            <Text>Hủy lọc</Text>
+                        </TouchableOpacity>
+                    </View>
+
                     {
                         isLoading ? (
                             <View className="h-full flex justify-center items-center">
@@ -224,6 +334,46 @@ const CreateExercisePage = () => {
                     <CustomButton bgColor='bg-[#3749db]' text="Tạo mới" onPress={handleSaveAddExerciseToTraining} />
                 </View>
                 <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
+                <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['95%']} bottomSheetRef={bottomSheetRefFilter}>
+                    <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] mx-2 mb-2">
+                        <Text className="font-pmedium text-lg mb-1">Phần bộ phận cơ thể</Text>
+                        <View className="flex flex-row flex-wrap">
+                            {
+                                bodyParts.map((item, index) => (
+                                    <Pressable
+                                        onPress={() => handleSelectBodyPart(item)}
+                                        key={index}
+                                        className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 ${filter?.bodyParts?.includes(item) && 'bg-[#000]'}`}
+                                    >
+                                        <Text className={`font-pbold text-[12px] uppercase ${filter?.bodyParts?.includes(item) && 'text-white'}`}>{item}</Text>
+                                    </Pressable>
+                                ))
+                            }
+                        </View>
+                    </View>
+
+                    <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] mx-2">
+                        <Text className="font-pmedium text-lg mb-1">Thiết bị</Text>
+                        <View className="flex flex-row flex-wrap">
+
+                            {
+                                equipments.map((item, index) => (
+                                    <Pressable
+                                        onPress={() => handleSelectEquipment(item)}
+                                        key={index}
+                                        className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 ${filter?.equipments?.includes(item) && 'bg-[#000]'}`}
+                                    >
+                                        <Text className={`font-pbold text-[12px] uppercase ${filter?.equipments?.includes(item) && 'text-white'}`}>{item}</Text>
+                                    </Pressable>
+                                ))
+                            }
+
+                        </View>
+                    </View>
+                    <View className="m-2">
+                        <CustomButton onPress={handleSaveFilter} bgColor='bg-[#3749db]' text={'Lưu'} />
+                    </View>
+                </BottomSheet>
                 <LoadingModal visible={isVisibleLoadingModal} />
             </SafeAreaView>
         </>

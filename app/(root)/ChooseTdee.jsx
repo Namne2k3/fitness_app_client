@@ -15,6 +15,75 @@ const levelToPointMap = {
     "Tập thể dục rất căng thẳng": 1.950
 }
 
+function calculateTrainingPlan(userData) {
+    const {
+        weight,
+        targetWeight,
+        tdee,
+        healthGoal,
+        level
+    } = userData;
+
+    const adjustedTDEE = tdee;
+
+    let daysShouldTraining = 0;
+    if (healthGoal === "Tăng cơ") {
+        daysShouldTraining = level === "Người mới bắt đầu" ? 4 : 5;
+    } else if (healthGoal === "Giảm mỡ") {
+        daysShouldTraining = 5;
+    } else if (healthGoal === "Cân đối") {
+        daysShouldTraining = 3;
+    } else if (healthGoal === "Sức mạnh") {
+        daysShouldTraining = 4;
+    }
+
+
+    const minCaloriesPerTraining = Math.floor(adjustedTDEE * 0.15);
+    const maxCaloriesPerTraining = Math.floor(adjustedTDEE * 0.25);
+    const caloriesPerTraining = (minCaloriesPerTraining + maxCaloriesPerTraining) / 2;
+
+    // Yêu cầu protein và chất béo
+    const proteinRequirement = weight * 2; // 2g/kg protein cho tăng cơ
+    const fatRequirement = Math.ceil(adjustedTDEE * 0.25); // Chất béo 25% TDEE
+
+    // Tốc độ tăng cân lành mạnh (mặc định: 0.5–1 kg/tuần)
+    const calorieSurplusPerDay = 500; // Lượng calo dư mỗi ngày
+    const calorieChangePerKg = 7700; // Calo để tăng/giảm 1 kg
+
+    // Tính tổng số ngày để đạt cân nặng mục tiêu
+    let totalDaysToReachTarget = 0;
+    if (targetWeight > weight) {
+        const totalWeightGain = targetWeight - weight; // Tổng số kg cần tăng
+        const totalSurplusCalories = totalWeightGain * calorieChangePerKg;
+        totalDaysToReachTarget = Math.ceil(totalSurplusCalories / calorieSurplusPerDay);
+    }
+
+    // Phân phối lượng calo theo từng bữa
+    const mealDistribution = {
+        breakfast: adjustedTDEE * 0.3,
+        lunch: adjustedTDEE * 0.4,
+        dinner: adjustedTDEE * 0.3
+    };
+
+    console.log("Check all >> ", {
+        daysShouldTraining,
+        caloriesPerTraining,
+        proteinRequirement,
+        fatRequirement,
+        totalDaysToReachTarget,
+        mealDistribution
+    });
+
+    return {
+        daysShouldTraining,
+        caloriesPerTraining,
+        proteinRequirement,
+        fatRequirement,
+        totalDaysToReachTarget,
+        mealDistribution
+    };
+}
+
 
 // phuong trinh Mifflin St Jeor
 const BMR = (user) => {
@@ -44,11 +113,28 @@ const ChooseTdee = () => {
     const handleNext = () => {
         try {
 
+
+            const { daysShouldTraining,
+                caloriesPerTraining,
+                proteinRequirement,
+                fatRequirement,
+                totalDaysToReachTarget,
+                mealDistribution
+            } = calculateTrainingPlan({
+                ...user,
+                bmr: form.bmr,
+                activityLevel: form.level_workout,
+                tdee: form.tdee,
+            })
+
             setUser({
                 ...user,
                 bmr: form.bmr,
                 activityLevel: form.level_workout,
                 tdee: form.tdee,
+                daysShouldTraining: daysShouldTraining,
+                caloriesPerTraining: caloriesPerTraining,
+                totalDaysToReachTarget: totalDaysToReachTarget
             })
 
             router.push('/(root)/ChooseOrm')

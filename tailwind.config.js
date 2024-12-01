@@ -12,6 +12,8 @@ module.exports = {
         pbold: ["Roboto-Bold"],
         pextrabold: ["Roboto-Bold"],
         pblack: ["Roboto-Black"],
+        pitalic: ["Roboto-Italic"],
+        pbitalic: ["Roboto-BoldItalic"]
       },
     },
   },

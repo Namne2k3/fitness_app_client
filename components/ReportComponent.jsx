@@ -3,7 +3,7 @@ import React from 'react'
 
 const ReportComponent = ({ title, children, rightComponent }) => {
     return (
-        <View className="mt-4 p-4">
+        <View className="p-4">
             <View className="flex flex-row justify-between items-center">
                 <Text className="capitalize font-pextrabold text-lg dark:text-white">{title}</Text>
                 {

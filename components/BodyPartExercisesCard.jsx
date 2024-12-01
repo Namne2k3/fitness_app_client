@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Image } from 'expo-image'
 import React from 'react'
 import { images } from '../constants/image'
@@ -6,7 +6,7 @@ import { Link, router } from 'expo-router'
 const BodyPartExercisesCard = ({ item }) => {
 
     return (
-        <TouchableOpacity className="flex bg-[#fff] dark:bg-[#292727]  rounded-2xl p-4 shadow-lg" onPress={() => {
+        <Pressable className="flex bg-[#fff] dark:bg-[#292727]  rounded-2xl p-4 shadow-lg" onPress={() => {
             router.push({
                 pathname: `/(root)/TrainingDetails/${item?._id}`,
                 params: { data: JSON.stringify(item) }
@@ -42,7 +42,7 @@ const BodyPartExercisesCard = ({ item }) => {
                     })
                 }
             </View>
-        </TouchableOpacity>
+        </Pressable>
     )
 }
 

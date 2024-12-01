@@ -821,73 +821,47 @@ const generateTrainings = async (userData, exerciseData) => {
 
         switch (healthGoal) {
             case "Tăng cơ": {
-                sets = level === "người mới bắt đầu" ? 3 : level === "trung cấp" ? 4 : 5;
+                sets = level === "người mới bắt đầu" ? 3 : level === "trung cấp" ? 4 : 5
                 reps = gender === "nam"
-                    ? level === "người mới bắt đầu"
-                        ? 8 + Math.floor(Math.random() * 3) // Nam: Beginner: 8-10 reps
-                        : level === "trung cấp"
-                            ? 6 + Math.floor(Math.random() * 3) // Nam: Intermediate: 6-8 reps
-                            : 4 + Math.floor(Math.random() * 3) // Nam: Advanced: 4-6 reps
-                    : level === "người mới bắt đầu"
-                        ? 10 + Math.floor(Math.random() * 3) // Nữ: Beginner: 10-12 reps
-                        : level === "trung cấp"
-                            ? 8 + Math.floor(Math.random() * 3) // Nữ: Intermediate: 8-10 reps
-                            : 6 + Math.floor(Math.random() * 3); // Nữ: Advanced: 6-8 reps;
-                kilogram = orm ? orm * (0.6 + Math.random() * 0.2) : 0; // 60-80% ORM
+                    ? level === "người mới bắt đầu" ? 10 : level === "trung cấp" ? 8 : 6
+                    : level === "người mới bắt đầu" ? 12 : level === "trung cấp" ? 10 : 8;
+
+                kilogram = orm * 0.7; // 60-80% ORM
                 break;
             }
             case "Giảm mỡ": {
-                sets = level === "người mới bắt đầu" ? 3 : level === "trung cấp" ? 4 : 4;
+                sets = level === "người mới bắt đầu" ? 3 : 4;
                 reps = gender === "nam"
-                    ? level === "người mới bắt đầu"
-                        ? 12 + Math.floor(Math.random() * 4) // Nam: Beginner: 12-15 reps
-                        : level === "trung cấp"
-                            ? 15 + Math.floor(Math.random() * 3) // Nam: Intermediate: 15-17 reps
-                            : 18 + Math.floor(Math.random() * 3) // Nam: Advanced: 18-20 reps
-                    : level === "người mới bắt đầu"
-                        ? 15 + Math.floor(Math.random() * 3) // Nữ: Beginner: 15-17 reps
-                        : level === "trung cấp"
-                            ? 18 + Math.floor(Math.random() * 3) // Nữ: Intermediate: 18-20 reps
-                            : 20 + Math.floor(Math.random() * 3); // Nữ: Advanced: 20-23 reps
-                kilogram = orm ? orm * (0.4 + Math.random() * 0.2) : 0; // 40-60% ORM
+                    ? level === "người mới bắt đầu" ? 15 : level === "trung cấp" ? 17 : 20
+                    : level === "người mới bắt đầu" ? 17 : level === "trung cấp" ? 20 : 23;
+
+                kilogram = orm * (0.4 + Math.random() * 0.2); // 40-60% ORM
                 break;
             }
             case "Sức mạnh": {
                 sets = level === "người mới bắt đầu" ? 3 : level === "trung cấp" ? 4 : 5;
+
                 reps = gender === "nam"
-                    ? level === "người mới bắt đầu"
-                        ? 6 + Math.floor(Math.random() * 2) // Nam: Beginner: 6-8 reps
-                        : level === "trung cấp"
-                            ? 4 + Math.floor(Math.random() * 2) // Nam: Intermediate: 4-6 reps
-                            : 2 + Math.floor(Math.random() * 2) // Nam: Advanced: 2-4 reps
-                    : level === "người mới bắt đầu"
-                        ? 8 + Math.floor(Math.random() * 2) // Nữ: Beginner: 8-10 reps
-                        : level === "trung cấp"
-                            ? 6 + Math.floor(Math.random() * 2) // Nữ: Intermediate: 6-8 reps
-                            : 4 + Math.floor(Math.random() * 2); // Nữ: Advanced: 4-6 reps
-                kilogram = orm ? orm * (0.7 + Math.random() * 0.2) : 0; // 70-90% ORM
+                    ? level === "người mới bắt đầu" ? 8 : level === "trung cấp" ? 6 : 4
+                    : level === "người mới bắt đầu" ? 10 : level === "trung cấp" ? 8 : 6;
+
+                kilogram = orm * 0.85; // 85% ORM
                 break;
             }
             case "Cân đối": {
-                sets = level === "người mới bắt đầu" ? 2 : 3;
+                sets = level === "người mới bắt đầu" ? 3 : 4;
+
                 reps = gender === "nam"
-                    ? level === "người mới bắt đầu"
-                        ? 10 + Math.floor(Math.random() * 3) // Nam: Beginner: 10-12 reps
-                        : level === "trung cấp"
-                            ? 12 + Math.floor(Math.random() * 3) // Nam: Intermediate: 12-15 reps
-                            : 15 + Math.floor(Math.random() * 3) // Nam: Advanced: 15-18 reps
-                    : level === "người mới bắt đầu"
-                        ? 12 + Math.floor(Math.random() * 3) // Nữ: Beginner: 12-15 reps
-                        : level === "trung cấp"
-                            ? 15 + Math.floor(Math.random() * 3) // Nữ: Intermediate: 15-18 reps
-                            : 18 + Math.floor(Math.random() * 3); // Nữ: Advanced: 18-21 reps
-                kilogram = orm ? orm * (0.5 + Math.random() * 0.1) : 0; // 50-60% ORM
+                    ? level === "người mới bắt đầu" ? 12 : level === "trung cấp" ? 15 : 18
+                    : level === "người mới bắt đầu" ? 15 : level === "trung cấp" ? 18 : 21;
+
+                kilogram = orm * 0.6; // 60% ORM
                 break;
             }
             default:
                 sets = 3;
                 reps = 12;
-                kilogram = orm ? orm * 0.5 : 0;
+                kilogram = orm * 0.5;
                 break;
         }
 

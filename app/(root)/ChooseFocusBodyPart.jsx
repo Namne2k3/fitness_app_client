@@ -170,7 +170,7 @@ const ChooseFocusBodyPart = () => {
             </View>
 
             <View className="absolute bottom-0 m-4">
-                <CustomButton text="Tiếp theo" onPress={handleNext} textStyle={{
+                <CustomButton bgColor='bg-[#3749db]' text="Tiếp theo" onPress={handleNext} textStyle={{
                     fontFamily: "Roboto-Bold"
                 }} />
             </View>
