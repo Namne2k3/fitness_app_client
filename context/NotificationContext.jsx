@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import * as Notifications from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
-// import { Subscription } from "expo-modules-core";
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
 
 // interface NotificationContextType {

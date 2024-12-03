@@ -1,18 +1,17 @@
 import { Image } from 'expo-image'
 import { router } from 'expo-router'
-import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { BarChart } from 'react-native-chart-kit'
+import CircularProgress from 'react-native-circular-progress-indicator'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HistoryRecordCard from '../../../components/HistoryRecordCard'
+import LoadingModal from '../../../components/LoadingModal'
 import ReportComponent from '../../../components/ReportComponent'
 import { images } from '../../../constants/image'
 import { getTrainingRecord, getTrainingRecordsByMonth, getWeeklyTrainings } from '../../../libs/mongodb'
-import { countDataByDaysInMonth, formatDate, getAverageTimeDurationThisWeek, getCurrentMonthDays, getCurrentWeekDays, getTotalTimeDuration } from '../../../utils/index'
-import CircularProgress from 'react-native-circular-progress-indicator';
 import useUserStore from '../../../store/userStore'
-import LoadingModal from '../../../components/LoadingModal'
+import { countDataByDaysInMonth, formatDate, getAverageTimeDurationThisWeek, getCurrentMonthDays, getCurrentWeekDays, getTotalTimeDuration } from '../../../utils/index'
 const screenWidth = Dimensions.get('window').width
 
 const Report = () => {
@@ -22,7 +21,6 @@ const Report = () => {
     const [weekRecords, setWeekRecords] = useState([])
     const [totalCaloriesBurned, setTotalCaloriesBurned] = useState(0)
     const { user } = useUserStore()
-    const { colorScheme } = useColorScheme()
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef();
     const [loading, setLoading] = useState(false)
@@ -55,7 +53,6 @@ const Report = () => {
             if (newRecordDatas?.length > 0) {
                 setSkip((prev) => prev + limit)
             }
-            console.log("Message: ", res.message);
 
         } catch (error) {
             Alert.alert("Lỗi", error.message)
@@ -196,7 +193,7 @@ const Report = () => {
                                             drawBorder: false,
                                             drawOnChart: false,
                                             drawTicks: false,
-                                        },
+                                        }
                                     }}
                                     showValuesOnTopOfBars={true} // Hiển thị giá trị trên các cột
                                     style={{

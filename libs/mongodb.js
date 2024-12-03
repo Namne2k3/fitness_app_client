@@ -125,7 +125,7 @@ const getWeeklyTrainings = async () => {
                 Authorization: `Bearer ${token}`, // Thay bằng token của bạn
             },
         });
-        console.log("Check res data >>> ", res.data);
+
         return res.data
     } catch (error) {
         throw new Error(error)

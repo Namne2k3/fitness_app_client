@@ -8,7 +8,7 @@ import { useColorScheme } from 'nativewind';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Progress from 'react-native-progress';
 import axios from 'axios';
-import { getUserByEmail } from '@/libs/mongodb';
+import { getUserByEmail, getUserById } from '@/libs/mongodb';
 import { useUserStore } from '@/store';
 import { getToken } from '@/libs/token';
 
@@ -21,30 +21,6 @@ const WelcomePage = () => {
 
     useEffect(() => {
         let isNotificationHandled = false;
-
-        const handleInitialNotification = async () => {
-            const notificationData = await AsyncStorage.getItem('notificationData');
-            if (notificationData != null) {
-                isNotificationHandled = true
-                const parsed = JSON.parse(notificationData)
-                if (parsed?._id) {
-                    router.push(`/(root)/TrainingDetails/${parsed?._id}`)
-                }
-            }
-            // if (notificationData != null) {
-            //     isNotificationHandled = true
-            //     const { subtitle } = JSON.parse(notificationData);
-            //     if (subtitle) {
-            //         console.log("Subtitle from notification:", subtitle);
-
-            //         // Xóa dữ liệu để tránh xử lý lại
-            //         await AsyncStorage.removeItem('notificationData');
-            //         router.replace(`/(root)/(tabs)/${subtitle}`);
-            //         return; // Ngăn chặn khởi động app như bình thường
-            //     }
-            // }
-            await AsyncStorage.removeItem('notificationData');
-        };
 
         const checkSavedTheme = async () => {
             try {
@@ -66,13 +42,9 @@ const WelcomePage = () => {
                     const res = await axios.get(`${process.env.EXPO_PUBLIC_URL_SERVER}/api/user/getCurrentUser`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
-                    if (!res.data) {
-                        await AsyncStorage.removeItem('jwt_token');
-                        return false;
-                    }
+                    const userData = await getUserById(res.data.user._id);
 
-                    const userData = await getUserByEmail(res.data.user._doc.email);
-                    setUser(userData);
+                    setUser(userData.data);
                     return true;
                 } catch (error) {
                     console.log('Error fetching user:', error.message);
@@ -83,14 +55,12 @@ const WelcomePage = () => {
             const fetchSuccess = await fetchUserByToken();
 
             if (fetchSuccess) {
-                if (!isNotificationHandled) {
-                    const updatedUser = useUserStore.getState().user;
+                const updatedUser = useUserStore.getState().user;
 
-                    if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee) {
-                        router.replace(`/(root)/ChooseGender`);
-                    } else {
-                        router.replace('/(root)/(tabs)/training');
-                    }
+                if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee) {
+                    router.replace(`/(root)/ChooseGender`);
+                } else {
+                    router.replace('/(root)/(tabs)/training');
                 }
             } else {
                 router.replace('/(auth)/sign-in');
@@ -100,8 +70,6 @@ const WelcomePage = () => {
         const initializeApp = async () => {
             await checkSavedTheme();
             await runAppStartupTasks(); // Chạy logic khởi động nếu không có thông báo
-            // await handleInitialNotification(); // Kiểm tra thông báo
-            isNotificationHandled = false
         };
 
         initializeApp();
