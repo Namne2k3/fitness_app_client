@@ -1,10 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
+import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
+import { router } from 'expo-router'
 import React, { useState } from 'react'
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { AntDesign, Feather, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons'
 import CustomButton from '../../components/CustomButton'
 import useUserStore from '../../store/userStore'
-import { router } from 'expo-router'
 
 const ChooseGoal = () => {
     const user = useUserStore.getState().user;

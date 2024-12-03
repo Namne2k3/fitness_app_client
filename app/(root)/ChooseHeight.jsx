@@ -1,12 +1,12 @@
-import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import InputField from '../../components/InputField'
 import { AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
-import useUserStore from '../../store/userStore'
+import DateTimePicker from '@react-native-community/datetimepicker'
 import { router } from 'expo-router'
+import React, { useEffect, useState } from 'react'
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
-import DateTimePicker from '@react-native-community/datetimepicker';
+import InputField from '../../components/InputField'
+import useUserStore from '../../store/userStore'
 
 
 function analyzeUser(weight, height, targetWeight) {

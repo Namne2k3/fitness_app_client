@@ -29,7 +29,7 @@ const NewFeedPage = () => {
     const openPicker = async () => {
         try {
             let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: 'All',
                 allowsMultipleSelection: true,
                 aspect: [4, 3],
                 quality: 1,
@@ -90,12 +90,14 @@ const NewFeedPage = () => {
                     ...form,
                     medias: response
                 })
+            } else {
+                throw new Error("Lỗi khi đăng bài viết")
             }
 
             Alert.alert("Đăng thành công!")
             router.back()
         } catch (error) {
-            Alert.alert('Error', error.message);
+            Alert.alert('Lỗi', error.message);
         } finally {
             setIsVisibleModal(false)
         }
@@ -106,8 +108,8 @@ const NewFeedPage = () => {
     }, [])
 
     return (
-        <SafeAreaView className="flex bg-[#fff] h-full dark:bg-slate-950">
-            <View className="flex bg-[#fff] h-full p-4 dark:bg-slate-950">
+        <SafeAreaView className="flex h-full dark:bg-slate-950">
+            <View className="flex p-4 dark:bg-slate-950">
                 <View className="flex-1">
                     <Text className="font-pbold text-[16px]">Bài đăng mới</Text>
                     <TextInput
@@ -177,16 +179,16 @@ const NewFeedPage = () => {
                                 onValueChange={() => setForm({ ...form, allowComment: !form.allowComment })}
                             />
                         </View>
-                        <View className="flex flex-row">
-                            <CustomButton
-                                text={"Đăng"}
-                                onPress={handleAddFeed}
-                            />
-                        </View>
+                    </View>
+                    <View className="flex flex-row">
+                        <CustomButton
+                            text={"Đăng"}
+                            onPress={handleAddFeed}
+                        />
                     </View>
                 </View>
             </View>
-            <LoadingModal visible={isVisibleModal} message={"Posting ... "} />
+            <LoadingModal visible={isVisibleModal} />
         </SafeAreaView>
     )
 }

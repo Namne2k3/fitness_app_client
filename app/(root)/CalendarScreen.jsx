@@ -1,20 +1,20 @@
 import { Feather } from '@expo/vector-icons';
 import dayjs from 'dayjs';
-import { scheduleNotificationAsync, cancelAllScheduledNotificationsAsync, cancelScheduledNotificationAsync } from 'expo-notifications';
+import { cancelScheduledNotificationAsync, scheduleNotificationAsync } from 'expo-notifications';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import { useEffect, useState, useCallback } from 'react';
-import { Alert, FlatList, Image, KeyboardAvoidingView, Modal, Platform, ScrollView, Text, TouchableOpacity, View, RefreshControl } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, FlatList, Image, KeyboardAvoidingView, Modal, Platform, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from 'react-native-ui-datepicker';
 import CalendarCard from '../../components/CalendarCard';
 import CustomButton from '../../components/CustomButton';
 import LoadingModal from '../../components/LoadingModal';
-import { createCalendarNotify, getCalendars, deleteNotificationById, deleteAllNotificationPassedByUserId } from '../../libs/mongodb';
+import { images } from '../../constants/image';
+import { createCalendarNotify, deleteAllNotificationPassedByUserId, deleteNotificationById, getCalendars } from '../../libs/mongodb';
 import usePlanStore from '../../store/usePlanStore';
 import useUserStore from '../../store/userStore';
 import { getAbbreviation, randomColor } from '../../utils';
-import { images } from '../../constants/image';
 const CalendarScreen = () => {
 
     const { colorScheme } = useColorScheme();

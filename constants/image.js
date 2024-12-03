@@ -39,4 +39,5 @@ export const images = {
     fitness_female: require('../assets/images/fitness_female.jpg'),
     "3d_male": require('../assets/images/3d_male.jpg'),
     "3d_female": require('../assets/images/3d_female.jpg'),
+    icon: require('../assets/images/icon.png')
 };

@@ -1,7 +1,7 @@
 
 import { ClerkProvider } from '@clerk/clerk-expo';
 import { useFonts } from 'expo-font';
-import { Stack, router } from 'expo-router';
+import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
@@ -9,7 +9,6 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { tokenCache } from '../libs/clerk';
-import socket from '../utils/socket'
 import store from '../store/reduxStore'
 import { Provider } from 'react-redux'
 import { NotificationProvider } from '../context/NotificationContext';
@@ -21,18 +20,6 @@ export default function RootLayout() {
 
   const { colorScheme, toggleColorScheme } = useColorScheme()
   const [fontsLoaded, error] = useFonts({
-    // "Poppins-Black": require("../assets/fonts/Poppins-Black.ttf"),
-    // "Poppins-Bold": require("../assets/fonts/Poppins-Bold.ttf"),
-    // "Poppins-ExtraBold": require("../assets/fonts/Poppins-ExtraBold.ttf"),
-    // "Poppins-ExtraLight": require("../assets/fonts/Poppins-ExtraLight.ttf"),
-    // "Poppins-Light": require("../assets/fonts/Poppins-Light.ttf"),
-    // "Poppins-Medium": require("../assets/fonts/Poppins-Medium.ttf"),
-    // "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
-    // "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
-    // "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
-
-
-
     "Roboto-Thin": require('../assets/fonts/Roboto-Thin.ttf'),
     "Roboto-Italic": require('../assets/fonts/Roboto-Italic.ttf'),
     "Roboto-Bold": require('../assets/fonts/Roboto-Bold.ttf'),
@@ -43,16 +30,6 @@ export default function RootLayout() {
     "Roboto-SemiBold": require('../assets/fonts/Roboto-Bold.ttf'),
     "Roboto-Black": require('../assets/fonts/Roboto-Black.ttf'),
     "Roboto-BoldItalic": require('../assets/fonts/Roboto-BoldItalic.ttf'),
-
-
-    //     pthin: ["Roboto-Thin"],
-    //     plight: ["Roboto-Light"],
-    //     pregular: ["Roboto-Regular"],
-    //     pmedium: ["Roboto-Medium"],
-    //     psemibold: ["Roboto-Bold"],
-    //     pbold: ["Roboto-Bold"],
-    //     pextrabold: ["Roboto-Bold"],
-    //     pblack: ["Roboto-Black"],
   });
 
 

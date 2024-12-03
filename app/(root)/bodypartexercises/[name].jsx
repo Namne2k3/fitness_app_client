@@ -1,15 +1,14 @@
+import { Feather, Ionicons } from '@expo/vector-icons'
+import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import { images } from '../../../constants/image'
-import { fetchAllExercisesByBodyPart } from '../../../libs/exerciseDb'
 import { getAllExercisesByBodyPart } from '../../../libs/mongodb'
-import { Feather, Ionicons } from '@expo/vector-icons'
 
 const ListHeaderComponent = ({ name }) => {
 

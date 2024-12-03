@@ -51,10 +51,6 @@ const Feed = () => {
     useFocusEffect(
         useCallback(() => {
             fetchBlogs();
-
-            // return () => {
-            //     setBlogs([]); // Reset dữ liệu blogs
-            // };
         }, [])
     );
 

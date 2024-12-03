@@ -1,14 +1,13 @@
-import { router, useLocalSearchParams } from 'expo-router'
-import React, { useEffect, useState } from 'react'
-import { Alert, FlatList, StyleSheet, Text, View } from 'react-native'
 import { Image } from 'expo-image'
+import { router, useLocalSearchParams } from 'expo-router'
+import React, { useState } from 'react'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
-import { images } from '../../../constants/image'
-import { getTrainingRecordById } from '../../../libs/mongodb'
-import { formatDateWithMonth, formatTime } from '../../../utils/index'
 import LoadingModal from '../../../components/LoadingModal'
+import { images } from '../../../constants/image'
 import usePlanStore from '../../../store/usePlanStore'
+import { formatDateWithMonth, formatTime } from '../../../utils/index'
 const FinishTrainingId = () => {
 
     const { id, trainingRecordParams } = useLocalSearchParams()

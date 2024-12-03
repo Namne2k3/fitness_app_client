@@ -224,7 +224,7 @@ const ChooseOrm = () => {
                             </View>
                             <View className='flex flex-row justify-end items-center flex-1'>
                                 <Text className="font-pextrabold text-lg mr-2 dark:text-white">
-                                    {calculate1RM(weight, reps, selected).toFixed(0)}
+                                    {calculate1RM(weight, reps, selected)}
                                 </Text>
                                 <Text className="font-pregular dark:text-white">{isLbs ? 'lbs' : 'kg'}</Text>
                             </View>

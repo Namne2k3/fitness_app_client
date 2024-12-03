@@ -1,5 +1,5 @@
 import { Feather } from "@expo/vector-icons";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 
 import { router, useFocusEffect } from "expo-router";
@@ -35,7 +35,6 @@ const Chat = () => {
     }
 
     const fetchAllChatRooms = async () => {
-        // setFetching(true)
         try {
             const res = await getAllChatRooms()
             setRooms(res.data)
@@ -63,9 +62,9 @@ const Chat = () => {
                     </TouchableOpacity>
                 </View>
                 <Text className=" text-center font-pextrabold text-[24px] dark:text-white">Tin nhắn</Text>
-                <TouchableOpacity onPress={openBottomSheet} className="flex flex-row flex-1 justify-end items-center">
+                {/* <TouchableOpacity onPress={openBottomSheet} className="flex flex-row flex-1 justify-end items-center">
                     <Feather name="edit" size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
 
             <View>

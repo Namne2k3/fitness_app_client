@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, Image, Dimensions, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import { Alert, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import useUserStore from '../../store/userStore';
+import CustomButton from '../../components/CustomButton';
 import { images } from '../../constants/image';
-import CustomButton from '../../components/CustomButton'
-import { AntDesign } from '@expo/vector-icons'
-import { router } from 'expo-router'
+import useUserStore from '../../store/userStore';
 const { width } = Dimensions.get('window');
 
 

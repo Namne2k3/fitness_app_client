@@ -267,12 +267,7 @@ const Report = () => {
 
 
                 <ReportComponent title={`lịch sử`} rightComponent={
-                    <TouchableOpacity onPress={() => router.push({
-                        pathname: '/(root)/allHistoryRecords',
-                        params: {
-                            recordDatas: JSON.stringify(recordDatas)
-                        }
-                    })}>
+                    <TouchableOpacity onPress={() => router.push('/(root)/allHistoryRecords')}>
                         <Text className="text-[#3749db] font-pbold text-lg">Tất cả</Text>
                     </TouchableOpacity>
                 }>
@@ -280,7 +275,7 @@ const Report = () => {
                         {recordDatas && recordDatas?.length > 0 ? (
                             recordDatas.slice(0, 3).map((item, index) => <HistoryRecordCard key={index} item={item} />)
                         ) : (
-                            <View className="flex flex-col items-center justify-center bg-transparent">
+                            <View className="flex mb flex-col items-center justify-center bg-transparent">
                                 <Image
                                     source={images.no_result}
                                     className="w-40 h-40"

@@ -1,17 +1,15 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, TextInput, ActivityIndicator, Pressable, ScrollView, Alert } from 'react-native'
-import { Image } from 'expo-image'
-import React, { useState, useCallback, useRef, useEffect } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import CustomButton from '@/components/CustomButton'
+import { getAllExercisesBySearchQueryName } from '@/libs/mongodb'
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
+import { Image } from 'expo-image'
+import { useColorScheme } from 'nativewind'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import BottomSheet from '../../../components/BottomSheet'
+import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import { images } from '../../../constants/image'
-import { useColorScheme } from 'nativewind'
-import BottomSheetModalComponent from '../../../components/BottomSheetModal'
-import BottomSheet from '../../../components/BottomSheet'
-import { getAllExercisesBySearchQueryName } from '@/libs/mongodb'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import CustomButton from '@/components/CustomButton'
 
 const bodyParts = [
     'bụng', 'cardio',
@@ -112,7 +110,7 @@ const Exercises = () => {
             }
 
         } catch (error) {
-            console.log("Error fetching training data:", error);
+            console.log("Lỗi khi lấy dữ liệu:", error);
         } finally {
             setSmallLoading(false)
             setIsLoading(false);
@@ -122,7 +120,6 @@ const Exercises = () => {
     const handleSaveFilter = async () => {
         try {
             bottomSheetRefFilter?.current?.dismiss()
-            await fetchDataByQuery(true)
         } catch (error) {
             Alert.alert("Lỗi", error.message)
         }

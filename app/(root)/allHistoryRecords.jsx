@@ -1,14 +1,13 @@
-import { ActivityIndicator, Alert, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Image } from 'expo-image'
-import React, { useEffect, useState, useCallback } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { getTrainingRecord } from '../../libs/mongodb'
-import { router, useLocalSearchParams } from 'expo-router'
 import { Feather, Ionicons } from '@expo/vector-icons'
-import HistoryRecordCard from '../../components/HistoryRecordCard'
-import { useUserStore } from '../../store'
-import { images } from '../../constants/image'
+import { Image } from 'expo-image'
+import { router } from 'expo-router'
 import { useColorScheme } from 'nativewind'
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import HistoryRecordCard from '../../components/HistoryRecordCard'
+import { images } from '../../constants/image'
+import { getTrainingRecord } from '../../libs/mongodb'
 const AllHistoryRecords = () => {
 
     const [recordDatas, setRecordDatas] = useState([])
@@ -75,11 +74,6 @@ const AllHistoryRecords = () => {
                             renderItem={({ item }) => (
                                 <HistoryRecordCard item={item} />
                             )}
-                            ItemSeparatorComponent={
-                                <View className="h-[12px]">
-
-                                </View>
-                            }
                             ListEmptyComponent={() => (
                                 <View className="flex flex-col items-center justify-center bg-transparent h-full">
                                     <Image

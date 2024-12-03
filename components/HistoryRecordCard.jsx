@@ -6,14 +6,14 @@ import { formatTime, formatDateWithMonth } from '../utils'
 const HistoryRecordCard = ({ item }) => {
 
     return (
-        <TouchableOpacity className="bg-[#fff] dark:bg-[#292727] p-4 flex rounded-lg" onPress={() => router.push({
+        <TouchableOpacity className="bg-[#fff] mb-3 dark:bg-[#292727] p-4 flex rounded-lg" onPress={() => router.push({
             pathname: `/(root)/TrainingDetails/${item?.training?._id}`,
             params: {
                 data: JSON.stringify(item?.training)
             }
         })}>
             <View className="flex flex-row justify-between items-center">
-                <Text className="dark:text-white text-[16px] font-pextrabold">{item?.training?.title}</Text>
+                <Text className="dark:text-white text-[16px] font-pextrabold">{item?.training?.title ?? "Set tập không tồn tại"}</Text>
             </View>
             <View className="flex flex-row mt-2">
                 <View className="flex-1">

@@ -1,14 +1,14 @@
 import { Feather } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useColorScheme } from 'nativewind'
+import React, { useCallback, useRef, useState } from 'react'
 import { Alert, FlatList, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CustomButton from '../../../components/CustomButton'
-import TrainingCard from '../../../components/TrainingCard'
-import { fetchTrainingById, updateTraining } from '../../../libs/mongodb'
-import { useColorScheme } from 'nativewind'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
+import CustomButton from '../../../components/CustomButton'
 import LoadingModal from '../../../components/LoadingModal'
+import TrainingCard from '../../../components/TrainingCard'
+import { updateTraining } from '../../../libs/mongodb'
 const EditCustomTraining = () => {
 
     const { id, data } = useLocalSearchParams()

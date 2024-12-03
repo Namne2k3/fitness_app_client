@@ -65,7 +65,10 @@ const CreateExercisePage = () => {
     const { colorScheme } = useColorScheme()
     const [skip, setSkip] = useState(0)
     const limit = 10
-
+    const [filter, setFilter] = useState({
+        bodyParts: [],
+        equipments: [],
+    })
     const [trainingData, setTrainingData] = useState({
         title: 'Bài tập mới',
         exercises: [
@@ -108,11 +111,6 @@ const CreateExercisePage = () => {
         }
     }
 
-    const [filter, setFilter] = useState({
-        bodyParts: [],
-        equipments: [],
-    })
-
     const handleAddExerciseToSelection = useCallback((exercise) => {
         if (!exerciseSelections.some((ex) => ex.id === exercise.id)) {
             setExerciseSelections((prev) => [...prev, exercise]);
@@ -151,7 +149,7 @@ const CreateExercisePage = () => {
                 isCustom: true
             })
             setTrainingData((previous) => ({
-                title: 'New Training',
+                title: 'Bài tập mới',
                 exercises: [
 
                 ],
@@ -159,13 +157,14 @@ const CreateExercisePage = () => {
             }))
 
             setIsVisibleLoadingModal(false)
-            router.back()
+            router.push({
+                pathname: '/(root)/(tabs)/custom'
+            })
             Alert.alert("Đã tạo set bài tập mới!")
 
         } catch (error) {
             setIsVisibleLoadingModal(false)
-            console.log("Error: ", error);
-
+            console.log("Lỗi: ", error);
         }
     })
 
@@ -211,7 +210,6 @@ const CreateExercisePage = () => {
     const handleSaveFilter = async () => {
         try {
             bottomSheetRefFilter?.current?.dismiss()
-            await fetchDataByQuery(true)
         } catch (error) {
             Alert.alert("Lỗi", error.message)
         }
@@ -228,7 +226,7 @@ const CreateExercisePage = () => {
         }, 1000); // Thời gian debounce: 1 giây
 
         return () => clearTimeout(debounceTimeout); // Xóa timeout nếu người dùng tiếp tục nhập
-    }, [searchQuery]);
+    }, [searchQuery, filter.bodyParts, filter.equipments]);
 
     return (
         <>
@@ -323,7 +321,7 @@ const CreateExercisePage = () => {
                                 )}
                                 showsVerticalScrollIndicator={false}
                                 contentContainerStyle={{
-                                    paddingBottom: 210,
+                                    paddingBottom: 300,
                                     marginTop: 12
                                 }}
                             />

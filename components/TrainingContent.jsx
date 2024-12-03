@@ -11,7 +11,6 @@ const TrainingContent = () => {
 
     const fetchBodyParts = async () => {
         const res = await getAllTrainingsByUserId()
-        console.log("Check res from bodypart >>>", res);
 
         if (res.data) {
 
@@ -19,8 +18,6 @@ const TrainingContent = () => {
         }
     }
     useEffect(() => {
-        console.log("Chay ham nay");
-
         fetchBodyParts();
     }, [])
 

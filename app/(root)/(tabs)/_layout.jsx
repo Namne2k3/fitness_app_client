@@ -1,7 +1,7 @@
+import { FontAwesome, FontAwesome5, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Feather, FontAwesome, FontAwesome5, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
+import React from 'react';
 
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();

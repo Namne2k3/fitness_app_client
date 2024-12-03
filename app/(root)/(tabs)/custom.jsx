@@ -1,14 +1,14 @@
 import { images } from '@/constants/image';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
+import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchTrainingsByUserId } from '../../../libs/mongodb';
 import CustomTrainingCard from '../../../components/CustomTrainingCard';
-import { useUserStore } from '../../../store'
-import { useColorScheme } from 'nativewind';
+import { fetchTrainingsByUserId } from '../../../libs/mongodb';
+import { useUserStore } from '../../../store';
 
 const CustomPage = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -26,7 +26,7 @@ const CustomPage = () => {
       const data = await fetchTrainingsByUserId(user?._id);
       setTrainingDatas(data);
     } catch (error) {
-      console.log("Error fetching training data:", error);
+      console.log("Lỗi khi lấy dữ liệu", error);
     } finally {
       setIsLoading(false);
     }

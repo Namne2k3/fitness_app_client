@@ -2,14 +2,14 @@ import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useState } from 'react'
-import { Alert, FlatList, Modal, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
 import LoadingModal from '../../../components/LoadingModal'
 import TrainingCard from '../../../components/TrainingCard'
-import { createTrainingRecord, fetchTrainingById, getTrainingRecordById, updateCurrentPlanById } from '../../../libs/mongodb'
+import { createTrainingRecord, updateCurrentPlanById } from '../../../libs/mongodb'
 import { useUserStore } from '../../../store'
-import { generatePrompt, calculateCaloriesBurned } from '../../../utils/index'
+import { calculateCaloriesBurned } from '../../../utils/index'
 
 const BeginTrainingId = () => {
 

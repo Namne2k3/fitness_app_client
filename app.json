@@ -22,7 +22,10 @@
         "backgroundColor": "#ffffff"
       },
       "package": "dev.expo.fitbod",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "web": {
       "bundler": "metro",

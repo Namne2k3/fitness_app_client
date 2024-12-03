@@ -16,6 +16,7 @@ const levelToPointMap = {
 }
 
 function calculateTrainingPlan(userData) {
+
     const {
         weight,
         targetWeight,
@@ -38,8 +39,8 @@ function calculateTrainingPlan(userData) {
     }
 
 
-    const minCaloriesPerTraining = Math.floor(adjustedTDEE * 0.15);
-    const maxCaloriesPerTraining = Math.floor(adjustedTDEE * 0.25);
+    const minCaloriesPerTraining = Math.floor(adjustedTDEE * 0.10);
+    const maxCaloriesPerTraining = Math.floor(adjustedTDEE * 0.20);
     const caloriesPerTraining = (minCaloriesPerTraining + maxCaloriesPerTraining) / 2;
 
     // Yêu cầu protein và chất béo

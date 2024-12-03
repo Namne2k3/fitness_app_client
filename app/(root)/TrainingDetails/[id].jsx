@@ -1,24 +1,26 @@
-import { Entypo, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
+import { Entypo, Feather } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
-import React, { useCallback, useEffect, useRef, useState, memo } from 'react'
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View, Image, Modal, Dimensions } from 'react-native'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
+import { Alert, Dimensions, FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import BottomSheet from '../../../components/BottomSheet'
 import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 import CustomButton from '../../../components/CustomButton'
 import ExerciseTrainingCard from '../../../components/ExerciseTrainingCard'
-import { deleteTrainingById, fetchTrainingById } from '../../../libs/mongodb'
-import { formatDate, getAbbreviation, randomColor } from '../../../utils/index'
-import { images } from '../../../constants/image'
-import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
 import LoadingModal from '../../../components/LoadingModal'
+import { images } from '../../../constants/image'
+import { deleteTrainingById, fetchTrainingById } from '../../../libs/mongodb'
+import { getAbbreviation, randomColor } from '../../../utils/index'
 
 const TrainingDetails = () => {
     const { id } = useLocalSearchParams()
     const { index, planId, data } = useLocalSearchParams()
     const [isEdit, setIsEdit] = useState(false)
     const [trainingData, setTrainingData] = useState(data ? JSON.parse(data) : {})
+    if (trainingData == null) {
+        console.log("vo day");
+
+    }
 
     const [selectedExercise, setSelectedExercise] = useState({})
     const { colorScheme } = useColorScheme()
@@ -43,13 +45,14 @@ const TrainingDetails = () => {
             setIsLoading(true)
             try {
                 const found = await fetchTrainingById(id)
+                console.log("Check found >>> ", found);
 
                 if (found == null) {
                     throw new Error("Không tìm thấy dữ liệu")
                 }
                 setTrainingData(found)
             } catch (err) {
-                Alert.alert("Lỗi: ", err.message, [
+                Alert.alert("Không tìm thấy dữ liệu: ", "Dữ liệu có thể đã bị xóa", [
                     {
                         text: "Ok",
                         onPress: () => router.back()
@@ -59,7 +62,8 @@ const TrainingDetails = () => {
                 setIsLoading(false)
             }
         }
-        if (!data) {
+        if (trainingData == null) {
+            console.log("vo day");
             getTrainingById()
         }
     }, [])
@@ -190,6 +194,7 @@ const TrainingDetails = () => {
                             item={item}
                         />
                     )}
+                    showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         padding: 16,
                         backgroundColor: colorScheme == 'dark' ? "rgb(2, 6 ,23)" : '#f4f5f6"',

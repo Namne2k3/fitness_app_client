@@ -1,21 +1,21 @@
-import { Dimensions, Text, View } from 'react-native';
-import { Image } from 'expo-image'
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '@/constants/image';
+import { getUserById } from '@/libs/mongodb';
+import { getToken } from '@/libs/token';
+import { useUserStore } from '@/store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Progress from 'react-native-progress';
-import axios from 'axios';
-import { getUserByEmail, getUserById } from '@/libs/mongodb';
-import { useUserStore } from '@/store';
-import { getToken } from '@/libs/token';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import socket from '../../utils/socket'
 
 const WelcomePage = () => {
     const { colorScheme, toggleColorScheme } = useColorScheme();
     const [timing, setTiming] = useState(0);
-    const setUser = useUserStore((state) => state.setUser);
+    const { user, setUser } = useUserStore()
     const duration = 2000;
     const screenWidth = Dimensions.get('window').width;
 
@@ -43,7 +43,7 @@ const WelcomePage = () => {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     const userData = await getUserById(res.data.user._id);
-
+                    socket.emit('register', userData.data._id);
                     setUser(userData.data);
                     return true;
                 } catch (error) {
@@ -81,8 +81,8 @@ const WelcomePage = () => {
         <SafeAreaView className="h-full px-8 py-10 flex">
             <View className="flex justify-center items-center">
                 <Image
-                    source={images.welcome_image}
-                    className="w-[300px] h-[300px] rounded-full"
+                    source={images.icon}
+                    className="w-[300px] h-[300px]"
                     contentFit="contain"
                 />
             </View>
