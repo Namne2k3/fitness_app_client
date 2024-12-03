@@ -21,13 +21,13 @@ const Report = () => {
     const [monthRecords, setMonthRecords] = useState([])
     const [weekRecords, setWeekRecords] = useState([])
     const [totalCaloriesBurned, setTotalCaloriesBurned] = useState(0)
-
     const { user } = useUserStore()
     const { colorScheme } = useColorScheme()
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef();
     const [loading, setLoading] = useState(false)
-
+    const [skip, setSkip] = useState(0)
+    const limit = 10
     const monthDays = getCurrentMonthDays()
 
     const filteredLabels = monthDays
@@ -38,11 +38,31 @@ const Report = () => {
         setMonthRecords(data)
     }
 
-    const fetchAllTrainingRecord = async () => {
-        const res = await getTrainingRecord()
-        console.log("Check recordDatas >>> ", res.data);
-        setRecordDatas(res.data)
-    }
+    const fetchAllTrainingRecord = async (isSearchReset = false) => {
+        try {
+
+            if (isSearchReset) {
+                // setLoading(true)
+                setSkip(0)
+                setRecordDatas([])
+            }
+
+            const res = await getTrainingRecord({ limit: 0, skip: isSearchReset ? 0 : skip });
+
+            const newRecordDatas = res.data;
+            setRecordDatas((current) => isSearchReset ? newRecordDatas : [...current, ...newRecordDatas])
+
+            if (newRecordDatas?.length > 0) {
+                setSkip((prev) => prev + limit)
+            }
+            console.log("Message: ", res.message);
+
+        } catch (error) {
+            Alert.alert("Lỗi", error.message)
+        } finally {
+            setLoading(false)
+        }
+    };
 
     const fetchAllWeekRecord = async () => {
         const res = await getWeeklyTrainings()
@@ -58,13 +78,13 @@ const Report = () => {
 
     const fetchData = async () => {
 
-        setLoading(true);
+        // setLoading(true);
 
         try {
             await Promise.all([
                 fetchAllWeekRecord(),
                 fetchTrainingRecordsByMonth(new Date().getMonth() + 1),
-                fetchAllTrainingRecord(),
+                fetchAllTrainingRecord(true),
             ]);
 
         } catch (error) {
@@ -259,7 +279,7 @@ const Report = () => {
                         <Text className="text-[#3749db] font-pbold text-lg">Tất cả</Text>
                     </TouchableOpacity>
                 }>
-                    <View className="rounded-lg p-4 bg-[#fff] dark:bg-[#292727] mt-2">
+                    <View className="rounded-lgbg-[#fff] dark:bg-[#292727] mt-2">
                         {recordDatas && recordDatas?.length > 0 ? (
                             recordDatas.slice(0, 3).map((item, index) => <HistoryRecordCard key={index} item={item} />)
                         ) : (

@@ -6,7 +6,7 @@ import { formatTime, formatDateWithMonth } from '../utils'
 const HistoryRecordCard = ({ item }) => {
 
     return (
-        <TouchableOpacity className="bg-[#fff] dark:bg-[#292727] p-2 flex" onPress={() => router.push({
+        <TouchableOpacity className="bg-[#fff] dark:bg-[#292727] p-4 flex rounded-lg" onPress={() => router.push({
             pathname: `/(root)/TrainingDetails/${item?.training?._id}`,
             params: {
                 data: JSON.stringify(item?.training)

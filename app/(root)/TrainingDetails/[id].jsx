@@ -17,12 +17,6 @@ import LoadingModal from '../../../components/LoadingModal'
 const TrainingDetails = () => {
     const { id } = useLocalSearchParams()
     const { index, planId, data } = useLocalSearchParams()
-
-    // console.log("Check planId >>> ", planId);
-    // console.log("Check index >>> ", index);
-    // console.log("Check data >>> ", data);
-
-
     const [isEdit, setIsEdit] = useState(false)
     const [trainingData, setTrainingData] = useState(data ? JSON.parse(data) : {})
 

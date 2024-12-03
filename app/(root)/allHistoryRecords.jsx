@@ -1,51 +1,58 @@
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Image } from 'expo-image'
 import React, { useEffect, useState, useCallback } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getTrainingRecord } from '../../libs/mongodb'
 import { router, useLocalSearchParams } from 'expo-router'
-import { Feather } from '@expo/vector-icons'
+import { Feather, Ionicons } from '@expo/vector-icons'
 import HistoryRecordCard from '../../components/HistoryRecordCard'
 import { useUserStore } from '../../store'
 import { images } from '../../constants/image'
 import { useColorScheme } from 'nativewind'
 const AllHistoryRecords = () => {
 
-    const params = useLocalSearchParams();
-    console.log("Check params >>> ", params);
-
-
-    const [recordDatas, setRecordDatas] = useState(JSON.parse(params.recordDatas))
-    const [isLoading, setIsLoading] = useState(true)
-    const [refreshing, setRefreshing] = useState(false);
+    const [recordDatas, setRecordDatas] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [smallLoading, setSmallLoading] = useState(false)
     const { colorScheme } = useColorScheme()
+    const [skip, setSkip] = useState(0)
+    const limit = 10
 
-    const user = useUserStore((state) => state.user)
+    const fetchAllTrainingRecord = async (isSearchReset = false) => {
+        if (!isSearchReset) setSmallLoading(true)
+        try {
 
-    const [offset, setOffset] = useState(0)
+            if (isSearchReset) {
+                setIsLoading(true)
+                setSkip(0)
+                setRecordDatas([])
+            }
 
-    const handleRefresh = useCallback(async () => {
-        setOffset(0)
-        await fetchAllTrainingRecord()
-    })
+            const res = await getTrainingRecord({ limit, skip: isSearchReset ? 0 : skip });
 
-    // const fetchAllTrainingRecord = async () => {
-    //     const data = await getTrainingRecord(user?._id);
-    //     setRecordDatas(data);
-    // };
+            const newRecordDatas = res.data;
+            setRecordDatas((current) => isSearchReset ? newRecordDatas : [...current, ...newRecordDatas])
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         await fetchAllTrainingRecord();
-    //         setIsLoading(false);
-    //     };
-    //     fetchData();
-    // }, []);
+            if (newRecordDatas?.length > 0) {
+                setSkip((prev) => prev + limit)
+            }
+            console.log("Message: ", res.message);
+
+        } catch (error) {
+            Alert.alert("Lỗi", error.message)
+        } finally {
+            setSmallLoading(false)
+            setIsLoading(false)
+        }
+    };
+    useEffect(() => {
+        fetchAllTrainingRecord(true)
+    }, []);
 
     return (
-        <SafeAreaView className="h-full relative bg-[#fff] dark:bg-slate-950">
+        <SafeAreaView className="h-full relative dark:bg-slate-950 p-4">
 
-            <View className="px-4 w-full flex flex-row justify-between items-center">
+            <View className=" w-full flex flex-row justify-between items-center">
                 <View className="flex flex-row justify-center items-center">
                     <TouchableOpacity
                         onPress={() => router.back()}
@@ -53,7 +60,7 @@ const AllHistoryRecords = () => {
                         <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                     </TouchableOpacity>
 
-                    <Text className="ml-4 font-pextrabold uppercase text-[32px] dark:text-white">History</Text>
+                    <Text className="ml-4 font-pextrabold uppercase text-[28px] dark:text-white">Lịch sử tập luyện</Text>
                 </View>
             </View>
             {
@@ -64,12 +71,14 @@ const AllHistoryRecords = () => {
                 ) : (
                     <>
                         <FlatList
-                            data={recordDatas?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))}
+                            data={recordDatas}
                             renderItem={({ item }) => (
                                 <HistoryRecordCard item={item} />
                             )}
-                            refreshControl={
-                                <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+                            ItemSeparatorComponent={
+                                <View className="h-[12px]">
+
+                                </View>
                             }
                             ListEmptyComponent={() => (
                                 <View className="flex flex-col items-center justify-center bg-transparent h-full">
@@ -82,12 +91,18 @@ const AllHistoryRecords = () => {
                                     <Text className="text-sm">No records found!</Text>
                                 </View>
                             )}
+                            showsVerticalScrollIndicator={false}
                             contentContainerStyle={{
-                                borderRadius: 16,
-                                padding: 16,
-                                backgroundColor: colorScheme == 'dark' ? '#292727' : '#fff',
-                                paddingBottom: 100
+                                paddingVertical: 16,
                             }}
+                            ListFooterComponent={
+                                !smallLoading ?
+                                    <TouchableOpacity onPress={() => fetchAllTrainingRecord(false)} className='p-4 flex flex-row justify-center items-center'>
+                                        <Ionicons name='reload' size={30} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                                    </TouchableOpacity>
+                                    :
+                                    <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                            }
                         />
                     </>
                 )

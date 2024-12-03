@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
 import LoadingModal from '../../../components/LoadingModal'
 import TrainingCard from '../../../components/TrainingCard'
-import { createTrainingRecord, fetchTrainingById, updateCurrentPlanById } from '../../../libs/mongodb'
+import { createTrainingRecord, fetchTrainingById, getTrainingRecordById, updateCurrentPlanById } from '../../../libs/mongodb'
 import { useUserStore } from '../../../store'
 import { generatePrompt, calculateCaloriesBurned } from '../../../utils/index'
 
@@ -23,6 +23,7 @@ const BeginTrainingId = () => {
     const { colorScheme } = useColorScheme()
     const [backModalVisible, setBackModalVisible] = useState(false)
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
+    const [trainingRecord, setTrainingRecord] = useState({})
 
     const pad = (number) => {
         return number < 10 ? `0${number}` : number;
@@ -157,16 +158,20 @@ const BeginTrainingId = () => {
             }
 
             const saved = await createTrainingRecord(trainingRecord)
+            console.log("Check saved training record >>> ", JSON.stringify(saved?.data));
 
             if (planId && index) {
-                // cap nhat curernt plan tai day
-                const planUpdated = await updateCurrentPlanById(planId, Number(index) + 1)
-
+                await updateCurrentPlanById(planId, Number(index) + 1)
             }
 
             if (saved) {
                 setIsVisibleLoadingModal(false)
-                router.replace(`/(root)/finishTraining/${saved?._id}`)
+                router.replace({
+                    pathname: `/(root)/finishTraining/${saved?._id}`,
+                    params: {
+                        trainingRecordParams: JSON.stringify(saved?.data)
+                    }
+                })
             }
         } catch (error) {
 

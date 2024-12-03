@@ -11,27 +11,27 @@ import LoadingModal from '../../../components/LoadingModal'
 import usePlanStore from '../../../store/usePlanStore'
 const FinishTrainingId = () => {
 
-    const { id } = useLocalSearchParams()
-    const [trainingRecord, setTrainingRecord] = useState({})
+    const { id, trainingRecordParams } = useLocalSearchParams()
+    const [trainingRecord, setTrainingRecord] = useState(JSON.parse(trainingRecordParams))
     const { setIsFetched } = usePlanStore()
     const [isLoading, setIsLoading] = useState(false)
 
-    useEffect(() => {
-        const fetchTrainingRecordById = async () => {
-            setIsLoading(true)
-            try {
-                const data = await getTrainingRecordById(id)
-                setTrainingRecord(data)
-                setIsFetched(false)
-            } catch (error) {
-                Alert.alert("Lỗi", error.message)
-            } finally {
-                setIsLoading(false)
-            }
-        }
+    // useEffect(() => {
+    //     const fetchTrainingRecordById = async () => {
+    //         setIsLoading(true)
+    //         try {
+    //             const data = await getTrainingRecordById(id)
+    //             setTrainingRecord(data)
+    //             setIsFetched(false)
+    //         } catch (error) {
+    //             Alert.alert("Lỗi", error.message)
+    //         } finally {
+    //             setIsLoading(false)
+    //         }
+    //     }
 
-        fetchTrainingRecordById()
-    }, [])
+    //     fetchTrainingRecordById()
+    // }, [])
 
 
     return (
@@ -147,7 +147,7 @@ const FinishTrainingId = () => {
                     <CustomButton
                         text="Xong"
                         bgColor='bg-[#4040d6]'
-                        onPress={() => router.replace('/(root)/(tabs)/training')}
+                        onPress={() => router.replace('/(root)/(tabs)/report')}
                     />
                 </View>
             </View>

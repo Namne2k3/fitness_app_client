@@ -146,11 +146,11 @@ const getTrainingRecordsByMonth = async (month) => {
     }
 }
 
-const getTrainingRecord = async () => {
+const getTrainingRecord = async ({ limit, skip }) => {
     const token = await getToken()
 
     try {
-        const res = await axios.get(`${URL}/api/trainingrecord/getAllTrainingRecords`, {
+        const res = await axios.get(`${URL}/api/trainingrecord/getAllTrainingRecords?limit=${limit}&skip=${skip}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -163,20 +163,14 @@ const getTrainingRecord = async () => {
 }
 
 const createTrainingRecord = async (recordData) => {
-
-    console.log("Check recordData >> ", recordData);
-
-
     const token = await getToken()
     try {
-        const response = await axios.post(`${URL}/api/trainingrecord/create`, recordData, {
+        const res = await axios.post(`${URL}/api/trainingrecord/create`, recordData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
-        const data = await response.data;
-
-        return data;
+        return res.data;
     } catch (error) {
         throw new Error(error)
     }
