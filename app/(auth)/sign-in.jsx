@@ -19,54 +19,44 @@ const SignIn = () => {
         password: 'nhpn2003'
     })
 
-
-    console.log("Day la trang sign in");
-
-
     const setUser = useUserStore((state) => state.setUser)
 
     const onSignInPress = useCallback(async () => {
-
-        if (!isLoaded) {
-            return
-        }
-
         try {
             setIsVisibleLoadingModal(true)
             const response = await axios.post(`${process.env.EXPO_PUBLIC_URL_SERVER}/api/auth/login`, {
                 email: form.email,
                 password: form.password,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
             })
             const data = await response.data;
+
 
             if (data.token) {
 
                 await AsyncStorage.setItem('jwt_token', data.token);
                 const userData = await getUserByEmail(form.email)
+
                 setUser(userData)
                 if (!userData.weight || !userData.height || userData.height == "0" || !userData.orm || !userData.tdee) {
-                    setIsVisibleLoadingModal(false)
+                    // setIsVisibleLoadingModal(false)
                     router.replace(`/(root)/ChooseGender`)
                     return;
                 }
-                setIsVisibleLoadingModal(false)
+                // setIsVisibleLoadingModal(false)
                 router.replace('/(root)/(tabs)/training')
                 // router.push('/(root)/ChooseGender')
 
             } else {
-                Alert.alert("Can't login, have some error while login", data.message);
+                Alert.alert("Không thể đăng nhập", data.message);
             }
 
         } catch (err) {
+            Alert.alert("Lỗi", err.message);
+        } finally {
             setIsVisibleLoadingModal(false)
-            Alert.alert("Error", err.message);
         }
 
-    }, [isLoaded, form.email, form.password])
+    }, [form.email, form.password])
     return (
         <SafeAreaView className="p-8 bg-[#fff] h-full">
             <ScrollView showsVerticalScrollIndicator={false}>

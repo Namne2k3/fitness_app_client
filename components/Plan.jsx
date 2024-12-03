@@ -7,11 +7,10 @@ import useUserStore from '../store/userStore';
 import usePlanStore from '../store/usePlanStore';
 import LoadingModal from "./LoadingModal";
 import PlanCard from "./PlanCard";
+import { useLocalSearchParams } from "expo-router";
 
 const Plan = () => {
 
-
-    const { user, setUser } = useUserStore()
     const { plans, setPlans } = usePlanStore()
     const [isLoading, setIsLoading] = useState(false)
 
@@ -30,9 +29,11 @@ const Plan = () => {
 
             try {
                 setIsLoading(true)
-                console.log("Fetch plans ....");
+
                 const res = await getAllPlansByUserId();
                 if (res.data) {
+                    console.log("Plans length >>> ", res.data.length);
+
                     setPlans(res.data); // Lưu vào Zustand
                 }
             } catch (error) {
@@ -41,7 +42,9 @@ const Plan = () => {
                 setIsLoading(false);
             }
         };
+
         fetchPlans()
+
     }, []);
 
     return (

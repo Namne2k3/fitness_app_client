@@ -9,7 +9,6 @@ import { useLocalSearchParams } from "expo-router";
 const Tab = createMaterialTopTabNavigator();
 
 const TrainingPage = () => {
-
   const { colorScheme } = useColorScheme()
   return (
     <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>

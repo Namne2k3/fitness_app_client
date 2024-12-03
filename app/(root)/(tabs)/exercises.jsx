@@ -168,7 +168,7 @@ const Exercises = () => {
         }, 1000);
 
         return () => clearTimeout(debounceTimeout);
-    }, [searchQuery]);
+    }, [searchQuery, filter.bodyParts, filter.equipments]);
 
     return (
         <SafeAreaView className="px-4 pt-4 h-full dark:bg-slate-950">
@@ -207,10 +207,12 @@ const Exercises = () => {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity onPress={() => setFilter({
-                    bodyParts: [],
-                    equipments: [],
-                })}>
+                <TouchableOpacity
+                    disabled={filter.bodyParts.length > 0 || filter.equipments.length > 0 ? false : true}
+                    onPress={() => setFilter({
+                        bodyParts: [],
+                        equipments: [],
+                    })}>
                     <Text>Hủy lọc</Text>
                 </TouchableOpacity>
             </View>
@@ -260,7 +262,7 @@ const Exercises = () => {
             }
             <BottomSheetModalComponent selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
             <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['95%']} bottomSheetRef={bottomSheetRefFilter}>
-                <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] mx-2 mb-2">
+                <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] m-2">
                     <Text className="font-pmedium text-lg mb-1">Phần bộ phận cơ thể</Text>
                     <View className="flex flex-row flex-wrap">
                         {

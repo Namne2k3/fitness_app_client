@@ -683,7 +683,55 @@ const deleteAllNotificationPassedByUserId = async () => {
     }
 }
 
+const updateUserById = async (body) => {
+    const token = await getToken()
+    try {
+        const res = await axios.put(`${URL}/api/user/update/updateUserById`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const reCreateTrainingsByUserId = async (trainings) => {
+    const token = await getToken()
+    try {
+        const res = await axios.post(`${URL}/api/trainings/recreate`, trainings, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const reCreatePlans = async (plans) => {
+    const token = await getToken()
+    try {
+        const res = await axios.post(`${URL}/api/plan/recreate`, plans, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export {
+    reCreatePlans,
+    reCreateTrainingsByUserId,
+    updateUserById,
     getWeeklyTrainings,
     deleteAllNotificationPassedByUserId,
     deleteNotificationById,

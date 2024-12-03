@@ -40,20 +40,18 @@ const Report = () => {
 
     const fetchAllTrainingRecord = async () => {
         const res = await getTrainingRecord()
+        console.log("Check recordDatas >>> ", res.data);
         setRecordDatas(res.data)
     }
 
     const fetchAllWeekRecord = async () => {
         const res = await getWeeklyTrainings()
 
-        console.log("Week data >>> ", res.data);
-
-
         setWeekRecords(res.data)
         let total = res.data?.reduce((total, record) => {
             return total + record.caloriesBurned;
         }, 0);
-        console.log("Check total >>> ", total);
+
         setTotalCaloriesBurned(total)
 
     }
@@ -252,7 +250,12 @@ const Report = () => {
 
 
                 <ReportComponent title={`lịch sử`} rightComponent={
-                    <TouchableOpacity onPress={() => router.push('/(root)/allHistoryRecords')}>
+                    <TouchableOpacity onPress={() => router.push({
+                        pathname: '/(root)/allHistoryRecords',
+                        params: {
+                            recordDatas: JSON.stringify(recordDatas)
+                        }
+                    })}>
                         <Text className="text-[#3749db] font-pbold text-lg">Tất cả</Text>
                     </TouchableOpacity>
                 }>

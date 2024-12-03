@@ -383,17 +383,17 @@ function calculate1RM(weight, reps, name) {
     }
 
     if (reps == 1) {
-        return weight; // Nếu chỉ có 1 rep, thì 1RM chính là trọng lượng đó
+        return Number(weight).toFixed(1); // Nếu chỉ có 1 rep, thì 1RM chính là trọng lượng đó
     }
     const oneRepMax = weight * (1 + reps / 30);
     switch (name) {
         case 'Bench Press':
             // Nếu cần điều chỉnh, bạn có thể áp dụng hệ số cho từng bài tập
-            return (oneRepMax * 1.0)
+            return (oneRepMax * 1.0).toFixed(1)
         case 'Deadlift':
-            return (oneRepMax * 1.05)
+            return (oneRepMax * 1.05).toFixed(1)
         case 'Squats':
-            return (oneRepMax * 1.03)
+            return (oneRepMax * 1.03).toFixed(1)
         default:
             throw new Error('Bài tập không hợp lệ!'); // Kiểm tra bài tập hợp lệ
     }

@@ -42,7 +42,6 @@ const ChooseGender = () => {
             <View>
                 <Text className="font-pbold text-[28px] text-center">Giới tính của bạn</Text>
             </View>
-            <View />
             <View style={styles.genderContainer}>
                 <TouchableOpacity onPress={() => setGender('male')} style={styles.imageContainer}>
                     <Image

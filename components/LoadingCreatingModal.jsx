@@ -3,7 +3,7 @@ import { Modal, Text, View } from 'react-native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 
 
-const LoadingCreatingModal = ({ visible, onClose }) => {
+const LoadingCreatingModal = ({ visible, onClose, message = "Đang tạo kế hoạch tập luyện cho bạn" }) => {
 
     const [progress, setProgress] = useState(0);
 
@@ -70,7 +70,7 @@ const LoadingCreatingModal = ({ visible, onClose }) => {
                             color: '#3749db',
                             textAlign: 'center',
                         }}>
-                        Đang tạo kế hoạch tập luyện cho bạn
+                        {message}
                     </Text>
                 </View>
             </View>

@@ -59,6 +59,12 @@
             "supportsBackgroundPlayback": true,
             "supportsPictureInPicture": true
           }
+        ],
+        [
+          "expo-notifications",
+          {
+            "icon": "./assets/images/icon.png"
+          }
         ]
       ]
     },

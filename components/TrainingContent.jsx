@@ -7,15 +7,19 @@ import { View } from "react-native";
 
 const TrainingContent = () => {
 
-
     const [bodyParts, setBodyParts] = useState([])
-    const fetchBodyParts = useCallback(async () => {
+
+    const fetchBodyParts = async () => {
         const res = await getAllTrainingsByUserId()
+        console.log("Check res from bodypart >>>", res);
+
         if (res.data) {
+
             setBodyParts(res.data)
         }
-    }, [])
+    }
     useEffect(() => {
+        console.log("Chay ham nay");
 
         fetchBodyParts();
     }, [])

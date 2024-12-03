@@ -82,7 +82,9 @@ const ChooseOrm = () => {
             const saved = await createPlans(plans)
 
             if (saved?.data?.length > 0) {
-                router.push('/(root)/(tabs)/training')
+                router.replace({
+                    pathname: '/(root)/(tabs)/training'
+                })
             } else {
                 throw new Error("Lỗi tạo plans")
             }

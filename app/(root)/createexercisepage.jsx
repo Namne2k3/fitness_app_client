@@ -335,7 +335,7 @@ const CreateExercisePage = () => {
                 </View>
                 <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
                 <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['95%']} bottomSheetRef={bottomSheetRefFilter}>
-                    <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] mx-2 mb-2">
+                    <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] m-2">
                         <Text className="font-pmedium text-lg mb-1">Phần bộ phận cơ thể</Text>
                         <View className="flex flex-row flex-wrap">
                             {

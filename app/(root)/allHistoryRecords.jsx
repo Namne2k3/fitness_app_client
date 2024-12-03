@@ -3,7 +3,7 @@ import { Image } from 'expo-image'
 import React, { useEffect, useState, useCallback } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { getTrainingRecord } from '../../libs/mongodb'
-import { router } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { Feather } from '@expo/vector-icons'
 import HistoryRecordCard from '../../components/HistoryRecordCard'
 import { useUserStore } from '../../store'
@@ -11,7 +11,11 @@ import { images } from '../../constants/image'
 import { useColorScheme } from 'nativewind'
 const AllHistoryRecords = () => {
 
-    const [recordDatas, setRecordDatas] = useState([])
+    const params = useLocalSearchParams();
+    console.log("Check params >>> ", params);
+
+
+    const [recordDatas, setRecordDatas] = useState(JSON.parse(params.recordDatas))
     const [isLoading, setIsLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false);
     const { colorScheme } = useColorScheme()
@@ -25,18 +29,18 @@ const AllHistoryRecords = () => {
         await fetchAllTrainingRecord()
     })
 
-    const fetchAllTrainingRecord = async () => {
-        const data = await getTrainingRecord(user?._id);
-        setRecordDatas(data);
-    };
+    // const fetchAllTrainingRecord = async () => {
+    //     const data = await getTrainingRecord(user?._id);
+    //     setRecordDatas(data);
+    // };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await fetchAllTrainingRecord();
-            setIsLoading(false);
-        };
-        fetchData();
-    }, []);
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         await fetchAllTrainingRecord();
+    //         setIsLoading(false);
+    //     };
+    //     fetchData();
+    // }, []);
 
     return (
         <SafeAreaView className="h-full relative bg-[#fff] dark:bg-slate-950">
