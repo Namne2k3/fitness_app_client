@@ -7,7 +7,6 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import 'react-native-reanimated';
 import { tokenCache } from '../libs/clerk';
 import store from '../store/reduxStore'
 import { Provider } from 'react-redux'
