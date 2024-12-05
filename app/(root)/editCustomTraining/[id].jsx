@@ -108,7 +108,7 @@ const EditCustomTraining = () => {
                 router.replace(`/(root)/(tabs)/custom`)
             }
         } catch (error) {
-            Alert.alert('Error: ', error.message)
+            Alert.alert('Lỗi: ', error.message)
         }
         finally {
             setIsLoading(false)

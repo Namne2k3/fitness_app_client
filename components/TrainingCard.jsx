@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import { FlatList, StyleSheet, Text, TouchableOpacity, View, Switch } from 'react-native'
 import { Image } from 'expo-image'
+import React from 'react'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import SetCard from './SetCard'
 
 const NoNeedKg = [
@@ -25,8 +25,6 @@ const NoNeedKg = [
 
 const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpdateKilogramAndReps, hasCheck, toggleBottomSheetModal }) => {
 
-    const [isSetAll, setIsSetAll] = useState(true)
-
     const isNeedKg = !NoNeedKg.includes(exercise?.equipment)
 
     return (
@@ -47,16 +45,6 @@ const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpd
                     <Text className="font-psemibold text-[13px] capitalize dark:text-white">{exercise.name}</Text>
                     <Text className="font-pregular text-[12px] dark:text-white">Số hiệp: {sets?.length}</Text>
                 </View>
-
-                {/* <View>
-                    <Switch
-                        trackColor={{ false: '#767577', true: '#ccc' }}
-                        thumbColor={'#3749db'}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={() => setIsSetAll((current) => !current)}
-                        value={isSetAll}
-                    />
-                </View> */}
             </View>
 
             <View className="w-full mt-2">
