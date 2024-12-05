@@ -411,6 +411,8 @@ const getAllChatRooms = async () => {
 }
 
 const createMessage = async (message) => {
+    console.log("Check message from createMessage >>> ", message);
+
     const token = await getToken()
 
     try {

@@ -79,7 +79,7 @@ const Feed = () => {
                                 )
                             }}
                             ItemSeparatorComponent={
-                                <View className="h-[5px] bg-[#ccc]">
+                                <View className="border-t-[0.5px] border-[#ccc]">
 
                                 </View>
                             }

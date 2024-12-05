@@ -36,6 +36,12 @@
       "expo-router",
       "expo-video",
       [
+        "expo-media-library",
+        {
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      [
         "expo-notifications",
         {
           "icon": "./assets/images/welcome_image.jpg"

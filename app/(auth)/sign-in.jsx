@@ -29,6 +29,7 @@ const SignIn = () => {
                 password: form.password,
             })
             const data = await response.data;
+            console.log("Check data from login >>> ", data);
 
 
             if (data.token) {
@@ -51,7 +52,7 @@ const SignIn = () => {
             }
 
         } catch (err) {
-            Alert.alert("Lỗi", err.message);
+            Alert.alert("Lỗi", "Tài khoản chưa được đăng ký");
         } finally {
             setIsVisibleLoadingModal(false)
         }

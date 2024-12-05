@@ -158,7 +158,6 @@ const BeginTrainingId = () => {
             }
 
             const saved = await createTrainingRecord(trainingRecord)
-            console.log("Check saved training record >>> ", JSON.stringify(saved?.data));
 
             if (planId && index) {
                 await updateCurrentPlanById(planId, Number(index) + 1)

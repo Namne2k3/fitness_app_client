@@ -1,6 +1,6 @@
 import { AntDesign, Feather, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import { Video } from 'expo-av'
-import { useLocalSearchParams } from 'expo-router'
+import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
@@ -27,7 +27,6 @@ const DetailFeed = () => {
 
     const handleDeleteComment = async () => {
         setIsPostingComment(true)
-
         try {
 
             const updatedBlogComments = blog?.comments
@@ -170,10 +169,10 @@ const DetailFeed = () => {
     return (
         <>
             <ScrollView
-                className="bg-[#fff] flex-1 dark:bg-slate-950"
+                className="bg-[#fff] h-full flex-1 dark:bg-slate-950"
             >
                 {/* header */}
-                <View className="border-t-[1px] border-[#ccc] flex flex-row justify-between items-center px-2 pt-4 ">
+                <View className="flex flex-row justify-between items-center px-2 pt-4 ">
                     <TouchableOpacity onPress={() => { }} className="mr-3 ">
                         <Image
                             source={{ uri: blog?.author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
@@ -239,7 +238,7 @@ const DetailFeed = () => {
                         {
                             blog?.allowComment &&
                             <View className="flex flex-row justify-center items-center">
-                                <TouchableOpacity onPress={() => router.push(`/(root)/feed/${_id}`)} className="ml-4">
+                                <TouchableOpacity onPress={() => inputCommentRef?.current?.focus()} className="ml-4">
                                     <MaterialCommunityIcons name='comment-text-outline' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                                 </TouchableOpacity>
                                 {
@@ -316,7 +315,7 @@ const DetailFeed = () => {
                         </View>
                 }
 
-                <View className="p-2 flex-1">
+                <View className="p-2 flex flex-1">
                     {
                         blog?.comments?.map((cmt, index) => (
                             <CommentCard colorScheme={colorScheme} currentUserId={user?._id} index={index} setSelectedComment={(cmt) => setSelectedComment(cmt)} handlePresentModalSheet={handlePresentModalSheet} comment={cmt} key={index} />
@@ -325,7 +324,7 @@ const DetailFeed = () => {
                 </View>
             </ScrollView>
             <LoadingModal visible={isPostingComment} message={"Loading..."} />
-            <BottomSheet bottomSheetRef={bottomSheetRef}>
+            <BottomSheet snapPoints={['40%']} bottomSheetRef={bottomSheetRef}>
                 <View className="flex">
                     <TouchableOpacity onPress={() => {
                         setIsEdit(true)

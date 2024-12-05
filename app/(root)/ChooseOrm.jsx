@@ -172,11 +172,12 @@ const ChooseOrm = () => {
                                         <TextInput
                                             className={`bg-[#ccc] mr-2 font-bold my-2 dark:text-white rounded-lg p-2 text-lg flex-1 text-left`}
                                             keyboardType="numeric"
-                                            value={(isLbs ? (weight * 2.20462) : weight || 0).toString()}
+                                            // value={(isLbs ? (weight * 2.20462) : weight || 0).toString()}
                                             onChangeText={(text) => {
                                                 const numericValue = parseFloat(text);
                                                 if (!isNaN(numericValue)) setWeight(numericValue);
                                             }}
+                                            placeholder='30'
                                         />
                                     </TouchableWithoutFeedback>
                                 </KeyboardAvoidingView>

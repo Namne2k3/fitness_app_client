@@ -116,6 +116,8 @@ export const uploadFile = async (file, type) => {
 //     },
 // ]
 export const createVideo = async (form) => {
+    console.log("Check form from createVideo >>> ", form);
+
     try {
         const uploadedMediaUrls = []
         for (let i = 0; i < form?.medias?.length; i++) {
