@@ -382,7 +382,12 @@ const BeginTrainingId = () => {
                         <TouchableOpacity
                             className="px-4 py-3 rounded-lg mb-3"
                             style={{ backgroundColor: 'rgba(0, 0, 100, 0.7)' }}
-                            onPress={() => router.replace(`/(root)/beginTraining/${id}`)}
+                            onPress={() => router.replace({
+                                pathname: `/(root)/beginTraining/${id}`,
+                                params: {
+                                    index: index, planId: planId, data: JSON.stringify(dataTraining)
+                                }
+                            })}
                         >
                             <Text className="uppercase text-white text-[28px] font-pextrabold">Bắt đầu lại</Text>
                         </TouchableOpacity>
