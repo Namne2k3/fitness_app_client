@@ -6,7 +6,7 @@ const CalendarCard = ({ item, handleDeleteNotification }) => {
     return (
         <View className="p-4 mr-3 rounded-lg bg-[#f2f2f2] flex flex-col justify-between items-start">
             <View className="flex flex-row items-center justify-between">
-                <View className="flex-1">
+                <View className="flex-1 mr-2">
                     <Text className="font-pextrabold text-lg text-[#3749db]">{new Date(item?.calendarDate).toLocaleDateString()}</Text>
                     <Text className="font-pmedium text-[#3749db]">{new Date(item?.calendarDate).toLocaleTimeString()}</Text>
                 </View>
