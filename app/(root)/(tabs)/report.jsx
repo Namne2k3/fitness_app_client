@@ -149,18 +149,18 @@ const Report = () => {
                         </View>
                         <View className="flex flex-row mt-4">
                             <View className="flex justify-start items-start flex-1">
-                                <Text className="text-[13px] font-pbold dark:text-white flex-1">Phân phối calo theo bữa ăn</Text>
-                                <View className="flex w-[90%]">
+                                <Text className="text-[13px] font-pbold dark:text-white flex-1">Phân phối calo theo bữa</Text>
+                                <View className="flex w-[90%] mt-2">
                                     <View className="flex flex-row justify-between items-center">
-                                        <Text>Bữa sáng:</Text>
+                                        <Text className="font-pmedium">Bữa sáng:</Text>
                                         <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.breakfast} g</Text>
                                     </View>
                                     <View className="flex flex-row justify-between items-center">
-                                        <Text>Bữa trưa:</Text>
+                                        <Text className="font-pmedium">Bữa trưa:</Text>
                                         <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.lunch} g</Text>
                                     </View>
                                     <View className="flex flex-row justify-between items-center">
-                                        <Text>Bữa tối:</Text>
+                                        <Text className="font-pmedium">Bữa tối:</Text>
                                         <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.dinner} g</Text>
                                     </View>
                                 </View>
@@ -311,8 +311,7 @@ const Report = () => {
                                 <Image
                                     source={images.no_result}
                                     className="w-40 h-40"
-                                    alt="No recent rides found"
-                                    resizeMethod="contain"
+                                    contentFit="contain"
                                 />
                                 <Text className="text-sm">Chưa có lịch sử tập luyện!</Text>
                             </View>

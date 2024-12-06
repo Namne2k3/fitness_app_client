@@ -52,7 +52,7 @@ const Exercises = () => {
 
     const [smallLoading, setSmallLoading] = useState(false)
     const [isSearching, setIsSearching] = useState(false)
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [exercises, setExercises] = useState([])
     const [selectedExercise, setSelectedExercise] = useState({})
     const bottomSheetRef = useRef(null)
@@ -116,14 +116,6 @@ const Exercises = () => {
         }
     };
 
-    const handleSaveFilter = async () => {
-        try {
-            bottomSheetRefFilter?.current?.dismiss()
-        } catch (error) {
-            Alert.alert("Lỗi", error.message)
-        }
-    }
-
     const handleSelectBodyPart = (item) => {
         if (!filter?.bodyParts?.includes(item)) {
             setFilter((filter) => ({
@@ -167,12 +159,12 @@ const Exercises = () => {
     }, [searchQuery, filter.bodyParts, filter.equipments]);
 
     return (
-        <View className="px-4 pt-4 h-full dark:bg-slate-950">
+        <View className="px-4 pt-2 h-full dark:bg-slate-950">
             {
                 isSearching ? (
                     <View className="shadow-lg flex flex-row justify-between items-center">
                         <TextInput
-                            className="p-3 rounded-lg bg-[#fff] flex-1 mr-3"
+                            className="p-3 rounded-lg bg-neutral-200 flex-1 mr-3"
                             color={'#000'}
                             value={searchQuery}
                             placeholder='Tìm kiếm tên bài tập...'
@@ -195,7 +187,7 @@ const Exercises = () => {
                         </View>
                     </View>
             }
-            <View className="flex flex-row justify-between items-center my-2">
+            <View className="flex flex-row justify-between items-center my-3">
                 <View>
                     <TouchableOpacity onPress={() => handlePresentFilterModal()} className="rounded-lg flex flex-row items-center justify-center bg-neutral-200 p-2">
                         <Ionicons name='filter-sharp' size={20} />
@@ -249,7 +241,7 @@ const Exercises = () => {
                                     alt="No recent rides found"
                                     resizeMethod="contain"
                                 />
-                                <Text className="text-sm">No exercises found!</Text>
+                                <Text className="text-sm">Không tìm thấy dữ liệu bài tập!</Text>
                             </View>
                         )}
 

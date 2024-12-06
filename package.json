@@ -21,6 +21,7 @@
     "@openspacelabs/react-native-zoomable-view": "^2.1.6",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "8.2.0",
+    "@react-native-community/slider": "^4.5.5",
     "@react-navigation/material-top-tabs": "^7.0.3",
     "@react-navigation/native": "^7.0.0",
     "@react-navigation/stack": "^7.0.6",
@@ -37,6 +38,7 @@
     "expo-image-picker": "~16.0.3",
     "expo-linking": "~7.0.3",
     "expo-mail-composer": "^14.0.1",
+    "expo-media-library": "~17.0.3",
     "expo-notifications": "~0.29.10",
     "expo-router": "^4.0.11",
     "expo-secure-store": "~14.0.0",
@@ -76,8 +78,7 @@
     "react-redux": "^9.1.2",
     "socket.io-client": "^4.8.1",
     "uuid": "^11.0.3",
-    "zustand": "^5.0.0-rc.2",
-    "expo-media-library": "~17.0.3"
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

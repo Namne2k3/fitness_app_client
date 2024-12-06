@@ -316,7 +316,7 @@ const CreateExercisePage = () => {
                                             alt="No recent rides found"
                                             resizeMethod="contain"
                                         />
-                                        <Text className="text-sm">No exercises found!</Text>
+                                        <Text className="text-sm">Không tìm thấy dữ liệu bài tập!</Text>
                                     </View>
                                 )}
                                 showsVerticalScrollIndicator={false}
