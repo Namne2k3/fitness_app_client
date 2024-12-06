@@ -119,24 +119,56 @@ const Report = () => {
                 <ReportComponent title={'Mục tiêu'}>
                     <View className="bg-[#fff] rounded-lg mt-2 p-4 w-full dark:bg-[#292727] flex">
                         <View className="flex flex-row">
-                            <View className="flex justify-center items-start flex-1">
-                                <Text className="text-[13px] font-pmedium dark:text-white">Lượng calo cần phải tiêu hao mỗi buổi tập</Text>
+                            <View className="flex justify-start items-start flex-[0.9]">
+                                <Text className="text-[13px] font-pbold dark:text-white flex-1">Lượng calo cần phải tiêu hao mỗi buổi tập</Text>
                                 <Text className="text-[#3749db] font-pextrabold text-[26px]">
                                     {user?.caloriesPerTraining} calo
                                 </Text>
                             </View>
-                            <View className="flex justify-center items-start flex-1">
-                                <Text className="text-[13px] font-pmedium dark:text-white">Tổng số ngày để đạt mục tiêu</Text>
+                            <View className="flex justify-start items-start flex-1">
+                                <Text className="text-[13px] font-pbold dark:text-white flex-1">Tổng số ngày để đạt mục tiêu</Text>
                                 <Text className="text-[#3749db] font-pextrabold text-[26px]">
                                     {user?.totalDaysToReachTarget} ngày
                                 </Text>
                             </View>
                         </View>
+
                         <View className="flex flex-row mt-4">
-                            <View className="flex justify-center items-start flex-1">
-                                <Text className="text-[13px] font-pmedium dark:text-white">Số ngày cần luyện tập trong tuần</Text>
+                            <View className="flex justify-start items-start flex-[0.9]">
+                                <Text className="text-[13px] font-pbold dark:text-white flex-1">Số ngày cần luyện tập trong tuần</Text>
                                 <Text className="text-[#3749db] font-pextrabold text-[26px]">
                                     {user?.daysShouldTraining} ngày
+                                </Text>
+                            </View>
+                            <View className="flex justify-start items-start flex-1">
+                                <Text className="text-[13px] font-pbold dark:text-white flex-1">Lượng protein cần thiết (mỗi ngày)</Text>
+                                <Text className="text-[#3749db] font-pextrabold text-[26px]">
+                                    {user?.proteinRequirement}g
+                                </Text>
+                            </View>
+                        </View>
+                        <View className="flex flex-row mt-4">
+                            <View className="flex justify-start items-start flex-1">
+                                <Text className="text-[13px] font-pbold dark:text-white flex-1">Phân phối calo theo bữa ăn</Text>
+                                <View className="flex w-[90%]">
+                                    <View className="flex flex-row justify-between items-center">
+                                        <Text>Bữa sáng:</Text>
+                                        <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.breakfast} g</Text>
+                                    </View>
+                                    <View className="flex flex-row justify-between items-center">
+                                        <Text>Bữa trưa:</Text>
+                                        <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.lunch} g</Text>
+                                    </View>
+                                    <View className="flex flex-row justify-between items-center">
+                                        <Text>Bữa tối:</Text>
+                                        <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.dinner} g</Text>
+                                    </View>
+                                </View>
+                            </View>
+                            <View className="flex justify-start items-start flex-[0.9]">
+                                <Text className="text-[13px] font-pbold dark:text-white flex-1">Lượng chất béo cần thiết (mỗi ngày)</Text>
+                                <Text className="text-[#3749db] font-pbold text-[26px]">
+                                    {user?.fatRequirement}g
                                 </Text>
                             </View>
                         </View>
@@ -245,7 +277,7 @@ const Report = () => {
                                     activeStrokeColor='#3749db'
                                     valueSuffix=''
                                     maxValue={user?.caloriesPerTraining * user?.daysShouldTraining}
-                                    inActiveStrokeColor='#fff'
+                                    inActiveStrokeColor='#f5f5f5'
                                     title='Calo đã đốt'
                                     titleStyle={{ fontWeight: 'bold' }}
                                 />
@@ -254,7 +286,7 @@ const Report = () => {
                                 <CircularProgress
                                     value={weekRecords?.length}
                                     activeStrokeColor='#3749db'
-                                    inActiveStrokeColor='#fff'
+                                    inActiveStrokeColor='#f5f5f5'
                                     valueSuffix={`/${user?.daysShouldTraining}`}
                                     maxValue={user?.daysShouldTraining}
                                     title='Ngày/Tuần'
@@ -282,7 +314,7 @@ const Report = () => {
                                     alt="No recent rides found"
                                     resizeMethod="contain"
                                 />
-                                <Text className="text-sm">Không có lịch sử nào!</Text>
+                                <Text className="text-sm">Chưa có lịch sử tập luyện!</Text>
                             </View>
                         )}
                     </View>

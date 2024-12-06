@@ -1,28 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
 import Swiper from 'react-native-swiper';
-import { images } from "../constants/image";
-import { getAllPlansByUserId } from '../libs/mongodb';
-import useUserStore from '../store/userStore';
-import usePlanStore from '../store/usePlanStore';
-import LoadingModal from "./LoadingModal";
-import PlanCard from "./PlanCard";
+import { images } from "../../constants/image";
+import { getAllPlansByUserId } from '../../libs/mongodb';
+import useUserStore from '../../store/userStore';
+import usePlanStore from '../../store/usePlanStore';
+import LoadingModal from "../../components/LoadingModal";
+import PlanCard from "../../components/PlanCard";
 import { useLocalSearchParams } from "expo-router";
 
 const Plan = () => {
 
     const { plans, setPlans } = usePlanStore()
     const [isLoading, setIsLoading] = useState(false)
-
-    // const handleNavigateDetail = useCallback((id, index) => {
-
-    //     if (active < index) {
-    //         Alert.alert("Bạn cần phải hoàn thành các bài tập trước!")
-    //     }
-    //     else {
-    //         router.push(`/(root)/TrainingDetails/${id}?index=${index}`)
-    //     }
-    // }, [])
 
     useEffect(() => {
         const fetchPlans = async () => {

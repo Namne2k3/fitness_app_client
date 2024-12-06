@@ -7,21 +7,16 @@ import axios from 'axios';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, Text, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import socket from '../../utils/socket'
+import socket from '../../utils/socket';
 
 const WelcomePage = () => {
     const { colorScheme, toggleColorScheme } = useColorScheme();
-    const [timing, setTiming] = useState(0);
-    const { user, setUser } = useUserStore()
-    const duration = 2000;
-    const screenWidth = Dimensions.get('window').width;
+    const { setUser } = useUserStore()
 
     useEffect(() => {
-        let isNotificationHandled = false;
-
         const checkSavedTheme = async () => {
             try {
                 const savedTheme = await AsyncStorage.getItem('theme');
@@ -29,7 +24,7 @@ const WelcomePage = () => {
                     toggleColorScheme();
                 }
             } catch (error) {
-                console.error('Failed to retrieve theme from storage', error);
+                console.log('Có lỗi khi lấy dữ liệu theme trong storage', error);
             }
         };
         const runAppStartupTasks = async () => {
@@ -47,7 +42,7 @@ const WelcomePage = () => {
                     setUser(userData.data);
                     return true;
                 } catch (error) {
-                    console.log('Error fetching user:', error.message);
+                    console.log('Có lỗi khi lấy thông tin người dùng:', error.message);
                     return false;
                 }
             }
@@ -57,7 +52,7 @@ const WelcomePage = () => {
             if (fetchSuccess) {
                 const updatedUser = useUserStore.getState().user;
 
-                if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee) {
+                if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee || !updatedUser?.age) {
                     router.replace(`/(root)/ChooseGender`);
                 } else {
                     router.replace('/(root)/(tabs)/training');
@@ -69,7 +64,7 @@ const WelcomePage = () => {
 
         const initializeApp = async () => {
             await checkSavedTheme();
-            await runAppStartupTasks(); // Chạy logic khởi động nếu không có thông báo
+            await runAppStartupTasks();
         };
 
         initializeApp();
@@ -90,16 +85,6 @@ const WelcomePage = () => {
                 <Text className="font-pbold text-[32px] text-center">Ứng dụng</Text>
                 <Text className="font-pextrabold text-[32px] text-[#00008B] text-center mt-2">MyWorkout</Text>
             </View>
-            {/* <View className="flex justify-center items-center flex-row flex-1">
-                <Progress.Bar
-                    animationType="timing"
-                    progress={timing}
-                    unfilledColor="#F0F0F0"
-                    color="#00008B"
-                    width={screenWidth - 60}
-                    height={15}
-                />
-            </View> */}
         </SafeAreaView>
     );
 };

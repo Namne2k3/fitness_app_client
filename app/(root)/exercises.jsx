@@ -5,11 +5,10 @@ import { Image } from 'expo-image'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Alert, FlatList, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import BottomSheet from '../../../components/BottomSheet'
-import BottomSheetModalComponent from '../../../components/BottomSheetModal'
-import ExerciseDetailCard from '../../../components/ExerciseDetailCard'
-import { images } from '../../../constants/image'
+import BottomSheet from '../../components/BottomSheet'
+import BottomSheetModalComponent from '../../components/BottomSheetModal'
+import ExerciseDetailCard from '../../components/ExerciseDetailCard'
+import { images } from '../../constants/image'
 
 const bodyParts = [
     'bụng', 'cardio',
@@ -53,7 +52,7 @@ const Exercises = () => {
 
     const [smallLoading, setSmallLoading] = useState(false)
     const [isSearching, setIsSearching] = useState(false)
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [exercises, setExercises] = useState([])
     const [selectedExercise, setSelectedExercise] = useState({})
     const bottomSheetRef = useRef(null)
@@ -168,7 +167,7 @@ const Exercises = () => {
     }, [searchQuery, filter.bodyParts, filter.equipments]);
 
     return (
-        <SafeAreaView className="px-4 pt-4 h-full dark:bg-slate-950">
+        <View className="px-4 pt-4 h-full dark:bg-slate-950">
             {
                 isSearching ? (
                     <View className="shadow-lg flex flex-row justify-between items-center">
@@ -188,7 +187,7 @@ const Exercises = () => {
                     </View>
                 ) :
                     <View className="flex flex-row justify-between items-center">
-                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">tìm kiếm</Text>
+                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">bài tập</Text>
                         <View>
                             <TouchableOpacity onPress={handleToggleSearching}>
                                 <FontAwesome name='search' size={26} color={colorScheme == 'dark' ? '#fff' : '#000'} />
@@ -258,7 +257,7 @@ const Exercises = () => {
                 )
             }
             <BottomSheetModalComponent selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
-            <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['95%']} bottomSheetRef={bottomSheetRefFilter}>
+            <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['100%']} bottomSheetRef={bottomSheetRefFilter}>
                 <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] m-2">
                     <Text className="font-pmedium text-lg mb-1">Phần bộ phận cơ thể</Text>
                     <View className="flex flex-row flex-wrap">
@@ -294,11 +293,8 @@ const Exercises = () => {
 
                     </View>
                 </View>
-                <View className="m-2">
-                    <CustomButton onPress={handleSaveFilter} bgColor='bg-[#3749db]' text={'Lưu'} />
-                </View>
             </BottomSheet>
-        </SafeAreaView>
+        </View>
     )
 }
 

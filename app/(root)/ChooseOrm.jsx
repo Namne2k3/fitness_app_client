@@ -11,28 +11,12 @@ import LoadingCreatingModal from '../../components/LoadingCreatingModal'
 import { createPlans, createTrainings, getAllExercises, handleUpdateUser } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
 import { calculate1RM, createPlansForUser, generateTrainings } from '../../utils/index'
+import { seedDataOrm } from '../../constants/seeds'
 
-const seedData = [
-    {
-        name: "Bench Press",
-        value: "Bench Press",
-        url: "https://drive.google.com/uc?id=13ibeDSBV0wx7lpYJI9f2N2xc85ky0ztc"
-    },
-    {
-        name: "Deadlift",
-        value: "Deadlift",
-        url: "https://drive.google.com/uc?id=16To7ZKpunF0vQugU4oPsrm3NAjA1Fzzf"
-    },
-    {
-        name: "Squats",
-        value: "Squats",
-        url: "https://drive.google.com/uc?id=1vqA6d5AQw336tvhRuY3SeizWK7GZtyVx"
-    }
-]
 
 function urlSelected(name) {
     let selected = {}
-    seedData.forEach((item) => {
+    seedDataOrm.forEach((item) => {
         if (item.name == name)
             selected = item
     })
@@ -41,7 +25,7 @@ function urlSelected(name) {
 }
 
 const ChooseOrm = () => {
-    const [selected, setSelected] = useState(seedData[0].name)
+    const [selected, setSelected] = useState(seedDataOrm[0].name)
     const [isLbs, setIsLbs] = useState(false)
     const [weight, setWeight] = useState(Number(0))
     const [reps, setReps] = useState(Number(1))
@@ -157,7 +141,7 @@ const ChooseOrm = () => {
                                     setSelected={(item) => {
                                         setSelected(item)
                                     }}
-                                    data={seedData}
+                                    data={seedDataOrm}
                                     placeholder={selected}
                                     save="value"
                                     search={false}

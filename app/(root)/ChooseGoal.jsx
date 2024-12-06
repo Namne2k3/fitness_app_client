@@ -1,4 +1,4 @@
-import { AntDesign, Feather, MaterialCommunityIcons } from '@expo/vector-icons'
+import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
@@ -36,7 +36,7 @@ const ChooseGoal = () => {
 
             <View className="flex px-4">
                 <View className="h-[100px]"></View>
-                <TouchableOpacity onPress={() => setSelected("Tăng cơ")} className={` bg-[#fff] mt-4 flex flex-row justify-between items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Tăng cơ' && 'border-[4px] border-[#000]'}`}>
+                <TouchableOpacity onPress={() => setSelected("Tăng cơ")} className={` bg-[#fff] mt-4 flex flex-row justify-between items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Tăng cơ' && 'border-[2px] border-[#000]'}`}>
                     <View className="flex flex-row justify-start items-center">
                         <MaterialCommunityIcons name='arm-flex-outline' size={45} />
                         <Text className="flex-1 ml-4 font-pextrabold text-lg">Tăng cơ</Text>
@@ -45,22 +45,22 @@ const ChooseGoal = () => {
                         }
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSelected("Cân đối tổng thể")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Cân đối tổng thể' && 'border-[4px] border-[#000]'}`}>
-                    <MaterialCommunityIcons name='fire' size={45} />
+                <TouchableOpacity onPress={() => setSelected("Cân đối tổng thể")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Cân đối tổng thể' && 'border-[2px] border-[#000]'}`}>
+                    <Ionicons name='fitness-outline' size={45} />
                     <Text className="flex-1 ml-4 font-pextrabold text-lg">Cân đối</Text>
                     {
                         selected == 'Cân đối tổng thể' && <AntDesign name={'checkcircle'} size={28} />
                     }
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSelected("Sức mạnh")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Sức mạnh' && 'border-[4px] border-[#000]'} `}>
-                    <Feather name='smile' size={45} />
+                <TouchableOpacity onPress={() => setSelected("Sức mạnh")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Sức mạnh' && 'border-[2px] border-[#000]'} `}>
+                    <MaterialCommunityIcons name='weight-lifter' size={45} />
                     <Text className="flex-1 ml-4 font-pextrabold text-lg">Sức mạnh</Text>
                     {
                         selected == 'Sức mạnh' && <AntDesign name={'checkcircle'} size={28} />
                     }
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSelected("Giảm mỡ")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Giảm mỡ' && 'border-[4px] border-[#000]'}`}>
-                    <MaterialCommunityIcons name='clock-time-four-outline' size={45} />
+                <TouchableOpacity onPress={() => setSelected("Giảm mỡ")} className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Giảm mỡ' && 'border-[2px] border-[#000]'}`}>
+                    <Ionicons name='trending-down' size={45} />
                     <Text className="flex-1 ml-4 font-pextrabold text-lg">Giảm mỡ</Text>
                     {
                         selected == 'Giảm mỡ' && <AntDesign name={'checkcircle'} size={28} />

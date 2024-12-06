@@ -368,9 +368,6 @@ const CreateExercisePage = () => {
 
                         </View>
                     </View>
-                    <View className="m-2">
-                        <CustomButton onPress={handleSaveFilter} bgColor='bg-[#3749db]' text={'Lưu'} />
-                    </View>
                 </BottomSheet>
                 <LoadingModal visible={isVisibleLoadingModal} />
             </SafeAreaView>

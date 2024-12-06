@@ -5,6 +5,199 @@ import { createTrainings } from '@/libs/mongodb';
 import * as FileSystem from 'expo-file-system';
 import * as MailComposer from 'expo-mail-composer';
 
+export function analyzeUser(weight, height, targetWeight) {
+    if (!weight || !height || !targetWeight) {
+        throw new Error("Chưa có một trong các dữ liệu sau (Chiều cao, cân nặng, mục tiêu cân nặng).");
+    }
+
+    const calculateBMI = (weight, height) => (weight / ((height / 100) ** 2)).toFixed(2);
+    const currentBMI = calculateBMI(weight, height);
+    const targetBMI = calculateBMI(targetWeight, height);
+
+    const percentageWeightChange = Math.abs(((targetWeight - weight) / weight) * 100).toFixed(2);
+
+    let result = {
+        title: "",
+        subtitle: "",
+        body: ""
+    };
+
+    // Define thresholds
+    const lowerLimit = 0.90 * weight; // 90% of current weight
+    const upperLimit = 1.10 * weight; // 110% of current weight
+    const effortLimit = 1.15 * weight; // 115% of current weight
+    const challengeLimit = 1.35 * weight; // 135% of current weight
+
+    // Classify target weight
+    if (targetWeight < lowerLimit) {
+        result = {
+            title: "Cảnh báo",
+            subtitle: `Bạn sẽ giảm ${percentageWeightChange}% trọng lượng cơ thể`,
+            body: `
+Giảm cân quá mức có thể gây hại cho sức khỏe:
+- Mệt mỏi và suy nhược cơ thể
+- Suy giảm hệ miễn dịch
+- Nguy cơ mắc bệnh thiếu máu
+Hãy tham khảo ý kiến chuyên gia để điều chỉnh mục tiêu phù hợp.
+            `
+        };
+    } else if (targetWeight >= lowerLimit && targetWeight <= upperLimit) {
+        result = {
+            title: "Mục tiêu hợp lý",
+            subtitle: `Bạn sẽ thay đổi ${percentageWeightChange}% trọng lượng cơ thể`,
+            body: `
+Những thay đổi nhỏ về cân nặng có thể mang lại lợi ích lớn:
+- Hạ huyết áp
+- Giảm nguy cơ mắc bệnh tiểu đường
+- Cải thiện sức khỏe tổng thể
+Hãy duy trì chế độ luyện tập và ăn uống cân bằng để đạt được mục tiêu.
+            `
+        };
+    } else if (targetWeight > upperLimit && targetWeight <= effortLimit) {
+        result = {
+            title: "Lựa chọn nỗ lực",
+            subtitle: `Bạn sẽ tăng ${percentageWeightChange}% trọng lượng cơ thể`,
+            body: `
+Mục tiêu này có thể đạt được với một chút nỗ lực:
+- Tăng cường sức mạnh cơ bắp
+- Cải thiện năng lượng và sức bền
+- Xây dựng hình thể lý tưởng
+Hãy tập trung vào chế độ dinh dưỡng và luyện tập để đạt kết quả tốt.
+            `
+        };
+    } else if (targetWeight > effortLimit && targetWeight <= challengeLimit) {
+        result = {
+            title: "Thử thách",
+            subtitle: `Bạn sẽ tăng ${percentageWeightChange}% trọng lượng cơ thể`,
+            body: `
+Mục tiêu này đòi hỏi sự kiên nhẫn và quyết tâm cao:
+- Cần thời gian để xây dựng khối lượng cơ
+- Tăng cường sự tự tin và sức mạnh
+- Cải thiện đáng kể vóc dáng
+Hãy xây dựng kế hoạch chi tiết và kiên định với mục tiêu.
+            `
+        };
+    } else if (targetWeight > challengeLimit) {
+        result = {
+            title: "Cảnh báo",
+            subtitle: `Bạn sẽ tăng ${percentageWeightChange}% trọng lượng cơ thể`,
+            body: `
+Tăng cân quá mức có thể gây hại cho sức khỏe:
+- Gia tăng nguy cơ béo phì
+- Nguy cơ mắc các bệnh tim mạch
+- Tăng áp lực lên khớp và xương
+Hãy tham khảo ý kiến chuyên gia để điều chỉnh mục tiêu.
+            `
+        };
+    }
+
+    return {
+        currentBMI: currentBMI,
+        targetBMI: targetBMI,
+        percentageWeightChange: `${percentageWeightChange}%`,
+        conclusion: result
+    };
+}
+
+export const BMR = (user) => {
+
+    const { weight, height, age, gender } = user;
+
+    return gender == "nam"
+        ?
+        (
+            (10 * weight) + (6.25 * height) - (5 * age) + 5
+        )
+        :
+        (
+            (10 * weight) + (6.25 * height) - (5 * age) + 161
+        )
+}
+export function calculateTrainingPlan(userData) {
+
+    console.log("user Data >>> ", userData);
+
+    const {
+        weight,
+        targetWeight,
+        tdee,
+        healthGoal,
+        level
+    } = userData;
+
+    const adjustedTDEE = tdee;
+
+    let daysShouldTraining = 0;
+    let proteinMultiplier = 0;
+    let fatPercentage = 0;
+
+    // Xác định ngày tập luyện và hệ số protein
+    if (healthGoal === "Tăng cơ") {
+        daysShouldTraining = level === "Người mới bắt đầu" ? 4 : 5;
+        proteinMultiplier = 2.2; // Tăng cơ: 2.2g/kg
+        fatPercentage = 0.25; // 25% TDEE cho fat
+    } else if (healthGoal === "Giảm mỡ") {
+        daysShouldTraining = 5;
+        proteinMultiplier = 1.8; // Giảm mỡ: 1.8g/kg
+        fatPercentage = 0.20; // 20% TDEE cho fat
+    } else if (healthGoal === "Cân đối") {
+        daysShouldTraining = 3;
+        proteinMultiplier = 1.5; // Cân đối: 1.5g/kg
+        fatPercentage = 0.25; // 25% TDEE cho fat
+    } else if (healthGoal === "Sức mạnh") {
+        daysShouldTraining = 4;
+        proteinMultiplier = 2; // Sức mạnh: 2g/kg
+        fatPercentage = 0.30; // 30% TDEE cho fat
+    }
+
+    // Tính lượng protein và fat
+    const proteinRequirement = Math.ceil(weight * proteinMultiplier); // Lượng protein (g)
+    const fatRequirement = Math.ceil(adjustedTDEE * fatPercentage / 9); // Lượng fat (g), 1g fat = 9 calo
+
+    // Tính calo mỗi buổi tập
+    const minCaloriesPerTraining = Math.floor(adjustedTDEE * 0.10);
+    const maxCaloriesPerTraining = Math.floor(adjustedTDEE * 0.20);
+    const caloriesPerTraining = (minCaloriesPerTraining + maxCaloriesPerTraining) / 2;
+
+    // Tốc độ tăng cân/giảm cân lành mạnh
+    const calorieSurplusPerDay = healthGoal === "Tăng cơ" ? 500 : -500; // Dư/thâm hụt 500 calo mỗi ngày
+    const calorieChangePerKg = 7700; // Calo để tăng/giảm 1 kg
+
+    // Tổng số ngày để đạt cân nặng mục tiêu
+    let totalDaysToReachTarget = 0;
+    if (targetWeight !== weight) {
+        const totalWeightChange = Math.abs(targetWeight - weight); // Tổng số kg cần thay đổi
+        const totalCaloriesChange = totalWeightChange * calorieChangePerKg;
+        totalDaysToReachTarget = Math.ceil(totalCaloriesChange / Math.abs(calorieSurplusPerDay));
+    }
+
+    // Phân phối calo theo từng bữa
+    const mealDistribution = {
+        breakfast: Math.ceil(adjustedTDEE * 0.3),
+        lunch: Math.ceil(adjustedTDEE * 0.4),
+        dinner: Math.ceil(adjustedTDEE * 0.3)
+    };
+
+    console.log("Check all >> ", {
+        daysShouldTraining,
+        caloriesPerTraining,
+        proteinRequirement,
+        fatRequirement,
+        totalDaysToReachTarget,
+        mealDistribution
+    });
+
+    return {
+        daysShouldTraining,
+        caloriesPerTraining,
+        proteinRequirement,
+        fatRequirement,
+        totalDaysToReachTarget,
+        mealDistribution
+    };
+}
+
+
 export function generatePrompt(trainingRecord) {
     try {
 
@@ -439,379 +632,6 @@ const sendJSONByEmail = async (plan) => {
         console.error('Lỗi khi gửi email:', error);
     }
 };
-
-
-
-// const generateExercisePlan = async (user, exercises) => {
-//     const { level, focusBodyPart, healthGoal, orm, gender } = user;
-//     // focusBodyPart = ["bắp tay", "đùi", "lưng", "eo", "ngực", "vai", "cẳng chân", "cẳng tay", "cardio"]
-
-//     // Hàm xác định số set và reps dựa trên mục tiêu và giới tính
-//     const getSetsAndReps = () => {
-//         let sets = 3;
-//         let reps = 12;
-
-//         if (level === "người mới bắt đầu") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 3;
-//                 reps = gender === "nam" ? 8 + Math.floor(Math.random() * 5) : 10 + Math.floor(Math.random() * 3); // Nam: 8-12, Nữ: 10-12
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 3;
-//                 reps = 12 + Math.floor(Math.random() * 4); // 12-15
-//             } else if (healthGoal === "Sức mạnh") {
-//                 sets = 2 + Math.floor(Math.random() * 2); // 2-3 sets
-//                 reps = 15 + Math.floor(Math.random() * 6); // 15-20
-//             } else if (healthGoal === "Cân đối") {
-//                 sets = 2 + Math.floor(Math.random() * 2);
-//                 reps = 10 + Math.floor(Math.random() * 3); // 10-12
-//             }
-//         } else if (level === "trung cấp") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 4;
-//                 reps = gender === "nam" ? 6 + Math.floor(Math.random() * 5) : 8 + Math.floor(Math.random() * 4); // Nam: 6-10, Nữ: 8-12
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 3 + Math.floor(Math.random() * 2); // 3-4 sets
-//                 reps = 10 + Math.floor(Math.random() * 5); // 10-15
-//             } else if (healthGoal === "Sức mạnh") {
-//                 sets = 3;
-//                 reps = 15 + Math.floor(Math.random() * 6); // 15-20
-//             } else if (healthGoal === "Cân đối") {
-//                 sets = 3;
-//                 reps = 10 + Math.floor(Math.random() * 4); // 10-12
-//             }
-//         } else if (level === "thâm niên") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 4 + Math.floor(Math.random() * 2); // 4-5 sets
-//                 reps = gender === "nam" ? 4 + Math.floor(Math.random() * 5) : 6 + Math.floor(Math.random() * 5); // Nam: 4-8, Nữ: 6-10
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 4;
-//                 reps = 8 + Math.floor(Math.random() * 5); // 8-12
-//             } else if (healthGoal === "Tăng sức bền") {
-//                 sets = 3 + Math.floor(Math.random() * 2); // 3-4 sets
-//                 reps = 12 + Math.floor(Math.random() * 9); // 12-20
-//             } else if (healthGoal === "Cân đối") {
-//                 sets = 3;
-//                 reps = 10 + Math.floor(Math.random() * 3); // 10-12
-//             }
-//         }
-
-//         return { sets, reps };
-//     };
-
-//     // Số ngày tập luyện dựa trên giới tính
-//     const trainingDaysPerWeek = gender === "nam" ? 6 : 5; // Nam: 6 ngày, Nữ: 5 ngày
-//     const totalDays = 30;
-//     const exercisesPerDay = 4;
-
-//     // Lọc bài tập phù hợp với user
-//     const filteredExercises = exercises.filter(exercise => {
-//         const isLevelMatch = exercise.levels.includes(level);
-//         const isPurposeMatch = exercise.purposes.includes(healthGoal);
-//         const isBodyPartMatch = focusBodyPart.some(part => exercise.bodyPart.includes(part));
-//         return isLevelMatch && isPurposeMatch && isBodyPartMatch;
-//     });
-
-//     console.log("Check filteredExercises >>> ", filteredExercises.length);
-
-//     const shuffledExercises = filteredExercises.sort(() => Math.random() - 0.5);
-
-//     const plan = [];
-//     let dayIndex = 1;
-
-//     for (let i = 0; i < totalDays; i++) {
-//         const dayExercises = [];
-//         const selectedExercises = new Set(); // Set để theo dõi bài tập đã chọn trong ngày
-
-//         for (let j = 0; j < exercisesPerDay; j++) {
-//             let ex;
-//             do {
-//                 // Lấy bài tập ngẫu nhiên
-//                 ex = shuffledExercises[Math.floor(Math.random() * shuffledExercises.length)];
-//             } while (selectedExercises.has(ex._id)); // Nếu bài đã chọn, chọn lại
-
-//             // Đánh dấu bài tập là đã chọn
-//             selectedExercises.add(ex._id);
-
-//             const { sets, reps } = getSetsAndReps();
-//             dayExercises.push({
-//                 exercise: {
-//                     _id: ex._id,
-//                     id: ex.id,
-//                     name: ex.name,
-//                     target: ex.target,
-//                     gifUrl: ex.gifUrl,
-//                     bodyPart: ex.bodyPart,
-//                     equipment: ex.equipment,
-//                     instructions: ex.instructions,
-//                     secondaryMuscles: ex.secondaryMuscles,
-//                 },
-//                 sets: Array.from({ length: sets }, () => ({
-//                     kilogram: orm ? orm * 0.7 : 0, // Nếu có ORM, sử dụng 70%
-//                     reps: reps,
-//                     isCheck: false,
-//                 })),
-//             });
-//         }
-
-//         plan.push({
-//             title: `Ngày ${dayIndex}`,
-//             exercises: dayExercises
-//         });
-//         dayIndex++;
-//     }
-
-//     return plan;
-// };
-
-// const generateTrainings = async (userData, exerciseData) => {
-//     const { gender, level, healthGoal } = userData;
-
-//     // Hàm tính toán sets và reps đã cho
-//     const getSetsAndReps = () => {
-//         let sets = 3;
-//         let reps = 12;
-
-//         if (level === "người mới bắt đầu") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 3;
-//                 reps = gender === "nam" ? 8 + Math.floor(Math.random() * 5) : 10 + Math.floor(Math.random() * 3); // Nam: 8-12, Nữ: 10-12
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 3;
-//                 reps = 12 + Math.floor(Math.random() * 4); // 12-15
-//             } else if (healthGoal === "Tăng sức bền") {
-//                 sets = 2 + Math.floor(Math.random() * 2); // 2-3 sets
-//                 reps = 15 + Math.floor(Math.random() * 6); // 15-20
-//             } else if (healthGoal === "Cải thiện sức khỏe tổng thể") {
-//                 sets = 2 + Math.floor(Math.random() * 2);
-//                 reps = 10 + Math.floor(Math.random() * 3); // 10-12
-//             }
-//         } else if (level === "trung cấp") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 4;
-//                 reps = gender === "nam" ? 6 + Math.floor(Math.random() * 5) : 8 + Math.floor(Math.random() * 4); // Nam: 6-10, Nữ: 8-12
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 3 + Math.floor(Math.random() * 2); // 3-4 sets
-//                 reps = 10 + Math.floor(Math.random() * 5); // 10-15
-//             } else if (healthGoal === "Tăng sức bền") {
-//                 sets = 3;
-//                 reps = 15 + Math.floor(Math.random() * 6); // 15-20
-//             } else if (healthGoal === "Cải thiện sức khỏe tổng thể") {
-//                 sets = 3;
-//                 reps = 10 + Math.floor(Math.random() * 4); // 10-12
-//             }
-//         } else if (level === "thâm niên") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 4 + Math.floor(Math.random() * 2); // 4-5 sets
-//                 reps = gender === "nam" ? 4 + Math.floor(Math.random() * 5) : 6 + Math.floor(Math.random() * 5); // Nam: 4-8, Nữ: 6-10
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 4;
-//                 reps = 8 + Math.floor(Math.random() * 5); // 8-12
-//             } else if (healthGoal === "Tăng sức bền") {
-//                 sets = 3 + Math.floor(Math.random() * 2); // 3-4 sets
-//                 reps = 12 + Math.floor(Math.random() * 9); // 12-20
-//             } else if (healthGoal === "Cải thiện sức khỏe tổng thể") {
-//                 sets = 3;
-//                 reps = 10 + Math.floor(Math.random() * 3); // 10-12
-//             }
-//         }
-
-//         return { sets, reps };
-//     };
-
-//     // Danh sách training cần tạo
-//     const trainingTitles = [
-//         "Tay",
-//         "Ngực",
-//         "Lưng",
-//         "Vai",
-//         "Chân",
-//         "Toàn thân",
-//         "Thân trên",
-//         "Bụng",
-//         "StrongLift A",
-//         "StrongLift B",
-//     ];
-
-//     // Tạo danh sách bài tập
-//     const trainings = trainingTitles.map((title) => {
-//         const selectedExercises = exerciseData.filter((exercise) => {
-//             // Chọn bài tập theo logic riêng cho từng title
-//             if (title === "StrongLift A") {
-//                 return ["barbell full squat", "barbell bench press", "barbell bent over row"].includes(exercise.name.toLowerCase());
-//             } else if (title === "StrongLift B") {
-//                 return ["barbell full squat", "dumbbell standing alternate overhead press", "barbell deadlift"].includes(exercise.name.toLowerCase());
-//             }
-//             // Với các bài tập thông thường, chọn bài theo bodyPart dựa trên title
-//             return exercise.bodyPart.toLowerCase() === title.toLowerCase();
-//         });
-
-//         // Giới hạn từ 4 đến 6 bài tập
-//         const limitedExercises = selectedExercises
-//             .sort(() => Math.random() - 0.5) // Trộn ngẫu nhiên danh sách
-//             .slice(0, 4 + Math.floor(Math.random() * 3)); // Lấy từ 4 đến 6 bài tập
-
-//         // Tạo danh sách exercises với sets và reps
-//         const exercises = limitedExercises.map((exercise) => ({
-//             exercise: {
-//                 name: exercise.name,
-//                 target: exercise.target,
-//                 gifUrl: exercise.gifUrl,
-//                 id: exercise.id,
-//                 bodyPart: exercise.bodyPart,
-//                 equipment: exercise.equipment,
-//                 instructions: exercise.instructions,
-//                 secondaryMuscles: exercise.secondaryMuscles,
-//             },
-//             sets: Array.from({ length: getSetsAndReps().sets }, () => ({
-//                 kilogram: 0,
-//                 reps: getSetsAndReps().reps,
-//                 isCheck: false,
-//             })),
-//         }));
-
-//         return {
-//             title,
-//             exercises,
-//             user: userData.id, // Giả định bạn có `user.id`
-//         };
-//     });
-
-//     return trainings;
-// };
-
-// ham nay hoat dong tot
-// const generateTrainings = async (userData, exerciseData) => {
-//     const { _id, gender, level, healthGoal } = userData;
-
-//     const getSetsAndReps = () => {
-//         let sets = 3;
-//         let reps = 12;
-
-//         if (level === "người mới bắt đầu") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 3;
-//                 reps = gender === "nam" ? 8 + Math.floor(Math.random() * 5) : 10 + Math.floor(Math.random() * 3);
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 3;
-//                 reps = 12 + Math.floor(Math.random() * 4);
-//             } else if (healthGoal === "Tăng sức bền") {
-//                 sets = 2 + Math.floor(Math.random() * 2);
-//                 reps = 15 + Math.floor(Math.random() * 6);
-//             } else if (healthGoal === "Cải thiện sức khỏe tổng thể") {
-//                 sets = 2 + Math.floor(Math.random() * 2);
-//                 reps = 10 + Math.floor(Math.random() * 3);
-//             }
-//         } else if (level === "trung cấp") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 4;
-//                 reps = gender === "nam" ? 6 + Math.floor(Math.random() * 5) : 8 + Math.floor(Math.random() * 4);
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 3 + Math.floor(Math.random() * 2);
-//                 reps = 10 + Math.floor(Math.random() * 5);
-//             } else if (healthGoal === "Tăng sức bền") {
-//                 sets = 3;
-//                 reps = 15 + Math.floor(Math.random() * 6);
-//             } else if (healthGoal === "Cải thiện sức khỏe tổng thể") {
-//                 sets = 3;
-//                 reps = 10 + Math.floor(Math.random() * 4);
-//             }
-//         } else if (level === "thâm niên") {
-//             if (healthGoal === "Tăng cơ") {
-//                 sets = 4 + Math.floor(Math.random() * 2);
-//                 reps = gender === "nam" ? 4 + Math.floor(Math.random() * 5) : 6 + Math.floor(Math.random() * 5);
-//             } else if (healthGoal === "Giảm mỡ") {
-//                 sets = 4;
-//                 reps = 8 + Math.floor(Math.random() * 5);
-//             } else if (healthGoal === "Tăng sức bền") {
-//                 sets = 3 + Math.floor(Math.random() * 2);
-//                 reps = 12 + Math.floor(Math.random() * 9);
-//             } else if (healthGoal === "Cải thiện sức khỏe tổng thể") {
-//                 sets = 3;
-//                 reps = 10 + Math.floor(Math.random() * 3);
-//             }
-//         }
-
-//         return { sets, reps };
-//     };
-
-//     const trainingTitles = [
-//         "Tay",
-//         "Ngực",
-//         "Lưng",
-//         "Vai",
-//         "Chân", // Thay đổi "Thân dưới" thành "Chân"
-//         "Toàn thân",
-//         "Thân trên",
-//         "Bụng",
-//         "StrongLift A",
-//         "StrongLift B",
-//     ];
-
-//     const trainings = trainingTitles.map((title) => {
-//         let selectedExercises = [];
-
-//         if (title === "StrongLift A") {
-//             selectedExercises = exerciseData.filter((exercise) =>
-//                 ["barbell full squat", "barbell bench press", "barbell bent over row"].includes(exercise.name.toLowerCase())
-//             );
-//         } else if (title === "StrongLift B") {
-//             selectedExercises = exerciseData.filter((exercise) =>
-//                 ["barbell full squat", "dumbbell standing alternate overhead press", "barbell deadlift"].includes(exercise.name.toLowerCase())
-//             );
-//         } else if (title === "Toàn thân") {
-//             // Chọn 1 bài tập từ mỗi nhóm cơ
-//             const groups = ["tay", "ngực", "lưng", "vai", "chân", "bụng"];
-//             selectedExercises = groups.map((group) => {
-//                 const groupExercises = exerciseData.filter(
-//                     (exercise) => exercise.bodyPart.toLowerCase() === group
-//                 );
-//                 return groupExercises[6];
-//             });
-//         } else if (title === "Thân trên") {
-//             // Ngẫu nhiên chọn từ tay, ngực, lưng, vai
-//             const upperBodyGroups = ["tay", "ngực", "lưng", "vai"];
-//             selectedExercises = exerciseData.filter((exercise) =>
-//                 upperBodyGroups.includes(exercise.bodyPart.toLowerCase())
-//             );
-//         } else {
-//             selectedExercises = exerciseData.filter(
-//                 (exercise) => exercise.bodyPart.toLowerCase() === title.toLowerCase()
-//             );
-//         }
-
-//         // Giới hạn bài tập từ 4 đến 6 bài
-//         const limitedExercises = selectedExercises
-//             .sort(() => Math.random() - 0.5)
-//             .slice(0, 4 + Math.floor(Math.random() * 3));
-
-//         const exercises = limitedExercises.map((exercise) => ({
-//             exercise: {
-//                 name: exercise.name,
-//                 target: exercise.target,
-//                 gifUrl: exercise.gifUrl,
-//                 id: exercise.id,
-//                 bodyPart: exercise.bodyPart,
-//                 equipment: exercise.equipment,
-//                 instructions: exercise.instructions,
-//                 secondaryMuscles: exercise.secondaryMuscles,
-//             },
-//             sets: Array.from({ length: getSetsAndReps().sets }, () => ({
-//                 kilogram: 0,
-//                 reps: getSetsAndReps().reps,
-//                 isCheck: false,
-//             })),
-//         }));
-
-//         return {
-//             title: title,
-//             image: images[title.toLowerCase()],
-//             exercises: exercises,
-//             user: _id,
-//         };
-//     });
-
-//     return trainings;
-// };
 
 const generateTrainings = async (userData, exerciseData) => {
     const { _id, gender, level, healthGoal, orm } = userData;

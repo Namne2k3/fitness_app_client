@@ -1,10 +1,11 @@
-import { AntDesign, Entypo, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+import { AntDesign, Entypo, Feather, FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
-import * as ImagePicker from 'expo-image-picker'
+import { launchImageLibraryAsync } from 'expo-image-picker'
 import { router } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useEffect, useRef, useState } from 'react'
-import { Alert, Dimensions, StyleSheet, Text, TouchableOpacity, ScrollView, View, TouchableWithoutFeedback, KeyboardAvoidingView, TextInput, Keyboard, Platform } from 'react-native'
+import { Alert, Dimensions, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { SelectList } from 'react-native-dropdown-select-list'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BottomSheet from '../../components/BottomSheet'
 import CustomButton from '../../components/CustomButton'
@@ -15,30 +16,16 @@ import { uploadFile } from '../../libs/appwrite'
 import { getAllExercises, handleUpdateUser, reCreatePlans, reCreateTrainingsByUserId, updateUserById } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
 import { calculate1RM, createPlansForUser, generateTrainings } from '../../utils'
-import { SelectList } from 'react-native-dropdown-select-list'
-const { width } = Dimensions.get('window');
+import { levelToPointMap, seedDataOrm } from '../../constants/seeds'
+import { BMR, calculateTrainingPlan } from '../../utils/index'
+import { analyzeUser } from '../../utils/index'
+import DateTimePicker from '@react-native-community/datetimepicker'
 
-const seedData = [
-    {
-        name: "Bench Press",
-        value: "Bench Press",
-        url: "https://drive.google.com/uc?id=13ibeDSBV0wx7lpYJI9f2N2xc85ky0ztc"
-    },
-    {
-        name: "Deadlift",
-        value: "Deadlift",
-        url: "https://drive.google.com/uc?id=16To7ZKpunF0vQugU4oPsrm3NAjA1Fzzf"
-    },
-    {
-        name: "Squats",
-        value: "Squats",
-        url: "https://drive.google.com/uc?id=1vqA6d5AQw336tvhRuY3SeizWK7GZtyVx"
-    }
-]
+const { width } = Dimensions.get('window');
 
 function urlSelected(name) {
     let selected = {}
-    seedData.forEach((item) => {
+    seedDataOrm.forEach((item) => {
         if (item.name == name)
             selected = item
     })
@@ -46,39 +33,44 @@ function urlSelected(name) {
     return selected.url;
 }
 
+const removeImageField = (obj) => {
+    const { image, ...rest } = obj;
+    return rest;
+};
+
 const MyProfile = () => {
 
     const { user, setUser } = useUserStore()
+    // console.log("USER >>> ", user);
+
     const [tempUser, setTempUser] = useState({})
     const { colorScheme } = useColorScheme()
     const [isChanging, setIsChanging] = useState("")
-    const [gender, setGender] = useState(user?.gender)
     const [profileImage, setProfileImage] = useState({})
     const [isVisibleModal, setIsVisibleModal] = useState(false)
-    const [isRecreating, setIsRecreating] = useState(false)
     const bottomSheetRef = useRef(null);
-    const [selected, setSelected] = useState(seedData[0].name)
+    const [selected, setSelected] = useState(seedDataOrm[0].name)
     const [isLbs, setIsLbs] = useState(false)
     const [weight, setWeight] = useState(Number(0))
     const [reps, setReps] = useState(Number(1))
+    const [mode, setMode] = useState('date');
+    const [show, setShow] = useState(false);
+    const [date, setDate] = useState(new Date());
 
     const isModified = () => {
-        return JSON.stringify(user) !== JSON.stringify(tempUser)
-    }
+        return JSON.stringify(removeImageField(user)) !== JSON.stringify(removeImageField(tempUser));
+    };
 
     const openPicker = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        let result = await launchImageLibraryAsync({
+            mediaTypes: 'Images',
             allowsMultipleSelection: false,
             aspect: [4, 3],
             quality: 1,
         });
 
 
-        if (result.canceled) {
-
-        } else {
-
+        if (!result.canceled) {
             setProfileImage(result.assets[0])
         }
     }
@@ -116,19 +108,51 @@ const MyProfile = () => {
         }
     }
 
-    const handleUpdateGender = (gender) => {
-        try {
-            setGender(gender)
-        } catch (error) {
-            Alert.alert('Lỗi', error.message)
-        }
-    }
-
     const handleOnlyUpdateInfo = async () => {
         setIsVisibleModal(true)
         try {
-            const res = await updateUserById(tempUser)
-            console.log("Check res >>> ", res);
+
+            const { daysShouldTraining,
+                caloriesPerTraining,
+                proteinRequirement,
+                fatRequirement,
+                totalDaysToReachTarget,
+                mealDistribution
+            } = calculateTrainingPlan(tempUser)
+
+            console.log("Check daysShouldTraining >>> ", daysShouldTraining);
+
+
+            const { currentBMI, targetBMI } = analyzeUser(
+                tempUser.weight, tempUser.height, tempUser.targetWeight
+            )
+
+            setTempUser((temp) => ({
+                ...temp,
+                daysShouldTraining: daysShouldTraining,
+                caloriesPerTraining: caloriesPerTraining,
+                totalDaysToReachTarget: totalDaysToReachTarget,
+                fatRequirement: fatRequirement,
+                proteinRequirement: proteinRequirement,
+                mealDistribution: mealDistribution,
+                bmi: currentBMI,
+                targetBMI: targetBMI
+            }))
+
+            console.log("Temp user >>> ", tempUser);
+
+
+            const res = await updateUserById({
+                ...tempUser,
+                daysShouldTraining: daysShouldTraining,
+                caloriesPerTraining: caloriesPerTraining,
+                totalDaysToReachTarget: totalDaysToReachTarget,
+                fatRequirement: fatRequirement,
+                proteinRequirement: proteinRequirement,
+                mealDistribution: mealDistribution,
+                bmi: currentBMI,
+                targetBMI: targetBMI
+            })
 
             if (res.data != null) {
                 setUser(res.data)
@@ -148,10 +172,44 @@ const MyProfile = () => {
         setIsVisibleModal(true)
         try {
             const { data } = await getAllExercises();
-            const updatedUser = await updateUserById(tempUser)
 
-            const createdTrainings = await generateTrainings(tempUser, data)
+            const { daysShouldTraining,
+                caloriesPerTraining,
+                proteinRequirement,
+                fatRequirement,
+                totalDaysToReachTarget,
+                mealDistribution
+            } = calculateTrainingPlan(tempUser)
 
+            const { currentBMI, targetBMI } = analyzeUser(
+                tempUser.weight, tempUser.height, tempUser.targetWeight
+            )
+
+            setTempUser((temp) => ({
+                ...temp,
+                daysShouldTraining: daysShouldTraining,
+                caloriesPerTraining: caloriesPerTraining,
+                totalDaysToReachTarget: totalDaysToReachTarget,
+                fatRequirement: fatRequirement,
+                proteinRequirement: proteinRequirement,
+                mealDistribution: mealDistribution,
+                bmi: currentBMI,
+                targetBMI: targetBMI
+            }))
+
+            const updatedUser = await updateUserById({
+                ...tempUser,
+                daysShouldTraining: daysShouldTraining,
+                caloriesPerTraining: caloriesPerTraining,
+                totalDaysToReachTarget: totalDaysToReachTarget,
+                fatRequirement: fatRequirement,
+                proteinRequirement: proteinRequirement,
+                mealDistribution: mealDistribution,
+                bmi: currentBMI,
+                targetBMI: targetBMI
+            })
+
+            const createdTrainings = await generateTrainings(updatedUser.data, data)
             const savedTrainings = await reCreateTrainingsByUserId(createdTrainings)
             const plans = await createPlansForUser(tempUser, savedTrainings.data);
             const savedPlan = await reCreatePlans(plans);
@@ -193,8 +251,37 @@ const MyProfile = () => {
         }
     }
 
+    const calculateAge = () => {
+        const today = new Date();
+        let age = today.getFullYear() - date.getFullYear();
+        const monthDifference = today.getMonth() - date.getMonth();
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < date.getDate())) {
+            age--;
+        }
+        return age;
+    };
+
+    const onChangeDate = (event, selectedDate) => {
+        const currentDate = selectedDate || date;
+        setShow(false);
+        setDate(currentDate);
+        setTempUser((temp) => ({
+            ...temp,
+            age: calculateAge()
+        }))
+    };
+
+    const showMode = (currentMode) => {
+        setShow(true);
+        setMode(currentMode);
+    };
+
+    const showDatepicker = () => {
+        showMode('date');
+    };
+
     useEffect(() => {
-        console.log("Chay lan 1");
         setTempUser(user);
     }, [])
 
@@ -233,148 +320,223 @@ const MyProfile = () => {
                 </TouchableOpacity>
                 <Text className="ml-4 font-pextrabold text-[28px] dark:text-white">Thông tin của tôi</Text>
             </View>
-
-            <View className="relative flex justify-center items-center mt-4">
-                <Image
-                    source={{ uri: profileImage?.uri ? profileImage?.uri : user?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
-                    width={120}
-                    height={120}
-                    className="rounded-full"
-                    contentFit='cover'
-                />
-                <TouchableOpacity onPress={openPicker} className="absolute">
-                    <Feather name='camera' size={24} color={"#000"} />
-                </TouchableOpacity>
-
-            </View>
-            {
-                profileImage?.uri &&
-                <View className="flex flex-row mt-2 justify-center items-center">
-                    <TouchableOpacity
-                        className={
-                            colorScheme == 'dark'
-                                ? `flex-1 bg-[#000] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
-                                : `flex-1 bg-[#ccc] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
-                        }
-                        onPress={handleUpdateUserImage}
-                    >
-                        <Text className="font-pregular text-[12px] dark:text-white">Update</Text>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View className="relative flex justify-center items-center mt-4">
+                    <Image
+                        source={{ uri: profileImage?.uri ? profileImage?.uri : user?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
+                        width={120}
+                        height={120}
+                        className="rounded-full"
+                        contentFit='cover'
+                    />
+                    <TouchableOpacity onPress={openPicker} className="absolute">
+                        <Feather name='camera' size={24} color={"#000"} />
                     </TouchableOpacity>
+
+                </View>
+                {
+                    profileImage?.uri &&
+                    <View className="flex flex-row mt-2 justify-center items-center">
+                        <TouchableOpacity
+                            className={
+                                colorScheme == 'dark'
+                                    ? `flex-1 bg-[#000] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
+                                    : `flex-1 bg-[#ccc] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
+                            }
+                            onPress={handleUpdateUserImage}
+                        >
+                            <Text className="font-pregular text-[12px] dark:text-white">Cập nhật</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className={
+                                colorScheme == 'dark'
+                                    ? `flex-1 bg-[#000] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
+                                    : `flex-1 bg-[#ccc] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
+                            }
+                            onPress={() => setProfileImage({})}
+                        >
+                            <Text className="font-pregular text-[12px] dark:text-white">Hủy</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+
+                <View className="mt-4">
                     <TouchableOpacity
-                        className={
-                            colorScheme == 'dark'
-                                ? `flex-1 bg-[#000] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
-                                : `flex-1 bg-[#ccc] rounded-full border-[1.5px] p-2 mx-2 justify-center items-center`
-                        }
-                        onPress={() => setProfileImage({})}
+                        onPress={() => {
+                            setIsChanging("orm")
+                            handlePresentBottomSheet()
+                        }}
+                        className="bg-[#fff] dark:bg-[#292727] flex p-4 rounded-lg shadow-xl"
                     >
-                        <Text className="font-pregular text-[12px] dark:text-white">Cancel</Text>
+                        <Text className="dark:text-white font-pmedium">One Rep Max</Text>
+                        <View className='flex flex-row justify-between items-center'>
+                            <Text className="font-psemibold text-lg capitalize dark:text-white">
+                                {`${isModified() ? tempUser?.orm : user?.orm} kg`}
+                            </Text>
+                            <AntDesign size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
                     </TouchableOpacity>
                 </View>
-            }
 
-            <View className="mt-4">
-                <TouchableOpacity
-                    onPress={() => {
-                        setIsChanging("orm")
-                        handlePresentBottomSheet()
-                    }}
-                    className="bg-[#fff] dark:bg-[#292727] flex p-4 rounded-lg shadow-xl"
-                >
-                    <Text className="dark:text-white font-pmedium">ORM (Bench Press)</Text>
-                    <View className='flex flex-row justify-between items-center'>
-                        <Text className="font-psemibold text-lg capitalize dark:text-white">
-                            {`${isModified() ? tempUser?.orm : user?.orm} kg`}
-                        </Text>
-                        <AntDesign size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                    </View>
-                </TouchableOpacity>
-            </View>
-
-            <View className="mt-4">
-                <Text className="text-[#acaaaa] font-pregular">Thông tin cơ bản</Text>
-                <TouchableOpacity
-                    onPress={() => {
-                        setIsChanging("gender")
-                        handlePresentBottomSheet()
-                    }}
-                    className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
-                    <Text className="font-pregular text-lg dark:text-white">Giới tính</Text>
-                    <View className="flex flex-row justify-center items-center">
-                        <Text className="text-center font-pextrabold text-lg dark:text-white capitalize">
-                            {
-                                isModified()
-                                    ?
-                                    tempUser?.gender == 'female' ? 'nữ' : 'nam'
-                                    :
-                                    user?.gender == 'female' ? 'nữ' : 'nam'
-                            }
-                        </Text>
-                        <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        setIsChanging("weight")
-                        handlePresentBottomSheet()
-                    }}
-                    className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
-                    <Text className="font-pregular text-lg dark:text-white">Cân nặng hiện tại</Text>
-                    <View className="flex flex-row justify-center items-center">
-                        <Text className="text-center font-pextrabold text-lg dark:text-white">
-                            {
-                                isModified()
-                                    ? tempUser?.weight
-                                    : user?.weight
-                            } Kg
-                        </Text>
-                        <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        setIsChanging("weight")
-                        handlePresentBottomSheet()
-                    }}
-                    className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
-                    <Text className="font-pregular text-lg dark:text-white">Mục tiêu cân nặng</Text>
-                    <View className="flex flex-row justify-center items-center">
-                        <Text className="text-center font-pextrabold text-lg dark:text-white">
-                            {
-                                isModified()
-                                    ? tempUser?.targetWeight
-                                    : user?.targetWeight
-                            } Kg
-                        </Text>
-                        <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {
-                        setIsChanging("weight")
-                        handlePresentBottomSheet()
-                    }}
-                    className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
-                    <Text className="font-pregular text-lg dark:text-white">Chiều cao</Text>
-                    <View className="flex flex-row justify-center items-center">
-                        <Text className="text-center font-pextrabold text-lg dark:text-white">
-                            {
-                                isModified()
-                                    ? tempUser?.height
-                                    : user?.height
-                            } Cm
-                        </Text>
-                        <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                    </View>
-                </TouchableOpacity>
-            </View>
-            <View className="my-4 bottom-1">
-                {
-                    isModified() &&
-                    <CustomButton bgColor='bg-[#3749db]' onPress={handleUpdateUserInfo} text={"Cập nhật thông tin"} />
-                }
-            </View>
-            <LoadingModal visible={isVisibleModal} />
+                <View className="mt-4">
+                    <Text className="text-[#acaaaa] font-pregular">Thông tin cơ bản</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsChanging("gender")
+                            handlePresentBottomSheet()
+                        }}
+                        className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
+                        <Text className="font-pregular text-lg dark:text-white">Giới tính</Text>
+                        <View className="flex flex-row justify-center items-center">
+                            <Text className="text-center font-pextrabold text-lg dark:text-white capitalize">
+                                {
+                                    isModified()
+                                        ?
+                                        tempUser?.gender == 'female' ? 'nữ' : 'nam'
+                                        :
+                                        user?.gender == 'female' ? 'nữ' : 'nam'
+                                }
+                            </Text>
+                            <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsChanging("weight")
+                            handlePresentBottomSheet()
+                        }}
+                        className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
+                        <Text className="font-pregular text-lg dark:text-white">Tuổi</Text>
+                        <View className="flex flex-row justify-center items-center">
+                            <Text className="text-center font-pextrabold text-lg dark:text-white capitalize">
+                                {
+                                    isModified()
+                                        ?
+                                        tempUser?.age
+                                        :
+                                        user?.age
+                                }
+                            </Text>
+                            <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsChanging("weight")
+                            handlePresentBottomSheet()
+                        }}
+                        className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
+                        <Text className="font-pregular text-lg dark:text-white">Cân nặng hiện tại</Text>
+                        <View className="flex flex-row justify-center items-center">
+                            <Text className="text-center font-pextrabold text-lg dark:text-white">
+                                {
+                                    isModified()
+                                        ? tempUser?.weight
+                                        : user?.weight
+                                } Kg
+                            </Text>
+                            <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsChanging("weight")
+                            handlePresentBottomSheet()
+                        }}
+                        className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
+                        <Text className="font-pregular text-lg dark:text-white">Mục tiêu cân nặng</Text>
+                        <View className="flex flex-row justify-center items-center">
+                            <Text className="text-center font-pextrabold text-lg dark:text-white">
+                                {
+                                    isModified()
+                                        ? tempUser?.targetWeight
+                                        : user?.targetWeight
+                                } Kg
+                            </Text>
+                            <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsChanging("weight")
+                            handlePresentBottomSheet()
+                        }}
+                        className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
+                        <Text className="font-pregular text-lg dark:text-white">Chiều cao</Text>
+                        <View className="flex flex-row justify-center items-center">
+                            <Text className="text-center font-pextrabold text-lg dark:text-white">
+                                {
+                                    isModified()
+                                        ? tempUser?.height
+                                        : user?.height
+                                } Cm
+                            </Text>
+                            <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsChanging("healthGoal")
+                            handlePresentBottomSheet()
+                        }}
+                        className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
+                        <Text className="font-pregular text-lg dark:text-white">Mục tiêu</Text>
+                        <View className="flex flex-row justify-center items-center">
+                            <Text className="text-center font-pextrabold text-lg dark:text-white">
+                                {
+                                    isModified()
+                                        ? tempUser?.healthGoal
+                                        : user?.healthGoal
+                                }
+                            </Text>
+                            <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsChanging("activityLevel")
+                            handlePresentBottomSheet()
+                        }}
+                        className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
+                        <Text className="font-pregular text-lg dark:text-white">Tầng suất hoạt động</Text>
+                        <View className="flex flex-row justify-center items-center">
+                            <Text className="text-center font-pextrabold text-lg dark:text-white">
+                                {
+                                    isModified()
+                                        ? tempUser?.activityLevel
+                                        : user?.activityLevel
+                                }
+                            </Text>
+                            <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => {
+                            setIsChanging("level")
+                            handlePresentBottomSheet()
+                        }}
+                        className='shadow-xl mt-2 flex flex-row justify-between items-center p-4 bg-[#fff] dark:bg-[#292727] rounded-lg'>
+                        <Text className="font-pregular text-lg dark:text-white">Trình độ</Text>
+                        <View className="flex flex-row justify-center items-center">
+                            <Text className="text-center font-pextrabold text-lg dark:text-white">
+                                {
+                                    isModified()
+                                        ? tempUser?.level
+                                        : user?.level
+                                }
+                            </Text>
+                            <AntDesign style={{ marginLeft: 6 }} size={20} name='right' color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                <View className="my-4 bottom-1">
+                    {
+                        isModified() &&
+                        <CustomButton bgColor='bg-[#3749db]' onPress={handleUpdateUserInfo} text={"Cập nhật thông tin"} />
+                    }
+                </View>
+                <LoadingModal visible={isVisibleModal} />
+            </ScrollView>
             <BottomSheet enablePanDownToClose={false} snapPoints={['95%']} bottomSheetRef={bottomSheetRef}>
                 {
                     isChanging == "gender" &&
@@ -384,14 +546,24 @@ const MyProfile = () => {
                         </View>
 
                         <View style={styles.genderContainer}>
-                            <TouchableOpacity onPress={() => handleUpdateGender('male')} style={styles.imageContainer}>
+                            <TouchableOpacity
+                                onPress={() => setTempUser((temp) => ({
+                                    ...temp,
+                                    gender: 'male'
+                                }))}
+                                style={styles.imageContainer}>
                                 <Image
                                     source={images["3d_male"]}
                                     style={styles.image}
                                     contentFit="cover"
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleUpdateGender('female')} style={styles.imageContainer}>
+                            <TouchableOpacity
+                                onPress={() => setTempUser((temp) => ({
+                                    ...temp,
+                                    gender: 'female'
+                                }))}
+                                style={styles.imageContainer}>
                                 <Image
                                     source={images["3d_female"]}
                                     style={styles.image}
@@ -400,29 +572,43 @@ const MyProfile = () => {
                             </TouchableOpacity>
                         </View>
                         <View className="flex flex-row justify-around items-center my-6">
-                            <TouchableOpacity onPress={() => handleUpdateGender('male')}>
+                            <TouchableOpacity
+                                onPress={() => setTempUser((temp) => ({
+                                    ...temp,
+                                    gender: 'male'
+                                }))}
+                            >
                                 <Text className="font-pextrabold text-lg">Nam</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleUpdateGender('female')}>
+                            <TouchableOpacity
+                                onPress={() => setTempUser((temp) => ({
+                                    ...temp,
+                                    gender: 'female'
+                                }))}
+                            >
                                 <Text className="font-pextrabold text-lg">Nữ</Text>
                             </TouchableOpacity>
                         </View>
                         <View className="flex flex-row justify-around items-center my-2">
-                            <TouchableOpacity onPress={() => handleUpdateGender('male')} >
-                                <AntDesign name={gender == 'male' ? 'checkcircle' : 'checkcircleo'} size={28} />
+                            <TouchableOpacity
+                                onPress={() => setTempUser((temp) => ({
+                                    ...temp,
+                                    gender: 'male'
+                                }))}
+                            >
+                                <AntDesign name={tempUser?.gender == 'male' ? 'checkcircle' : 'checkcircleo'} size={28} />
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => handleUpdateGender('female')}>
-                                <AntDesign name={gender == 'female' ? 'checkcircle' : 'checkcircleo'} size={28} />
+                            <TouchableOpacity
+                                onPress={() => setTempUser((temp) => ({
+                                    ...temp,
+                                    gender: 'female'
+                                }))}
+                            >
+                                <AntDesign name={tempUser?.gender == 'female' ? 'checkcircle' : 'checkcircleo'} size={28} />
                             </TouchableOpacity>
                         </View>
                         <View className="m-4 ">
-                            <CustomButton onPress={() => {
-                                setTempUser({
-                                    ...tempUser,
-                                    gender: gender
-                                })
-                                bottomSheetRef?.current?.dismiss()
-                            }} bgColor='bg-[#3749db]' text="Xong" textStyle={{
+                            <CustomButton onPress={handleDismissBottomSheet} bgColor='bg-[#3749db]' text="Xong" textStyle={{
                                 fontFamily: "Roboto-Bold"
                             }} />
                         </View>
@@ -431,8 +617,8 @@ const MyProfile = () => {
 
                 {
                     isChanging == "weight" &&
-                    <>
-                        <View className="p-4">
+                    <View className="p-4">
+                        <View >
                             <InputField
                                 placeholder={user?.weight.toString()}
                                 label={"Cân nặng"}
@@ -442,7 +628,7 @@ const MyProfile = () => {
                                 textRight={'Kg'}
                             />
                         </View>
-                        <View className="p-4">
+                        <View >
                             <InputField
                                 placeholder={user?.targetWeight.toString()}
                                 label={"Mục tiêu cân nặng"}
@@ -452,7 +638,7 @@ const MyProfile = () => {
                                 textRight={'Kg'}
                             />
                         </View>
-                        <View className="p-4">
+                        <View >
                             <InputField
                                 placeholder={user?.height.toString()}
                                 label={"Chiều cao"}
@@ -462,12 +648,299 @@ const MyProfile = () => {
                                 textRight={'Cm'}
                             />
                         </View>
+                        <View >
+                            <Text className={`text-lg font-psemibold`}>
+                                Sinh năm
+                            </Text>
+                            <View className={`flex flex-row justify-between items-center relative bg-neutral-100 rounded-full border border-neutral-100 my-2`}>
+                                <TouchableOpacity onPress={showDatepicker}>
+                                    <Ionicons name="calendar-outline" size={24} style={{ marginLeft: 12 }} />
+                                </TouchableOpacity>
+                                <TextInput
+                                    editable={false}
+                                    className={`rounded-full p-4 font-pbold text-[15px] text-black flex-1 text-left`}
+                                    value={date.toLocaleDateString()}
+                                    placeholder={"Tuổi"}
+                                    autoCapitalize={'none'}
+                                />
+                                <Text className="px-4">{calculateAge()} Tuổi</Text>
+
+                            </View>
+                        </View>
+                        <View>
+                            {show && (
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={date}
+                                    mode={mode}
+                                    is24Hour={true}
+                                    onChange={onChangeDate}
+                                />
+                            )}
+                        </View>
+                        <View className="m-4 ">
+                            <CustomButton onPress={() => {
+                                handleDismissBottomSheet()
+                                setTempUser((temp) => ({
+                                    ...temp,
+                                    age: calculateAge()
+                                }))
+                            }} bgColor='bg-[#3749db]' text="Xong" textStyle={{
+                                fontFamily: "Roboto-Bold"
+                            }} />
+                        </View>
+                    </View>
+                }
+                {
+                    isChanging == 'healthGoal' &&
+                    <>
+                        <View className="flex px-4">
+                            <View>
+                                <Text className="font-pbold text-[28px] text-center">Mục tiêu của bạn là gì?</Text>
+                            </View>
+                            <View className="h-[100px]"></View>
+                            <TouchableOpacity
+                                onPress={() => setTempUser((tempUser) => ({
+                                    ...tempUser,
+                                    healthGoal: "Tăng cơ"
+                                }))}
+                                className={` bg-[#fff] mt-4 flex flex-row justify-between items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.healthGoal == 'Tăng cơ' && 'border-[2px] border-[#000]'}`}>
+                                <View className="flex flex-row justify-start items-center">
+                                    <MaterialCommunityIcons name='arm-flex-outline' size={45} />
+                                    <Text className="flex-1 ml-4 font-pextrabold text-lg">Tăng cơ</Text>
+                                    {
+                                        tempUser?.healthGoal == 'Tăng cơ' && <AntDesign name={'checkcircle'} size={28} />
+                                    }
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setTempUser((tempUser) => ({
+                                    ...tempUser,
+                                    healthGoal: "Cân đối tổng thể"
+                                }))}
+                                className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.healthGoal == 'Cân đối tổng thể' && 'border-[2px] border-[#000]'}`}>
+                                <Ionicons name='fitness-outline' size={45} />
+                                <Text className="flex-1 ml-4 font-pextrabold text-lg">Cân đối</Text>
+                                {
+                                    tempUser?.healthGoal == 'Cân đối tổng thể' && <AntDesign name={'checkcircle'} size={28} />
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setTempUser((tempUser) => ({
+                                    ...tempUser,
+                                    healthGoal: "Sức mạnh"
+                                }))}
+                                className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.healthGoal == 'Sức mạnh' && 'border-[2px] border-[#000]'} `}>
+                                <MaterialCommunityIcons name='weight-lifter' size={45} />
+                                <Text className="flex-1 ml-4 font-pextrabold text-lg">Sức mạnh</Text>
+                                {
+                                    tempUser?.healthGoal == 'Sức mạnh' && <AntDesign name={'checkcircle'} size={28} />
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setTempUser((tempUser) => ({
+                                    ...tempUser,
+                                    healthGoal: "Giảm mỡ"
+                                }))}
+                                className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-2 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.healthGoal == 'Giảm mỡ' && 'border-[2px] border-[#000]'}`}>
+                                <Ionicons name='trending-down' size={45} />
+                                <Text className="flex-1 ml-4 font-pextrabold text-lg">Giảm mỡ</Text>
+                                {
+                                    tempUser?.healthGoal == 'Giảm mỡ' && <AntDesign name={'checkcircle'} size={28} />
+                                }
+                            </TouchableOpacity>
+                        </View>
                         <View className="m-4 ">
                             <CustomButton onPress={handleDismissBottomSheet} bgColor='bg-[#3749db]' text="Xong" textStyle={{
                                 fontFamily: "Roboto-Bold"
                             }} />
                         </View>
                     </>
+                }
+                {
+                    isChanging == 'activityLevel' &&
+                    <View>
+                        <View className="flex px-4">
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setTempUser((tempUser) => ({
+                                        ...tempUser,
+                                        activityLevel: levelToPointMap["Ít vận động"],
+                                        bmr: BMR(tempUser),
+                                        tdee: (levelToPointMap["Ít vận động"] * BMR(tempUser))
+                                    }))
+                                }}
+                                className={` bg-[#fff] mt-4 flex flex-row justify-between items-center p-4 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.activityLevel == levelToPointMap['Ít vận động'] && 'border-[2px] border-[#000]'}`}>
+                                <View className="flex flex-row justify-start items-center">
+                                    <FontAwesome name='desktop' size={32} color={"#000"} />
+                                    <Text className="flex-1 mx-4 font-pmedium text-[16px]">Ít vận động (ít hoặc không tập thể dục + làm việc văn phòng)</Text>
+                                    {
+                                        tempUser?.activityLevel == levelToPointMap['Ít vận động'] && <AntDesign name={'checkcircle'} size={28} color={"#000"} />
+                                    }
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setTempUser((tempUser) => ({
+                                        ...tempUser,
+                                        activityLevel: levelToPointMap["Hoạt động nhẹ"],
+                                        bmr: BMR(user),
+                                        tdee: (levelToPointMap["Hoạt động nhẹ"] * BMR(user))
+                                    }))
+                                }}
+                                className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-4 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.activityLevel == levelToPointMap['Hoạt động nhẹ'] && 'border-[2px] border-[#000]'}`}>
+                                <MaterialCommunityIcons name='clock-time-four-outline' size={32} color={"#000"} />
+                                <Text className="flex-1 mx-4 font-pmedium text-[16px]">Hoạt động nhẹ (tập thể dục nhẹ 1-3 ngày / tuần)</Text>
+                                {
+                                    tempUser?.activityLevel == levelToPointMap['Hoạt động nhẹ'] && <AntDesign name={'checkcircle'} size={28} color={"#000"} />
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setTempUser((tempUser) => ({
+                                        ...tempUser,
+                                        activityLevel: levelToPointMap["Tập thể dục vừa phải"],
+                                        bmr: BMR(user),
+                                        tdee: (levelToPointMap["Tập thể dục vừa phải"] * BMR(user))
+                                    }))
+                                }}
+                                className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-4 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.activityLevel == levelToPointMap['Tập thể dục vừa phải'] && 'border-[2px] border-[#000]'} `}>
+                                <MaterialIcons name='directions-run' size={32} color={"#000"} />
+                                <Text className="flex-1 mx-4 font-pmedium text-[16px]">Tập thể dục vừa phải (tập thể dục vừa phải 3-5 ngày / tuần)</Text>
+                                {
+                                    tempUser?.activityLevel == levelToPointMap['Tập thể dục vừa phải'] && <AntDesign name={'checkcircle'} size={28} color={"#000"} />
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setTempUser((tempUser) => ({
+                                        ...tempUser,
+                                        activityLevel: levelToPointMap["Tập thể dục cường độ cao"],
+                                        bmr: BMR(user),
+                                        tdee: (levelToPointMap["Tập thể dục cường độ cao"] * BMR(user))
+                                    }))
+                                }}
+                                className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-4 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.activityLevel == levelToPointMap['Tập thể dục cường độ cao'] && 'border-[2px] border-[#000]'}`}>
+                                <MaterialCommunityIcons name='dumbbell' size={32} color={"#000"} />
+
+                                <Text className="flex-1 mx-4 font-pmedium text-[16px]">Tập thể dục hàng ngày hoặc tập thể dục cường độ cao 3-4 lần / tuần</Text>
+                                {
+                                    tempUser?.activityLevel == levelToPointMap['Tập thể dục cường độ cao'] && <AntDesign name={'checkcircle'} size={28} color={"#000"} />
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setTempUser((tempUser) => ({
+                                        ...tempUser,
+                                        activityLevel: levelToPointMap["Tập thể dục nặng"],
+                                        bmr: BMR(user),
+                                        tdee: (levelToPointMap["Tập thể dục nặng"] * BMR(user))
+                                    }))
+                                }}
+                                className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-4 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.activityLevel == levelToPointMap['Tập thể dục nặng'] && 'border-[2px] border-[#000]'}`}>
+                                <MaterialCommunityIcons name='weight-lifter' size={32} color={"#000"} />
+                                <Text className="flex-1 mx-4 font-pmedium text-[16px]">Tập thể dục nặng (tập thể dục nặng 6-7 ngày / tuần)</Text>
+                                {
+                                    tempUser?.activityLevel == levelToPointMap['Tập thể dục nặng'] && <AntDesign name={'checkcircle'} size={28} color={"#000"} />
+                                }
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setTempUser((tempUser) => ({
+                                        ...tempUser,
+                                        activityLevel: levelToPointMap["Tập thể dục rất căng thẳng"],
+                                        bmr: BMR(user),
+                                        tdee: (levelToPointMap["Tập thể dục rất căng thẳng"] * BMR(user))
+                                    }))
+                                }}
+                                className={`bg-[#fff] mt-4 flex flex-row justify-start items-center p-4 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${tempUser?.activityLevel == levelToPointMap['Tập thể dục rất căng thẳng'] && 'border-[2px] border-[#000]'}`}>
+                                <MaterialCommunityIcons name='fire' size={32} color={"#000"} />
+                                <Text className="flex-1 mx-4 font-pmedium text-[16px]">Tập thể dục rất căng thẳng hàng ngày hoặc công việc thể chất, nặng nhọc</Text>
+                                {
+                                    tempUser?.activityLevel == levelToPointMap["Tập thể dục rất căng thẳng"] && <AntDesign name={'checkcircle'} size={28} color={"#000"} />
+                                }
+                            </TouchableOpacity>
+                        </View>
+                        <View className="m-4 ">
+                            <CustomButton bgColor={`bg-[#3749db]`} onPress={handleDismissBottomSheet} text="Xong" textStyle={{
+                                fontFamily: "Roboto-Bold"
+                            }} />
+                        </View>
+                    </View>
+                }
+                {
+                    isChanging == 'level' &&
+                    <View className="px-4 mt-4">
+                        <Text className="font-pbold text-[28px] text-center mb-4">Bạn là ?</Text>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                setTempUser((temp) => ({
+                                    ...temp,
+                                    level: "Người mới bắt đầu"
+                                }))
+                            }}
+                            className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${tempUser.level == 'Người mới bắt đầu' && 'border-[2px] border-[#000]'}`}
+                        >
+                            <View className="flex flex-row justify-center items-center">
+                                <FontAwesome name='battery-1' size={28} />
+                            </View>
+                            <View className="flex flex-1 ml-4 ">
+                                <Text className="font-pextrabold text-lg">Người mới bắt đầu</Text>
+                                <Text>Luyện tập ít hơn 6 tháng</Text>
+                            </View>
+                            {
+                                tempUser.level == 'Người mới bắt đầu' && <AntDesign name={'checkcircle'} size={28} />
+                            }
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                setTempUser((temp) => ({
+                                    ...temp,
+                                    level: "Trung cấp"
+                                }))
+                            }}
+                            className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${tempUser.level == 'Trung cấp' && 'border-[2px] border-[#000]'}`}
+                        >
+                            <View className="flex flex-row justify-center items-center">
+                                <FontAwesome name='battery-2' size={28} />
+                            </View>
+                            <View className="flex flex-1 ml-4 mr-2">
+                                <Text className="font-pextrabold text-lg">Trung cấp</Text>
+                                <Text>Luyện tập hơn 6 tháng và ít hơn 2 năm</Text>
+                            </View>
+                            {
+                                tempUser.level == 'Trung cấp' && <AntDesign name={'checkcircle'} size={28} />
+                            }
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                                setTempUser((temp) => ({
+                                    ...temp,
+                                    level: "Thâm niên"
+                                }))
+                            }}
+                            className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${tempUser.level == 'Thâm niên' && 'border-[2px] border-[#000]'}`}
+                        >
+                            <View className="flex flex-row justify-center items-center">
+                                <FontAwesome name='battery-4' size={28} />
+                            </View>
+                            <View className="flex flex-1 ml-4">
+                                <Text className="font-pextrabold text-lg">Thâm niên</Text>
+                                <Text>Hơn 2 năm luyện tập</Text>
+                            </View>
+                            {
+                                tempUser.level == 'Thâm niên' && <AntDesign name={'checkcircle'} size={28} />
+                            }
+                        </TouchableOpacity>
+                        <View className="mt-4 ">
+                            <CustomButton bgColor={`bg-[#3749db]`} onPress={handleDismissBottomSheet} text="Xong" textStyle={{
+                                fontFamily: "Roboto-Bold"
+                            }} />
+                        </View>
+                    </View>
                 }
                 {
                     isChanging == 'orm' &&
@@ -485,6 +958,7 @@ const MyProfile = () => {
                                     contentFit='contain'
                                 />
                             </View>
+                            <Text className="text-center font-pregular">Chỉ số sức mạnh cực đại cho 1 lần tập được gọi là ORM (One Repetition Maximum)</Text>
                             <View className="border-b-[0.5px] border-[#ccc]">
                                 <View className="flex flex-row items-center p-2">
                                     <Text className="font-pmedium text-[16px] flex-1 dark:text-white">Bài tạ</Text>
@@ -517,7 +991,7 @@ const MyProfile = () => {
                                             setSelected={(item) => {
                                                 setSelected(item)
                                             }}
-                                            data={seedData}
+                                            data={seedDataOrm}
                                             placeholder={selected}
                                             save="value"
                                             search={false}
@@ -596,7 +1070,6 @@ const MyProfile = () => {
                     </View>
                 }
             </BottomSheet>
-
         </SafeAreaView >
     )
 }

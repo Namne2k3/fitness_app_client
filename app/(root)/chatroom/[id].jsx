@@ -27,11 +27,12 @@ const ChatRoom = () => {
     const [smallLoading, setSmallLoading] = useState(false)
     const [smallIsDownload, setSmallIsDownload] = useState(false)
     const [isFetching, setIsFetching] = useState(false)
-    const [skip, setSkip] = useState(0);
     const [isFetchMore, setIsFetchMore] = useState(false)
+    const [skip, setSkip] = useState(0);
     const limit = 10;
     const [selectedImage, setSelectedImage] = useState({})
     const [visibleImageModal, setVisibleImageModal] = useState(false)
+
     const [form, setForm] = useState({
         author: user?._id,
         medias: []

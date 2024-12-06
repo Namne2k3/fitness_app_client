@@ -385,7 +385,7 @@ const BeginTrainingId = () => {
                             onPress={() => router.replace({
                                 pathname: `/(root)/beginTraining/${id}`,
                                 params: {
-                                    index: index, planId: planId, data: JSON.stringify(dataTraining)
+                                    index: index, planId: planId, data: data
                                 }
                             })}
                         >

@@ -7,108 +7,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
 import InputField from '../../components/InputField'
 import useUserStore from '../../store/userStore'
-
-
-function analyzeUser(weight, height, targetWeight) {
-    if (!weight || !height || !targetWeight) {
-        throw new Error("Chưa có một trong các dữ liệu sau (Chiều cao, cân nặng, mục tiêu cân nặng).");
-    }
-
-    const calculateBMI = (weight, height) => (weight / ((height / 100) ** 2)).toFixed(2);
-    const currentBMI = calculateBMI(weight, height);
-    const targetBMI = calculateBMI(targetWeight, height);
-
-    const percentageWeightChange = Math.abs(((targetWeight - weight) / weight) * 100).toFixed(2);
-
-    let result = {
-        title: "",
-        subtitle: "",
-        body: ""
-    };
-
-    // Define thresholds
-    const lowerLimit = 0.90 * weight; // 90% of current weight
-    const upperLimit = 1.10 * weight; // 110% of current weight
-    const effortLimit = 1.15 * weight; // 115% of current weight
-    const challengeLimit = 1.35 * weight; // 135% of current weight
-
-    // Classify target weight
-    if (targetWeight < lowerLimit) {
-        result = {
-            title: "Cảnh báo",
-            subtitle: `Bạn sẽ giảm ${percentageWeightChange}% trọng lượng cơ thể`,
-            body: `
-Giảm cân quá mức có thể gây hại cho sức khỏe:
-- Mệt mỏi và suy nhược cơ thể
-- Suy giảm hệ miễn dịch
-- Nguy cơ mắc bệnh thiếu máu
-Hãy tham khảo ý kiến chuyên gia để điều chỉnh mục tiêu phù hợp.
-            `
-        };
-    } else if (targetWeight >= lowerLimit && targetWeight <= upperLimit) {
-        result = {
-            title: "Mục tiêu hợp lý",
-            subtitle: `Bạn sẽ thay đổi ${percentageWeightChange}% trọng lượng cơ thể`,
-            body: `
-Những thay đổi nhỏ về cân nặng có thể mang lại lợi ích lớn:
-- Hạ huyết áp
-- Giảm nguy cơ mắc bệnh tiểu đường
-- Cải thiện sức khỏe tổng thể
-Hãy duy trì chế độ luyện tập và ăn uống cân bằng để đạt được mục tiêu.
-            `
-        };
-    } else if (targetWeight > upperLimit && targetWeight <= effortLimit) {
-        result = {
-            title: "Lựa chọn nỗ lực",
-            subtitle: `Bạn sẽ tăng ${percentageWeightChange}% trọng lượng cơ thể`,
-            body: `
-Mục tiêu này có thể đạt được với một chút nỗ lực:
-- Tăng cường sức mạnh cơ bắp
-- Cải thiện năng lượng và sức bền
-- Xây dựng hình thể lý tưởng
-Hãy tập trung vào chế độ dinh dưỡng và luyện tập để đạt kết quả tốt.
-            `
-        };
-    } else if (targetWeight > effortLimit && targetWeight <= challengeLimit) {
-        result = {
-            title: "Thử thách",
-            subtitle: `Bạn sẽ tăng ${percentageWeightChange}% trọng lượng cơ thể`,
-            body: `
-Mục tiêu này đòi hỏi sự kiên nhẫn và quyết tâm cao:
-- Cần thời gian để xây dựng khối lượng cơ
-- Tăng cường sự tự tin và sức mạnh
-- Cải thiện đáng kể vóc dáng
-Hãy xây dựng kế hoạch chi tiết và kiên định với mục tiêu.
-            `
-        };
-    } else if (targetWeight > challengeLimit) {
-        result = {
-            title: "Cảnh báo",
-            subtitle: `Bạn sẽ tăng ${percentageWeightChange}% trọng lượng cơ thể`,
-            body: `
-Tăng cân quá mức có thể gây hại cho sức khỏe:
-- Gia tăng nguy cơ béo phì
-- Nguy cơ mắc các bệnh tim mạch
-- Tăng áp lực lên khớp và xương
-Hãy tham khảo ý kiến chuyên gia để điều chỉnh mục tiêu.
-            `
-        };
-    }
-
-    return {
-        currentBMI: currentBMI,
-        targetBMI: targetBMI,
-        percentageWeightChange: `${percentageWeightChange}%`,
-        conclusion: result
-    };
-}
+import { analyzeUser } from '../../utils/index'
 
 const ChooseHeight = () => {
 
-    const user = useUserStore.getState().user
-
-    console.log("Checking user >>> ", user);
-
+    const { user } = useUserStore()
 
     const setUser = useUserStore.getState().setUser
     const [date, setDate] = useState(new Date());
@@ -168,11 +71,6 @@ const ChooseHeight = () => {
                 form.weight, form.height, form.targetWeight
             )
 
-            console.log("Check currentBMI >>> ", currentBMI);
-            console.log("Check targetBMI >>> ", targetBMI);
-            console.log("Check percentageWeightChange >>> ", percentageWeightChange);
-            console.log("Check conclusion >>> ", conclusion);
-
             setForm((form) => ({
                 ...form,
                 bmi: currentBMI,
@@ -229,7 +127,7 @@ const ChooseHeight = () => {
                 <View className="px-4 py-2">
                     <Text className="font-pbold text-[28px] text-center">Chiều cao và cân nặng</Text>
                 </View>
-                {/* <View className="h-[50px]"></View> */}
+
                 <View View className="px-4" >
                     <InputField
                         label={"Cân nặng"}

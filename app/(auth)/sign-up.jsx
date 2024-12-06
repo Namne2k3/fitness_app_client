@@ -127,7 +127,7 @@ const SignUp = () => {
                 >
                     <View className={`bg-white px-7 py-9 rounded-2xl min-h-[300px]`}>
                         <Text className={`text-2xl font-pextrabold mb-2 `}>
-                            Verification
+                            Xác thực
                         </Text>
                         <Text className={`font-pregular mb-5`}>
                             Chúng tôi vừa gửi đoạn mã đến {form.email}
@@ -149,7 +149,7 @@ const SignUp = () => {
                         )}
                         <CustomButton
                             bgColor='bg-[#3749db]'
-                            text={'Xác thục email'}
+                            text={'Xác thực email'}
                             onPress={onPressVerify}
                             containerStyle={`mt-4`}
                         />

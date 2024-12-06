@@ -1,3 +1,30 @@
+export const levelToPointMap = {
+    "Ít vận động": 1.232,
+    "Hoạt động nhẹ": 1.411,
+    "Tập thể dục vừa phải": 1.504,
+    "Tập thể dục cường độ cao": 1.591,
+    "Tập thể dục nặng": 1.771,
+    "Tập thể dục rất căng thẳng": 1.950
+}
+
+export const seedDataOrm = [
+    {
+        name: "Bench Press",
+        value: "Bench Press",
+        url: "https://drive.google.com/uc?id=13ibeDSBV0wx7lpYJI9f2N2xc85ky0ztc"
+    },
+    {
+        name: "Deadlift",
+        value: "Deadlift",
+        url: "https://drive.google.com/uc?id=16To7ZKpunF0vQugU4oPsrm3NAjA1Fzzf"
+    },
+    {
+        name: "Squats",
+        value: "Squats",
+        url: "https://drive.google.com/uc?id=1vqA6d5AQw336tvhRuY3SeizWK7GZtyVx"
+    }
+]
+
 export const seedTrainings = [
     {
         exercise: {

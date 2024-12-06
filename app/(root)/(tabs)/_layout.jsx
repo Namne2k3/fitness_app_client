@@ -40,22 +40,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="exercisesScreen"
+        options={{
+          title: 'Bài tập',
+          headerShown: false,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons size={26} name='space-dashboard' color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="custom"
         options={{
           title: 'Tùy chỉnh',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <FontAwesome5 size={22} name='pen' color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="exercises"
-        options={{
-          title: 'Bài tập',
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons size={26} name='space-dashboard' color={color} />
           ),
         }}
       />

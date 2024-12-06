@@ -82,7 +82,7 @@ const AllHistoryRecords = () => {
                                         alt="No recent rides found"
                                         resizeMethod="contain"
                                     />
-                                    <Text className="text-sm">No records found!</Text>
+                                    <Text className="text-sm">Chưa có lịch sử tập luyện!</Text>
                                 </View>
                             )}
                             showsVerticalScrollIndicator={false}

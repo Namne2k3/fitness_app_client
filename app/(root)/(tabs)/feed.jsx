@@ -1,8 +1,8 @@
-import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 import { useColorScheme } from 'nativewind';
-import { useCallback, useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BlogCard from '../../../components/BlogCard';
@@ -12,15 +12,46 @@ import useUserStore from '../../../store/userStore';
 
 const Feed = () => {
     const { colorScheme } = useColorScheme()
-    const user = useUserStore.getState().user
+    const { user } = useUserStore()
     const [blogs, setBlogs] = useState([])
+    const [skip, setSkip] = useState(0);
+    const limit = 5;
+    const [smallLoading, setSmallLoading] = useState(false)
+    const [refreshing, setRefreshing] = useState(false);
 
-    const fetchBlogs = async () => {
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchBlogs(true);
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
+    }, []);
+
+    const fetchBlogs = async (isSearchReset = false) => {
         try {
-            const res = await getAllBlog()
-            setBlogs(res.data)
+            if (isSearchReset) {
+                setSkip(0);
+            } else {
+                setSmallLoading(true)
+            }
+            const res = await getAllBlog({ limit, skip: isSearchReset ? 0 : skip })
+
+            if (isSearchReset) {
+                setBlogs(res.data)
+            } else {
+                setBlogs((blogs) => ([
+                    ...blogs,
+                    ...res.data
+                ]))
+            }
+
+            if (res?.data?.length > 0) {
+                setSkip((prevSkip) => prevSkip + limit);
+            }
         } catch (error) {
-            console.log(error);
+            Alert.alert("Lỗi", error.message)
+        } finally {
+            setSmallLoading(false)
         }
     }
 
@@ -43,16 +74,14 @@ const Feed = () => {
 
             await updateBlogById(updatedBlog._id, updatedBlog);
         } catch (error) {
-            Alert.alert("Error", error.message);
+            Alert.alert("Lỗi", error.message);
         }
     }, [user?._id]);
 
 
-    useFocusEffect(
-        useCallback(() => {
-            fetchBlogs();
-        }, [])
-    );
+    useEffect(() => {
+        fetchBlogs(true);
+    }, [])
 
     return (
         <SafeAreaView className="flex h-full pt-4 dark:bg-slate-950">
@@ -68,39 +97,46 @@ const Feed = () => {
                 </View>
             </View>
 
-            <View className="flex justify-center items-center">
-                {
-                    blogs?.length > 0 ?
-                        <FlatList
-                            data={blogs}
-                            renderItem={({ item, index }) => {
-                                return (
-                                    <BlogCard colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
-                                )
-                            }}
-                            ItemSeparatorComponent={
-                                <View className="border-t-[0.5px] border-[#ccc]">
 
-                                </View>
-                            }
-                            showsVerticalScrollIndicator={false}
+            {
+                blogs?.length > 0 ?
+                    <FlatList
+                        refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                        }
+                        data={blogs}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <BlogCard colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
+                            )
+                        }}
+                        ItemSeparatorComponent={
+                            <View className="border-t-[0.5px] border-[#ccc]">
 
-                            contentContainerStyle={{
-                                paddingBottom: 100
-                            }}
+                            </View>
+                        }
+                        showsVerticalScrollIndicator={false}
+                        ListFooterComponent={
+                            !smallLoading ?
+                                <TouchableOpacity className='mb-4 flex flex-row justify-center items-center' onPress={() => fetchBlogs(false)}>
+                                    <Ionicons name='reload' size={30} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                                </TouchableOpacity>
+                                :
+                                <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        }
+                    />
+                    :
+                    <View className="flex h-[80%] items-center justify-center bg-transparent px-8">
+                        <Image
+                            source={images.no_result}
+                            className="w-40 h-40"
+                            alt="No recent rides found"
+                            resizeMethod="contain"
                         />
-                        :
-                        <View className="flex h-[80%] items-center justify-center bg-transparent px-8">
-                            <Image
-                                source={images.no_result}
-                                className="w-40 h-40"
-                                alt="No recent rides found"
-                                resizeMethod="contain"
-                            />
-                            <Text className="text-sm dark:text-white text-center">Chưa có bài viết</Text>
-                        </View>
-                }
-            </View>
+                        <Text className="text-sm dark:text-white text-center">Chưa có bài viết</Text>
+                    </View>
+            }
+
         </SafeAreaView>
     )
 }

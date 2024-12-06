@@ -17,7 +17,7 @@ const FeedProfile = () => {
     const [userProfile, setUserProfile] = useState({})
     const [userFeeds, setUserFeeds] = useState([])
     const { colorScheme } = useColorScheme()
-    const user = useUserStore.getState().user
+    const { user } = useUserStore()
     const [isFetching, setIsFetching] = useState(false)
     const [tab, setTab] = useState('information')
 
@@ -37,8 +37,7 @@ const FeedProfile = () => {
             })
 
         } catch (error) {
-            console.log("Error: ", error.message);
-            Alert.alert("Error", error.message)
+            Alert.alert("Lỗi", error.message)
         }
     }
 
@@ -61,20 +60,20 @@ const FeedProfile = () => {
 
             await updateBlogById(updatedBlog._id, updatedBlog);
         } catch (error) {
-            Alert.alert("Error", error.message);
+            Alert.alert("Lỗi", error.message);
         }
     }, [user?._id]);
 
     useEffect(() => {
-        setIsFetching(true)
         const fetchUserData = async () => {
+            setIsFetching(true)
             try {
                 const res = await getUserById(id);
                 setUserProfile(res.data)
-                setIsFetching(false)
             } catch (error) {
+                Alert.alert("Lỗi", error.message)
+            } finally {
                 setIsFetching(false)
-                Alert.alert("Error", error.message)
             }
         }
         fetchUserData();
@@ -88,8 +87,8 @@ const FeedProfile = () => {
                 const res = await getFeedsByUserId(userProfile?._id)
                 setUserFeeds(res.data)
             } catch (error) {
-                console.log("Error: ", error.message);
-                Alert.alert("Error", error.message)
+                console.log("Lỗi: ", error.message);
+                Alert.alert("Lỗi", error.message)
             }
         }
 
@@ -113,9 +112,6 @@ const FeedProfile = () => {
                 </View>
                 <View className="flex">
                     <Text className="font-pextrabold text-[24px] dark:text-white">{userProfile?.username}</Text>
-                    <Text className="font-plight text-center text-[12px] mt-[0px]">
-                        Offline
-                    </Text>
                 </View>
                 <View className="flex-1" />
             </View>
@@ -188,11 +184,14 @@ const FeedProfile = () => {
                 }
             </View>
             <LoadingModal visible={isFetching} />
-            <View className="absolute bottom-0 right-0 m-6 bg-[#ccc] dark:bg-[#000] p-2 rounded-full">
-                <TouchableOpacity onPress={handleNavigateChatScreen}>
-                    <FontAwesome5 name='facebook-messenger' size={32} color={colorScheme == 'dark' ? "#fff" : '#000'} />
-                </TouchableOpacity>
-            </View>
+            {
+                user?._id != id &&
+                <View className="absolute bottom-0 right-0 m-6 bg-[#ccc] dark:bg-[#000] p-2 rounded-full">
+                    <TouchableOpacity onPress={handleNavigateChatScreen}>
+                        <FontAwesome5 name='facebook-messenger' size={32} color={colorScheme == 'dark' ? "#fff" : '#000'} />
+                    </TouchableOpacity>
+                </View>
+            }
         </SafeAreaView >
     )
 }

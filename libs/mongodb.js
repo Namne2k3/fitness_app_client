@@ -298,9 +298,14 @@ const createNewFeed = async (feed) => {
     }
 }
 
-const getAllBlog = async () => {
+const getAllBlog = async ({ limit, skip }) => {
+    const token = await getToken()
     try {
-        const res = await axios.get(`${URL}/api/feed/getAll`)
+        const res = await axios.get(`${URL}/api/feed/getAll?limit=${limit}&skip=${skip}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
 
         return res.data;
     } catch (error) {
@@ -310,8 +315,13 @@ const getAllBlog = async () => {
 }
 
 const getBlogById = async (id) => {
+    const token = await getToken()
     try {
-        const res = await axios.get(`${URL}/api/feed/getDetail/${id}`)
+        const res = await axios.get(`${URL}/api/feed/getDetail/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return res.data;
     } catch (error) {
         throw new Error("Error creating feed!");
@@ -724,7 +734,22 @@ const reCreatePlans = async (plans) => {
     }
 }
 
+const getAllFoods = async ({ limit, skip, name, Calories, Protein, Fat, Carbonhydrates, Weight }) => {
+    const token = await getToken()
+    try {
+        const res = await axios.get(`${URL}/api/foods/getAll?limit=${limit}&skip=${skip}&name=${name}&Calories=${Calories}&Protein=${Protein}&Fat=${Fat}&Carbonhydrates=${Carbonhydrates}&Weight=${Weight}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export {
+    getAllFoods,
     reCreatePlans,
     reCreateTrainingsByUserId,
     updateUserById,

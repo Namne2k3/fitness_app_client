@@ -12,6 +12,9 @@ const ImageModal = ({ smallIsDownload, handleDownloadImage, visibleImageModal, c
             transparent={true}
             onRequestClose={closeModal}
             animationType="fade"
+            style={{
+                backgroundColor: "#000"
+            }}
         >
             <View className="flex flex-row justify-between items-center bg-[#000] p-4">
 
@@ -42,8 +45,8 @@ const ImageModal = ({ smallIsDownload, handleDownloadImage, visibleImageModal, c
                 zoomStep={0.5}
                 initialZoom={1}
                 visualTouchFeedbackEnabled={false}
-                // bindToBorders={true}
-                panEnabled={false}
+                bindToBorders={true}
+                panEnabled={true}
                 style={{
                     backgroundColor: "#000"
                 }}

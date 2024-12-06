@@ -2,8 +2,8 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Plan from "../../../components/Plan";
-import TrainingContent from "../../../components/TrainingContent";
+import Plan from "../Plan"
+import TrainingContent from "../TrainingContent";
 
 const Tab = createMaterialTopTabNavigator();
 

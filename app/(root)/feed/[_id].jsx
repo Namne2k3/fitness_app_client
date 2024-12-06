@@ -3,7 +3,7 @@ import { Video } from 'expo-av'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { Image } from 'expo-image'
 import PagerView from 'react-native-pager-view'
 import BottomSheet from '../../../components/BottomSheet'
@@ -12,6 +12,9 @@ import LoadingModal from '../../../components/LoadingModal'
 import { getBlogById, updateBlogById } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import { formatDateWithMonth, formatTime } from '../../../utils'
+import ImageModal from '../../../components/ImageModal'
+import { downloadAsync, documentDirectory } from 'expo-file-system';
+import { saveToLibraryAsync } from 'expo-media-library';
 const DetailFeed = () => {
 
     const { _id } = useLocalSearchParams()
@@ -24,6 +27,9 @@ const DetailFeed = () => {
     const [isEdit, setIsEdit] = useState(false)
     const [selectedComment, setSelectedComment] = useState(null)
     const inputCommentRef = useRef(null)
+    const [visibleImageModal, setVisibleImageModal] = useState(false)
+    const [smallIsDownload, setSmallIsDownload] = useState(false)
+    const [selectedImage, setSelectedImage] = useState({})
 
     const handleDeleteComment = async () => {
         setIsPostingComment(true)
@@ -153,6 +159,46 @@ const DetailFeed = () => {
         }
     }
 
+    const openModal = (img) => {
+        setSelectedImage(img)
+        setVisibleImageModal(true)
+    }
+
+    const closeModal = () => {
+        setVisibleImageModal(false);
+        setSelectedImage(null);
+    };
+
+    const handleDownloadImage = async () => {
+        setSmallIsDownload(true)
+        try {
+            const uri = selectedImage?.fileUrl;
+
+            if (!uri) {
+                Alert.alert('Lỗi', 'Thiếu đường dẫn của ảnh!');
+                return;
+            }
+
+            // Tạo đường dẫn lưu ảnh
+            const fileUri = `${documentDirectory}${selectedImage?.fileName || 'downloaded_image.jpg'}`;
+
+            // Tải ảnh
+            const downloadResult = await downloadAsync(uri, fileUri);
+
+            await saveToLibraryAsync(downloadResult.uri);
+
+            if (downloadResult.status === 200) {
+                Alert.alert("Thành công", "Ảnh đã lưu vào thư viện ảnh.");
+            } else {
+                Alert.alert('Tải hình ảnh thất bài', 'Có lỗi xảy ra khi tải xuống ảnh.');
+            }
+        } catch (error) {
+            Alert.alert('Lỗi', error.message || 'Lỗi tải ảnh.');
+        } finally {
+            setSmallIsDownload(false)
+        }
+    };
+
     useEffect(() => {
         const fetchBlog = async () => {
             try {
@@ -199,7 +245,7 @@ const DetailFeed = () => {
                     >
                         {blog?.medias?.map((med, index) => {
                             return (
-                                <View key={index} className="border-[0.5px] rounded-lg m-2">
+                                <Pressable onPress={() => openModal(med)} key={index} className="border-[0.5px] rounded-lg m-2">
                                     {
                                         med.type == 'image' ?
                                             <Image
@@ -215,7 +261,7 @@ const DetailFeed = () => {
                                                 useNativeControls
                                             />
                                     }
-                                </View>
+                                </Pressable>
                             )
                         })}
                     </PagerView>
@@ -322,6 +368,7 @@ const DetailFeed = () => {
                         ))
                     }
                 </View>
+
             </ScrollView>
             <LoadingModal visible={isPostingComment} message={"Loading..."} />
             <BottomSheet snapPoints={['40%']} bottomSheetRef={bottomSheetRef}>
@@ -360,6 +407,9 @@ const DetailFeed = () => {
                     </TouchableOpacity>
                 </View>
             </BottomSheet>
+            {visibleImageModal && (
+                <ImageModal smallIsDownload={smallIsDownload} handleDownloadImage={handleDownloadImage} visibleImageModal={visibleImageModal} closeModal={closeModal} selectedImage={selectedImage} />
+            )}
         </>
     )
 }
