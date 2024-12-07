@@ -2,6 +2,7 @@
   "expo": {
     "name": "fitness-app-practice",
     "slug": "fitness-app-practice",
+    "projectId": "b9356908-3a1d-425d-b9d8-b18188bf2645",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
