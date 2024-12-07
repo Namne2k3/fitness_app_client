@@ -17,7 +17,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
 
-  const { colorScheme, toggleColorScheme } = useColorScheme()
+  const { colorScheme } = useColorScheme()
   const [fontsLoaded, error] = useFonts({
     "Roboto-Thin": require('../assets/fonts/Roboto-Thin.ttf'),
     "Roboto-Italic": require('../assets/fonts/Roboto-Italic.ttf'),

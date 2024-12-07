@@ -38,8 +38,8 @@ const WelcomePage = () => {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     const userData = await getUserById(res.data.user._id);
-                    socket.emit('register', userData.data._id);
-                    setUser(userData.data);
+                    socket.emit('register', userData?.data?._id);
+                    setUser(userData?.data);
                     return true;
                 } catch (error) {
                     console.log('Có lỗi khi lấy thông tin người dùng:', error.message);
@@ -53,7 +53,7 @@ const WelcomePage = () => {
                 const updatedUser = useUserStore.getState().user;
 
                 if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee || !updatedUser?.age) {
-                    router.replace(`/(root)/ChooseGender`);
+                    router.replace(`/(auth)/sign-in`);
                 } else {
                     router.replace('/(root)/(tabs)/training');
                 }

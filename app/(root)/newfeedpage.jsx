@@ -124,11 +124,15 @@ const NewFeedPage = () => {
                         placeholder='Chia sẽ câu chuyện của bạn ...'
                         onChangeText={(text) => setForm({ ...form, content: text })}
                         style={{
-                            padding: 8
+                            paddingVertical: 12,
+                            paddingHorizontal: 8,
+                            borderWidth: 0.5,
+                            borderRadius: 12,
+                            marginTop: 12,
                         }}
                     />
                 </View>
-                <View className="mt-4 flex-1 border-[0.5px] border-[#ccc] rounded-lg">
+                <View className="mt-4 flex-1 border-[#ccc] rounded-lg">
                     <Swiper
                         showsPagination={true}
                         loop={false}

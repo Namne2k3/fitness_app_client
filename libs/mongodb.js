@@ -421,8 +421,6 @@ const getAllChatRooms = async () => {
 }
 
 const createMessage = async (message) => {
-    console.log("Check message from createMessage >>> ", message);
-
     const token = await getToken()
 
     try {
@@ -748,7 +746,22 @@ const getAllFoods = async ({ limit, skip, name, Calories, Protein, Fat, Carbonhy
     }
 }
 
+const getRoomById = async (id) => {
+    const token = await getToken()
+    try {
+        const res = await axios.get(`${URL}/api/chatroom/getRoomById/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return res.data
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export {
+    getRoomById,
     getAllFoods,
     reCreatePlans,
     reCreateTrainingsByUserId,

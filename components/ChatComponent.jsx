@@ -15,7 +15,7 @@ const ChatComponent = ({ item, handlePressChatComponent, index }) => {
             style={styles.cchat}
             onLongPress={() => console.log('Long press')}
             onPress={() => handlePressChatComponent(item)}
-            className="bg-[#ccc]"
+            className="bg-[#f5f5f5]"
         >
 
             <Image

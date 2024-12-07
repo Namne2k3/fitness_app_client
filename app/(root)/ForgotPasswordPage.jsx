@@ -24,15 +24,21 @@ const ForgotPasswordPage = () => {
         code: "",
     });
     const handleSend = useCallback(async () => {
+
         setIsVisibleModelLoading(true)
         try {
+
+            if (signOut) {
+                await signOut()
+            }
+
             const data = await isEmailExist(email)
 
             if (data?.email === "") {
                 Alert.alert(data?.message)
             }
 
-            const created = await signIn?.create({
+            const created = await signIn.create({
                 strategy: 'reset_password_email_code',
                 identifier: email,
             })
@@ -103,7 +109,7 @@ const ForgotPasswordPage = () => {
                     <InputField
                         label={`Đoạn mã`}
                         icon={<FontAwesome name='lock' size={24} style={{ marginLeft: 12 }} />}
-                        placeholder={`12345`}
+                        placeholder={`XXXXXX`}
                         value={verification.code}
                         keyboardType={"numeric"}
                         onChange={(code) =>

@@ -1,6 +1,6 @@
 import { io } from 'socket.io-client'
 import { scheduleNotificationAsync } from 'expo-notifications';
-// const socket = io.connect('https://w2fw01lr-3000.asse.devtunnels.ms')
+
 const socket = io('https://w2fw01lr-3000.asse.devtunnels.ms', {
     transports: ['websocket'],
     withCredentials: true,
@@ -11,11 +11,11 @@ const handleNotify = async (message) => {
 
     await scheduleNotificationAsync({
         content: {
-            title: message.content,
-            body: message?.senderId?.username
+            title: message?.sender?.username,
+            body: message?.content
         },
         trigger: {
-            seconds: 1
+            seconds: 2
         }
     });
 }
@@ -31,7 +31,7 @@ socket.on('disconnect', (reason) => {
 socket.on("newMessage", async (message) => {
     console.log("Nhan message from socket");
 
-    handleNotify(message)
+    // handleNotify(message)
 });
 
 export default socket;

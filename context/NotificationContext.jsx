@@ -9,6 +9,7 @@ import React, {
 import * as Notifications from "expo-notifications";
 import * as TaskManager from "expo-task-manager";
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
+import { router } from "expo-router";
 
 // interface NotificationContextType {
 //     expoPushToken: string | null;
@@ -26,8 +27,8 @@ TaskManager.defineTask(
             console.error("Task Error:", error);
             return;
         }
+        const { url } = data.data.body
         console.log("✅ Received a notification in the background!", data);
-        // Do something with the notification data
     }
 );
 
@@ -77,7 +78,7 @@ export const NotificationProvider = ({ children }) => {
         const checkLastNotification = async () => {
             const lastNotificationResponse = await Notifications.getLastNotificationResponseAsync();
             if (lastNotificationResponse) {
-                console.log('App opened via notification:', lastNotificationResponse);
+                // console.log('App opened via notification:', lastNotificationResponse);
                 handleNotificationResponse(lastNotificationResponse);
             }
         };
@@ -91,13 +92,13 @@ export const NotificationProvider = ({ children }) => {
             // Kiểm tra thông báo cuối cùng khi ứng dụng được mở lại
             const lastNotificationResponse = await Notifications.getLastNotificationResponseAsync();
             if (lastNotificationResponse) {
-                console.log('Last notification response:', JSON.stringify(lastNotificationResponse, null, 2));
+                // console.log('Last notification response:', JSON.stringify(lastNotificationResponse, null, 2));
                 handleNotificationResponse(lastNotificationResponse);
             }
 
             notificationListener.current =
                 Notifications.addNotificationReceivedListener((notification) => {
-                    console.log("🔔 Notification Received While the app is running: ", JSON.stringify(notification));
+                    // console.log("🔔 Notification Received While the app is running: ", JSON.stringify(notification));
                     handleNotificationResponse(notification);
                 });
 
@@ -108,6 +109,7 @@ export const NotificationProvider = ({ children }) => {
                         JSON.stringify(response, null, 2),
                         JSON.stringify(response.notification.request.content.data, null, 2)
                     );
+                    router.push(response.notification.request.content.data.url)
                     // Handle the notification response here
                 });
 

@@ -1,58 +1,83 @@
-import { StyleSheet, Text, View, TouchableOpacity, Alert, ScrollView } from 'react-native'
-import React, { useCallback, useState } from 'react'
-import { router } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import InputField from '../../components/InputField'
-import CustomButton from '../../components/CustomButton'
-import { useSignIn } from '@clerk/clerk-expo'
 import { MaterialIcons } from '@expo/vector-icons'
-import { getUserByEmail } from '../../libs/mongodb'
-import LoadingModal from '../../components/LoadingModal'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
+import { router } from 'expo-router'
+import React, { useCallback, useState } from 'react'
+import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import CustomButton from '../../components/CustomButton'
+import InputField from '../../components/InputField'
+import LoadingModal from '../../components/LoadingModal'
+import { getUserByEmail, updateUserById } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
+import { requestPermissionsAsync, getExpoPushTokenAsync } from 'expo-notifications';
+
+
 const SignIn = () => {
-    const { signIn, setActive, isLoaded } = useSignIn()
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
     const [form, setForm] = useState({
         email: 'nhpn2003@gmail.com',
-        password: 'nhpn2003'
+        password: 'nhpn2003',
     })
+
+    const registerPushToken = async () => {
+        const { status } = await requestPermissionsAsync();
+        if (status !== 'granted') {
+            console.log('Permission not granted for notifications');
+            return;
+        }
+
+        const token = (await getExpoPushTokenAsync()).data;
+
+        // // Gửi token lên server
+        // await fetch('https://your-server.com/api/save-token', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify({ userId, pushToken: token }),
+        // });
+        return token
+    }
 
     const setUser = useUserStore((state) => state.setUser)
 
     const onSignInPress = useCallback(async () => {
         try {
             setIsVisibleLoadingModal(true)
+
             const response = await axios.post(`${process.env.EXPO_PUBLIC_URL_SERVER}/api/auth/login`, {
                 email: form.email,
                 password: form.password,
             })
-            const data = await response.data;
-            console.log("Check data from login >>> ", data);
 
+            if (response.status == 400) {
+                throw new Error(response.message)
+            }
+
+            const data = await response.data;
 
             if (data.token) {
 
                 await AsyncStorage.setItem('jwt_token', data.token);
                 const userData = await getUserByEmail(form.email)
+                const pushToken = await registerPushToken()
+                await updateUserById({ ...userData, pushToken: pushToken })
 
                 setUser(userData)
                 if (!userData.weight || !userData.height || userData.height == "0" || !userData.orm || !userData.tdee) {
-                    // setIsVisibleLoadingModal(false)
                     router.replace(`/(root)/ChooseGender`)
                     return;
                 }
-                // setIsVisibleLoadingModal(false)
+
                 router.replace('/(root)/(tabs)/training')
-                // router.push('/(root)/ChooseGender')
 
             } else {
                 Alert.alert("Không thể đăng nhập", data.message);
             }
 
         } catch (err) {
-            Alert.alert("Lỗi", "Tài khoản chưa được đăng ký");
+            Alert.alert("Lỗi", err.message);
         } finally {
             setIsVisibleLoadingModal(false)
         }
@@ -92,5 +117,3 @@ const SignIn = () => {
 }
 
 export default SignIn
-
-const styles = StyleSheet.create({})

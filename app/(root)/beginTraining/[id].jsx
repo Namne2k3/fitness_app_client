@@ -1,7 +1,7 @@
 import { AntDesign, Feather, MaterialIcons } from '@expo/vector-icons'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Alert, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../../components/CustomButton'
@@ -10,6 +10,7 @@ import TrainingCard from '../../../components/TrainingCard'
 import { createTrainingRecord, updateCurrentPlanById } from '../../../libs/mongodb'
 import { useUserStore } from '../../../store'
 import { calculateCaloriesBurned } from '../../../utils/index'
+import BottomSheetModalComponent from '../../../components/BottomSheetModal'
 
 const BeginTrainingId = () => {
 
@@ -21,9 +22,10 @@ const BeginTrainingId = () => {
     const [isRunning, setIsRunning] = useState(true)
     const [elapsedTime, setElapsedTime] = useState(0)
     const { colorScheme } = useColorScheme()
+    const bottomSheetRef = useRef(null)
     const [backModalVisible, setBackModalVisible] = useState(false)
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
-    const [trainingRecord, setTrainingRecord] = useState({})
+    const [selectedExercise, setSelectedExercise] = useState({})
 
     const pad = (number) => {
         return number < 10 ? `0${number}` : number;
@@ -146,6 +148,11 @@ const BeginTrainingId = () => {
     const handlePause = () => {
         setIsRunning(false);
     };
+
+    const toggleBottomSheetModal = useCallback((ex) => {
+        setSelectedExercise(ex)
+        bottomSheetRef?.current?.present()
+    }, [])
 
     const handleFinishedTraining = async () => {
         setIsVisibleLoadingModal(true)
@@ -298,7 +305,7 @@ const BeginTrainingId = () => {
                 data={dataTraining?.exercises}
                 renderItem={({ item }) => (
                     <View className="bg-[#fff] flex p-4 dark:bg-slate-800">
-                        <TrainingCard handleUpdateIsCheck={handleUpdateIsCheck} hasCheck={true} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
+                        <TrainingCard toggleBottomSheetModal={toggleBottomSheetModal} handleUpdateIsCheck={handleUpdateIsCheck} hasCheck={true} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
                         <View className="flex flex-row justify-between items-center">
                             <CustomButton
                                 containerStyle="mt-4 flex-1 mr-2 border-[1px] border-[#000]"
@@ -403,6 +410,7 @@ const BeginTrainingId = () => {
                     </View>
                 </View>
             </Modal>
+            <BottomSheetModalComponent selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
             <LoadingModal visible={isVisibleLoadingModal} />
         </SafeAreaView>
     )

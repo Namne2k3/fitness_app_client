@@ -10,11 +10,35 @@ import ImageModal from '../../../components/ImageModal'
 import MessageComponent from '../../../components/MessageComponent'
 import { createVideo } from '../../../libs/appwrite'
 import { analyzeImage } from '../../../libs/google_vision_cloud'
-import { createMessage, getAllMessagesByRoomId } from '../../../libs/mongodb'
+import { createMessage, getAllMessagesByRoomId, getRoomById } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import socket from '../../../utils/socket'
 import { downloadAsync, documentDirectory } from 'expo-file-system';
 import { saveToLibraryAsync } from 'expo-media-library';
+
+const sendNotification = async (expoPushToken, message) => {
+    console.log("Check message >>> ", message);
+
+    const notificationBody = {
+        to: expoPushToken,
+        sound: 'default',
+        title: message?.sender?.username,
+        body: message?.content,
+        data: {
+            url: `/(root)/chatroom/${message.roomId}`
+        }
+    };
+
+    await fetch('https://exp.host/--/api/v2/push/send', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(notificationBody),
+    });
+};
+
 const ChatRoom = () => {
 
     const { colorScheme } = useColorScheme()
@@ -30,8 +54,10 @@ const ChatRoom = () => {
     const [isFetchMore, setIsFetchMore] = useState(false)
     const [skip, setSkip] = useState(0);
     const limit = 10;
+    const [room, setRoom] = useState({})
     const [selectedImage, setSelectedImage] = useState({})
     const [visibleImageModal, setVisibleImageModal] = useState(false)
+    const [isAtBottomList, setIsAtBottomList] = useState(false);
 
     const [form, setForm] = useState({
         author: user?._id,
@@ -53,7 +79,6 @@ const ChatRoom = () => {
 
             // Tải ảnh
             const downloadResult = await downloadAsync(uri, fileUri);
-            console.log("Check downloadResult >>> ", downloadResult);
 
             await saveToLibraryAsync(downloadResult.uri);
 
@@ -80,46 +105,55 @@ const ChatRoom = () => {
     };
 
     const handleSendMessage = async () => {
-        setSmallLoading(true)
+        setSmallLoading(true);
         try {
-
-            if (message != "" || form?.medias?.length > 0) {
-                let mediasRes = []
+            if (message !== "" || form?.medias?.length > 0) {
+                let mediasRes = [];
                 if (form?.medias?.length > 0) {
                     const response = await createVideo(form);
-
-                    mediasRes = response
+                    mediasRes = response;
                     setForm((form) => ({
                         ...form,
                         medias: response
-                    }))
+                    }));
                 }
 
                 const newMessage = await createMessage({
                     roomId: id,
-                    senderId: user?._id,
+                    sender: user?._id,
                     content: message,
                     medias: mediasRes?.length > 0 ? mediasRes : []
-                })
-
-                setMessages((prevMessages) => {
-                    const updatedMessages = [...prevMessages, newMessage.data];
-                    setTimeout(() => flatListMessages.current?.scrollToEnd({ animated: true }), 0); // Đảm bảo cuộn sau khi render
-                    return updatedMessages;
                 });
-                setMessage("")
-                setForm((form) => ({
-                    ...form,
-                    medias: []
-                }))
-                socket.emit('sendMessage', newMessage.data)
+
+                // Thêm tin nhắn phía người gửi
+                if (newMessage && newMessage.data) {
+                    setMessages((prevMessages) => ([...prevMessages, newMessage.data]));
+
+                    // Reset lại các trường
+                    setMessage("");
+                    setForm((form) => ({
+                        ...form,
+                        medias: []
+                    }));
+
+                    socket.emit('sendMessage', newMessage.data);
+
+                    setTimeout(() => flatListMessages.current?.scrollToEnd({ animated: true }), 0);
+
+                    await sendNotification(room?.members[0]?._id == user?._id
+                        ? room?.members[1]?.pushToken
+                        : room?.members[0]?.pushToken,
+                        newMessage.data
+                    );
+
+                }
             }
         } catch (error) {
-            Alert.alert("Lỗi", error.message)
+            Alert.alert("Lỗi", error.message);
         } finally {
-            setSmallLoading(false)
+            setSmallLoading(false);
         }
-    }
+    };
 
     const handleLoadMore = async () => {
         if (!isFetching) {
@@ -135,10 +169,11 @@ const ChatRoom = () => {
             const res = await getAllMessagesByRoomId(id, { limit, skip });
 
             if (res.status == '404') {
-                console.log("Gap loi 404");
+                console.log("Lỗi 404");
                 return;
             }
 
+            // load ra tin nhắn
             setMessages((prevMessages) => {
                 const newMessages = res.data.filter(
                     (newMsg) => !prevMessages.some((msg) => msg._id === newMsg._id)
@@ -217,10 +252,36 @@ const ChatRoom = () => {
         }
     }
 
+    const handleScroll = (event) => {
+        setIsAtBottomList(false)
+        const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+        const isAtBottom =
+            layoutMeasurement.height + contentOffset.y >= contentSize.height - 100; // Kiểm tra cuộn tới cuối (dư 20px)
+
+        if (isAtBottom) {
+            setIsAtBottomList(true)
+        }
+    };
+
+
+    useEffect(() => {
+        const fetchRoomById = async () => {
+            try {
+                const room = await getRoomById(id)
+                setRoom(room.data);
+
+            } catch (error) {
+                Alert.alert("Lỗi", error.message)
+            }
+        }
+
+        fetchRoomById()
+    }, [])
 
     useEffect(() => {
 
         fetchAllMessageByRoomId()
+        setTimeout(() => flatListMessages.current?.scrollToEnd({ animated: true }), 0); // Đảm bảo cuộn sau khi render
         return () => {
             setForm((form) => ({
                 ...form,
@@ -233,12 +294,13 @@ const ChatRoom = () => {
     useEffect(() => {
         socket.emit('joinRoom', id);
         socket.on("newMessage", async (message) => {
-            console.log("Đã nhận tin nhắn phía room");
-            setMessages((prevMessages) => [...prevMessages, message]);
+            if (message.sender._id != user._id) {
+                console.log("Đã nhận tin nhắn phía room của " + user.username);
+                setMessages((prevMessages) => [...prevMessages, message]);
+            }
             setMessage("");
-            flatListMessages.current.scrollToEnd()
         });
-    }, [id]);
+    }, []);
 
     return (
         <SafeAreaView className="bg-[#fff] flex dark:bg-slate-950 h-full">
@@ -265,6 +327,7 @@ const ChatRoom = () => {
                     renderItem={({ item, index }) => (
                         <MessageComponent openModal={(img) => openModal(img)} index={index} roomImage={roomImage} item={item} user={user} />
                     )}
+                    onScroll={handleScroll}
                     scrollEventThrottle={16}
                     refreshing={isFetching}
                     ListHeaderComponent={
@@ -285,7 +348,7 @@ const ChatRoom = () => {
                     }}
                 />
             </View>
-            {/* input message */}
+
             <View>
                 {
                     form?.medias?.length > 0 &&
@@ -333,6 +396,15 @@ const ChatRoom = () => {
                                     value={message}
                                     onChangeText={(text) => {
                                         setMessage(text)
+                                    }}
+                                    onFocus={() => {
+                                        if (isAtBottomList) {
+                                            console.log("Scroll to end");
+                                            setTimeout(() => flatListMessages.current?.scrollToEnd({ animated: true }), 500);
+                                        }
+                                    }}
+                                    onBlur={() => {
+
                                     }}
                                     placeholderTextColor={colorScheme == 'dark' ? '#6b7280' : '#ccc'}
                                     className="dark:text-white"

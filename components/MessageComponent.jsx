@@ -4,7 +4,8 @@ import { Image } from 'expo-image'
 import styles from '../utils/styles';
 const MessageComponent = ({ item, user, roomImage, openModal }) => {
 
-    const status = item.senderId !== user?._id;
+    const status = item.sender._id != user?._id;
+
     const hasImedias = item?.medias?.length > 0
     return (
         <View>

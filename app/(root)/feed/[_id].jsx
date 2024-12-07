@@ -14,7 +14,7 @@ import useUserStore from '../../../store/userStore'
 import { formatDateWithMonth, formatTime } from '../../../utils'
 import ImageModal from '../../../components/ImageModal'
 import { downloadAsync, documentDirectory } from 'expo-file-system';
-import { saveToLibraryAsync } from 'expo-media-library';
+import { saveToLibraryAsync, usePermissions } from 'expo-media-library';
 const DetailFeed = () => {
 
     const { _id } = useLocalSearchParams()
@@ -30,6 +30,7 @@ const DetailFeed = () => {
     const [visibleImageModal, setVisibleImageModal] = useState(false)
     const [smallIsDownload, setSmallIsDownload] = useState(false)
     const [selectedImage, setSelectedImage] = useState({})
+    const [permissionResponse, requestPermission] = usePermissions();
 
     const handleDeleteComment = async () => {
         setIsPostingComment(true)
@@ -171,7 +172,11 @@ const DetailFeed = () => {
 
     const handleDownloadImage = async () => {
         setSmallIsDownload(true)
+
         try {
+            if (permissionResponse.status !== 'granted') {
+                await requestPermission();
+            }
             const uri = selectedImage?.fileUrl;
 
             if (!uri) {

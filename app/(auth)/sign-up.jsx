@@ -9,9 +9,11 @@ import { ReactNativeModal } from "react-native-modal";
 import { AntDesign, FontAwesome, MaterialIcons } from '@expo/vector-icons'
 import { createUser } from '../../libs/mongodb'
 import LoadingModal from '../../components/LoadingModal'
+import { useAuth } from '@clerk/clerk-expo';
 const SignUp = () => {
 
     const { isLoaded, signUp, setActive } = useSignUp()
+    const { signOut } = useAuth();
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
     const [form, setForm] = useState({
         email: '',
@@ -29,7 +31,13 @@ const SignUp = () => {
         if (!isLoaded) {
             return
         }
+
         try {
+
+            if (signOut) {
+                await signOut()
+            }
+
             setIsVisibleLoadingModal(true)
             await signUp.create({
                 emailAddress: form.email,
@@ -58,12 +66,13 @@ const SignUp = () => {
 
         try {
             setIsVisibleLoadingModal(true)
+
             const completeSignUp = await signUp.attemptEmailAddressVerification({
                 code: verification.code,
             })
 
             if (completeSignUp.status === 'complete') {
-                await setActive({ session: completeSignUp.createdSessionId })
+                // await setActive({ session: completeSignUp.createdSessionId })
 
                 await createUser({
                     username: form.username,
@@ -71,6 +80,7 @@ const SignUp = () => {
                     password: form.password,
                     clerkId: completeSignUp.createdUserId
                 })
+
                 setIsVisibleLoadingModal(false)
                 Alert.alert("Email đã xác thực! Vui lòng đến trang đăng nhập!")
                 router.replace(`/(auth)/sign-in`)
@@ -135,7 +145,7 @@ const SignUp = () => {
                         <InputField
                             label={`Code`}
                             icon={<FontAwesome name='lock' size={24} style={{ marginLeft: 12 }} />}
-                            placeholder={`12345`}
+                            placeholder={`XXXXXX`}
                             value={verification.code}
                             keyboardType={"numeric"}
                             onChange={(code) =>
