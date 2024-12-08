@@ -15,7 +15,7 @@ import { getAbbreviation, randomColor } from '../../../utils/index'
 const TrainingDetails = () => {
     const { id } = useLocalSearchParams()
     const { index, planId, data } = useLocalSearchParams()
-    const [isEdit, setIsEdit] = useState(false)
+
     const [trainingData, setTrainingData] = useState(data ? JSON.parse(data) : {})
     if (trainingData == null) {
         console.log("vo day");
@@ -74,7 +74,6 @@ const TrainingDetails = () => {
                 <View className="p-4 w-full flex flex-row justify-between items-center">
                     <View>
                         <TouchableOpacity
-                            // onPress={() => router.replace('/(root)/(tabs)/custom')}
                             onPress={() => router.back()}
                             style={{
                                 backgroundColor: 'transparent'
@@ -85,77 +84,80 @@ const TrainingDetails = () => {
                     </View>
                     <View>
                         {
-                            !trainingData?.isInPlan &&
-                            <TouchableOpacity
-                                onPress={() => {
-                                    // bottomEditSheetRef.current?.present()
-                                    setIsVisibleModalEdit(!isVisibleModalEdit);
-                                    setIsEdit(true)
-                                }}
-                                className="relative p-2"
-                            >
-                                <Entypo name='dots-three-vertical' size={22} color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                            </TouchableOpacity>
-                        }
-                        <Modal
-                            animationType="fade"
-                            transparent={true}
-                            visible={isVisibleModalEdit}
-                            onRequestClose={() => {
-                                setIsVisibleModalEdit(!isVisibleModalEdit);
-                            }}
-                        >
-                            <TouchableOpacity
-                                className="flex-1"
-                                onPress={() => setIsVisibleModalEdit(false)}
-                            />
-                            <View className="absolute top-[50px] right-[10px] border-[0.2px] bg-[#fff] dark:bg-slate-950 rounded-lg px-2 mr-1 mt-2">
-                                {
-                                    trainingData?.isCustom &&
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            Alert.alert(
-                                                "Xóa set tập",
-                                                "Bạn có chắc chắn muốn xóa set tập này?",
-                                                [
-                                                    {
-                                                        text: "Hủy",
-                                                        style: "cancel",
-                                                    },
-                                                    {
-                                                        text: "Xóa",
-                                                        onPress: async () => {
-                                                            await handleDeleteTrainingById(id)
-                                                            setIsVisibleModalEdit(false);
-                                                            router.replace('/(root)/(tabs)/custom')
-                                                        },
-                                                        style: "destructive",
-                                                    },
-                                                ]
-                                            );
-                                        }}
-                                        className='py-3 px-4'
-                                    >
-                                        <Text className="text-left text-[#000] text-[14px] dark:text-white">Xóa</Text>
-                                    </TouchableOpacity>
-                                }
+                            trainingData?.isCustom &&
+                            <>
                                 <TouchableOpacity
-                                    className="py-3 px-4"
-                                    onPress={() => router.push({
-                                        pathname: `/(root)/editCustomTraining/${id}`,
-                                        params: {
-                                            data: JSON.stringify(data)
-                                        }
-                                    })}
+                                    onPress={() => {
+                                        setIsVisibleModalEdit(!isVisibleModalEdit);
+                                    }}
+                                    className="relative p-2"
                                 >
-                                    <Text className="text-left text-[#000] text-[14px] dark:text-white">Chỉnh sửa</Text>
+                                    <Entypo name='dots-three-vertical' size={22} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                                 </TouchableOpacity>
-                            </View>
-                        </Modal>
+                                <Modal
+                                    animationType="fade"
+                                    transparent={true}
+                                    visible={isVisibleModalEdit}
+                                    onRequestClose={() => {
+                                        setIsVisibleModalEdit(!isVisibleModalEdit);
+                                    }}
+                                >
+                                    <TouchableOpacity
+                                        className="flex-1"
+                                        onPress={() => setIsVisibleModalEdit(false)}
+                                    />
+                                    <View className="absolute top-[50px] right-[10px] border-[0.2px] bg-[#fff] dark:bg-slate-950 rounded-lg px-2 mr-1 mt-2">
+                                        {
+                                            trainingData?.isCustom &&
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    Alert.alert(
+                                                        "Xóa set tập",
+                                                        "Bạn có chắc chắn muốn xóa set tập này?",
+                                                        [
+                                                            {
+                                                                text: "Hủy",
+                                                                style: "cancel",
+                                                            },
+                                                            {
+                                                                text: "Xóa",
+                                                                onPress: async () => {
+                                                                    await handleDeleteTrainingById(id)
+                                                                    setIsVisibleModalEdit(false);
+                                                                    router.replace('/(root)/(tabs)/custom')
+                                                                },
+                                                                style: "destructive",
+                                                            },
+                                                        ]
+                                                    );
+                                                }}
+                                                className='py-3 px-4'
+                                            >
+                                                <Text className="text-left text-[#000] text-[14px] dark:text-white">Xóa</Text>
+                                            </TouchableOpacity>
+                                        }
+                                        <TouchableOpacity
+                                            className="py-3 px-4"
+                                            onPress={() => router.push({
+                                                pathname: `/(root)/editCustomTraining/${id}`,
+                                                params: {
+                                                    data: JSON.stringify(data)
+                                                }
+                                            })}
+                                        >
+                                            <Text className="text-left text-[#000] text-[14px] dark:text-white">Chỉnh sửa</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </Modal>
+                            </>
+                        }
                     </View>
                 </View >
                 <View className="pl-4 pr-3 flex flex-row items-center justify-between">
-                    <Text className="font-pextrabold text-[30px] dark:text-white uppercase flex-1">{trainingData?.title && `${trainingData.title}`}</Text>
+                    <View className="flex">
+                        <Text className="font-pextrabold text-[30px] dark:text-white uppercase flex-1">{trainingData?.title && `${trainingData.title}`}</Text>
+                        <Text className="font-pextrabold text-[30px] dark:text-white uppercase flex-1">{trainingData?.name && `${trainingData.name}`}</Text>
+                    </View>
                     <View style={styles.imageContainer} className='rounded-full'>
 
                         {

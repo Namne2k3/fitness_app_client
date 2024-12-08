@@ -39,6 +39,39 @@ export const getFilePreview = async (fileId, type) => {
     }
 }
 
+// const listAllFiles = async () => {
+//     try {
+//         const files = await storage.listFiles(config.storageId);
+//         return files.documents; // Trả về danh sách file
+//     } catch (error) {
+//         console.error('Error listing files:', error);
+//         throw new Error(error);
+//     }
+// };
+
+// export const deleteAllFiles = async () => {
+//     try {
+//         const files = await listAllFiles();
+//         for (const file of files) {
+//             await deleteFile(file.$id); // Gọi hàm xóa file
+//         }
+//         console.log('All files have been deleted successfully.');
+//     } catch (error) {
+//         console.error('Error deleting all files:', error);
+//         throw new Error(error);
+//     }
+// };
+
+export const deleteFile = async (fileId) => {
+    try {
+        await storage.deleteFile(config.storageId, fileId);
+        console.log(`File with ID ${fileId} has been deleted successfully.`);
+    } catch (error) {
+        console.error(`Error deleting file with ID ${fileId}:`, error);
+        throw new Error(error);
+    }
+};
+
 const ensureAnonymousSession = async () => {
     const session = await account.getSession('current').catch(() => null);
     if (!session) {
@@ -65,9 +98,13 @@ export const uploadFile = async (file, type) => {
             asset
         )
 
+        console.log("Check uploadedFile >>> ", uploadedFile);
+
+
         const fileUrl = await getFilePreview(uploadedFile.$id, type);
         return {
-            fileUrl: fileUrl,
+            $id: uploadedFile.$id,
+            uri: fileUrl,
             fileName: file.fileName,
             fileType: file.mimeType,
             fileSize: file.fileSize,
@@ -78,45 +115,7 @@ export const uploadFile = async (file, type) => {
     }
 }
 
-// form
-// {
-//     content: '',
-//     author: currentUser?._id,
-//     medias: [],
-//     likes: [],
-//     comments: [],
-//     allowComment: true
-// }
-
-// form medias
-// [
-//     {
-//         "assetId": "C166F9F5-B5FE-4501-9531",
-//         "base64": null,
-//         "duration": null,
-//         "exif": null,
-//         "fileName": "IMG.HEIC",
-//         "fileSize": 6018901,
-//         "height": 3025,
-//         "type": "image",
-//         "uri": "file:///data/user/0/host.exp.exponent/cache/cropped1814158652.jpg"
-//         "width": 3024
-//     },
-//     {
-//         "assetId": "C166F9F5-B5FE-4501-9531",
-//         "base64": null,
-//         "duration": null,
-//         "exif": null,
-//         "fileName": "IMG.HEIC",
-//         "fileSize": 6018901,
-//         "height": 3025,
-//         "type": "image",
-//         "uri": "file:///data/user/0/host.exp.exponent/cache/cropped1814158652.jpg"
-//         "width": 3024
-//     },
-// ]
 export const createVideo = async (form) => {
-    console.log("Check form from createVideo >>> ", form);
 
     try {
         const uploadedMediaUrls = []

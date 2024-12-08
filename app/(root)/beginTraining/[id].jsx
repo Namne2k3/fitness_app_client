@@ -97,7 +97,7 @@ const BeginTrainingId = () => {
 
                     const updatedSets = exercise.sets.map((set, setIndex) => {
                         if (setIndex === index) {
-                            return { kilogram: newKilo, reps: newReps === 0 ? 1 : newReps };
+                            return { kilogram: newKilo, reps: newReps };
                         }
                         return set;
                     });
@@ -285,19 +285,12 @@ const BeginTrainingId = () => {
                 </View>
             </View>
 
-            {/* <View className="p-4">
-                <Text className="font-psemibold text-yellow-500">Note: </Text>
-                <Text className="font-pregular dark:text-white">
-                    Chúng tôi tính toán lượng calo tiêu hao dựa vào thông tin luyện tập của bạn, và chỉ mang tính chất tham khảo
-                </Text>
-            </View> */}
 
             <FlatList
                 ListHeaderComponent={
                     <View className="p-4">
                         <Text className="font-psemibold text-yellow-500">Note: </Text>
                         <Text className="font-pregular dark:text-white">
-                            {/* We'll calculate calories based on how many reps you've done, so make sure you get them right for accurate results. */}
                             Chúng tôi tính toán lượng calo tiêu hao dựa vào thông tin luyện tập của bạn, và chỉ mang tính chất tham khảo
                         </Text>
                     </View>

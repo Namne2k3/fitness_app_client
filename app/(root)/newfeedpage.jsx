@@ -1,6 +1,6 @@
 import { ResizeMode, Video } from 'expo-av';
 import { launchImageLibraryAsync } from 'expo-image-picker';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -13,13 +13,36 @@ import { createVideo } from '../../libs/appwrite';
 import { createNewFeed } from '../../libs/mongodb';
 import useUserStore from '../../store/userStore';
 import { analyzeImage } from '../../libs/google_vision_cloud';
+
+const convert = {
+
+}
+
 const NewFeedPage = () => {
+
+
+    const { isEdit, data } = useLocalSearchParams()
+    // console.log("isEdit >>> ", isEdit == "true"); >>> true 
+
     const { colorScheme } = useColorScheme()
-    const currentUser = useUserStore.getState().user;
+    const { user } = useUserStore()
     const [isVisibleModal, setIsVisibleModal] = useState(false)
-    const [form, setForm] = useState({
+    const [form, setForm] = useState(data ? {
+        ...JSON.parse(data),
+        medias: JSON.parse(data)?.medias?.map((asset) => {
+            if (asset.uri) {
+                return asset
+            } else {
+                return {
+                    ...asset,
+                    type: asset.fileType,
+                    uri: asset.uri
+                }
+            }
+        })
+    } : {
         content: '',
-        author: currentUser?._id,
+        author: user?._id,
         medias: [],
         likes: [],
         comments: [],
@@ -118,10 +141,14 @@ const NewFeedPage = () => {
         <SafeAreaView className="flex bg-[#fff] h-full dark:bg-slate-950 p-4">
             <View className="flex-1">
                 <View className="">
-                    <Text className="font-pbold text-[16px]">Bài đăng mới</Text>
+                    <Text className="font-pbold text-[16px]">
+                        {
+                            isEdit == "true" ? 'Cập nhật bài đăng' : 'Bài đăng mới'
+                        }
+                    </Text>
                     <TextInput
                         multiline
-                        placeholder='Chia sẽ câu chuyện của bạn ...'
+                        placeholder='Nội dung bài đăng'
                         onChangeText={(text) => setForm({ ...form, content: text })}
                         style={{
                             paddingVertical: 12,
@@ -130,6 +157,7 @@ const NewFeedPage = () => {
                             borderRadius: 12,
                             marginTop: 12,
                         }}
+                        value={isEdit && form?.content}
                     />
                 </View>
                 <View className="mt-4 flex-1 border-[#ccc] rounded-lg">
@@ -141,26 +169,28 @@ const NewFeedPage = () => {
                         dotStyle={styles.dotStyle} // Style for inactive dots
                         activeDotStyle={styles.activeDotStyle} // Style for active dot
                     >
-                        {form?.medias?.map((asset, index) => (
-                            <View key={index}>
-                                {
-                                    asset.type == 'image' ?
-                                        <Image
-                                            source={{ uri: asset.uri }}
-                                            className="w-full h-full rounded-lg"
-                                            resizeMode="cover"
-                                        />
-                                        :
-                                        <Video
-                                            source={{ uri: asset.uri }}
-                                            className="w-full h-full"
-                                            resizeMode={ResizeMode.COVER}
-                                            useNativeControls
-                                        />
-                                }
-                            </View>
+                        {
+                            form?.medias?.map((asset, index) => (
+                                <View key={index}>
+                                    {
+                                        asset.type == 'image/jpeg' || 'image' ?
+                                            <Image
+                                                source={{ uri: asset.uri }}
+                                                className="w-full h-full rounded-lg"
+                                                contentFit="cover"
+                                            />
+                                            :
+                                            <Video
+                                                source={{ uri: asset.uri }}
+                                                className="w-full h-full"
+                                                resizeMode={ResizeMode.COVER}
+                                                useNativeControls
+                                            />
+                                    }
+                                </View>
 
-                        ))}
+                            ))
+                        }
                     </Swiper>
                 </View>
             </View>

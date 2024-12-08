@@ -3,6 +3,22 @@ import axios from 'axios'
 import { getToken } from '../libs/token'
 
 const URL = process.env.EXPO_PUBLIC_URL_SERVER
+
+const deleteBlogById = async (id) => {
+    const token = await getToken()
+    try {
+
+        const res = await axios.delete(`${URL}/api/feed/deleteById/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return res
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 const createUser = async ({ username, email, password, clerkId }) => {
     try {
         await axios.post(`${URL}/api/auth/signup`, { username, email, password, clerkId })
@@ -761,6 +777,7 @@ const getRoomById = async (id) => {
 }
 
 export {
+    deleteBlogById,
     getRoomById,
     getAllFoods,
     reCreatePlans,

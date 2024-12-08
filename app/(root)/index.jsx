@@ -20,7 +20,7 @@ const WelcomePage = () => {
         const checkSavedTheme = async () => {
             try {
                 const savedTheme = await AsyncStorage.getItem('theme');
-                if (savedTheme && savedTheme !== colorScheme) {
+                if (savedTheme && savedTheme != colorScheme) {
                     toggleColorScheme();
                 }
             } catch (error) {
@@ -53,6 +53,7 @@ const WelcomePage = () => {
                 const updatedUser = useUserStore.getState().user;
 
                 if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee || !updatedUser?.age) {
+                    await AsyncStorage.removeItem('jwt_token');
                     router.replace(`/(auth)/sign-in`);
                 } else {
                     router.replace('/(root)/(tabs)/training');

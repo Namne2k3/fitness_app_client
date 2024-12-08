@@ -11,6 +11,7 @@ import LoadingModal from '../../components/LoadingModal'
 import { getUserByEmail, updateUserById } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
 import { requestPermissionsAsync, getExpoPushTokenAsync } from 'expo-notifications';
+import socket from '../../utils/socket';
 
 
 const SignIn = () => {
@@ -51,14 +52,8 @@ const SignIn = () => {
                 password: form.password,
             })
 
-            if (response.status == 400) {
-                throw new Error(response.message)
-            }
-
             const data = await response.data;
-
             if (data.token) {
-
                 await AsyncStorage.setItem('jwt_token', data.token);
                 const userData = await getUserByEmail(form.email)
                 const pushToken = await registerPushToken()
@@ -69,15 +64,16 @@ const SignIn = () => {
                     router.replace(`/(root)/ChooseGender`)
                     return;
                 }
-
+                socket.emit('register', userData?._id);
                 router.replace('/(root)/(tabs)/training')
 
             } else {
-                Alert.alert("Không thể đăng nhập", data.message);
+                Alert.alert("Không thể đăng nhập", data.message || "Đã xảy ra lỗi không xác định.");
             }
 
         } catch (err) {
-            Alert.alert("Lỗi", err.message);
+            const errorMessage = err.response?.data?.message || err.message || "Đã xảy ra lỗi không xác định.";
+            Alert.alert("Lỗi", errorMessage);
         } finally {
             setIsVisibleLoadingModal(false)
         }

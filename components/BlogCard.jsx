@@ -1,13 +1,13 @@
-import { Text, TouchableOpacity, View, StyleSheet, Pressable } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet, Pressable, Modal, Alert } from 'react-native';
 import { Image } from 'expo-image'
 import Swiper from 'react-native-swiper';
 import { Video } from 'expo-av';
-import React, { useEffect, useRef } from 'react';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import React, { useEffect, useRef, useState } from 'react';
+import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatDateWithMonth, formatTime } from '../utils';
 import { router } from 'expo-router';
 
-const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
+const BlogCard = ({ handleDeleteBlogById, blog, handleLike, index, userId, colorScheme, isAuthor }) => {
 
     const videoRef = useRef(null);
     const {
@@ -21,6 +21,7 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
         updated_at,
         allowComment
     } = blog;
+    const [isVisibleModalEdit, setIsVisibleModalEdit] = useState(false)
 
     useEffect(() => {
         return () => {
@@ -32,19 +33,82 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
     return (
         <View className=" dark:border-gray-800 mb-4 py-2 m-2 rounded-lg">
             <View className="flex flex-row justify-between items-center px-2">
-                <TouchableOpacity onPress={() => router.push(`/(root)/feedprofile/${author?._id}`)} className="mr-3">
-                    <Image
-                        source={{ uri: author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
-                        className="w-10 h-10 rounded-full"
-                        contentFit='cover'
-                    />
-                </TouchableOpacity>
-                <View className="flex-1">
+                <View className="flex flex-row justify-between items-center flex-1">
                     <TouchableOpacity onPress={() => router.push(`/(root)/feedprofile/${author?._id}`)} className="mr-3">
-                        <Text className="font-semibold text-sm dark:text-[#fff]">{author?.username}</Text>
+                        <Image
+                            source={{ uri: author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
+                            className="w-10 h-10 rounded-full"
+                            contentFit='cover'
+                        />
                     </TouchableOpacity>
-                    <Text className="text-gray-400 text-xs">{`${formatDateWithMonth(created_at)} ${formatTime(created_at)}`}</Text>
+                    <View className="flex-1">
+                        <TouchableOpacity onPress={() => router.push(`/(root)/feedprofile/${author?._id}`)} className="mr-3">
+                            <Text className="font-semibold text-sm dark:text-[#fff]">{author?.username}</Text>
+                        </TouchableOpacity>
+                        <Text className="text-gray-400 text-xs">{`${formatDateWithMonth(created_at)} ${formatTime(created_at)}`}</Text>
+                    </View>
                 </View>
+                {
+                    isAuthor &&
+                    <View className="relative">
+                        <TouchableOpacity onPress={() => setIsVisibleModalEdit(true)} className="pl-2 py-2">
+                            <Entypo name='dots-three-vertical' size={20} />
+                        </TouchableOpacity>
+                        <Modal
+                            animationType="fade"
+                            transparent={true}
+                            visible={isVisibleModalEdit}
+                            onRequestClose={() => {
+                                setIsVisibleModalEdit(!isVisibleModalEdit);
+                            }}
+                        >
+                            <TouchableOpacity
+                                className="flex-1"
+                                onPress={() => setIsVisibleModalEdit(false)}
+                            />
+                            <View className="absolute top-[120px] right-[10px] border-[0.2px] bg-[#fff] dark:bg-slate-950 rounded-lg px-2 mr-1 mt-2">
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Alert.alert(
+                                            "",
+                                            "Bạn có chắc chắn muốn xóa bài đăng này?",
+                                            [
+                                                {
+                                                    text: "Hủy",
+                                                    style: "cancel",
+                                                },
+                                                {
+                                                    text: "Xóa",
+                                                    onPress: async () => {
+                                                        await handleDeleteBlogById(_id)
+                                                    },
+                                                    style: "destructive",
+                                                },
+                                            ]
+                                        );
+                                    }}
+                                    className='py-3 px-4'
+                                >
+                                    <Text className="text-left text-[#000] text-[14px] dark:text-white">Xóa</Text>
+                                </TouchableOpacity>
+                                {/* <TouchableOpacity
+                                    className="py-3 px-4"
+                                    onPress={() => router.push({
+                                        pathname: `/(root)/newfeedpage`,
+                                        params: {
+                                            data: JSON.stringify(blog),
+                                            isEdit: true
+                                        }
+                                    })}
+                                >
+                                    <Text className="text-left text-[#000] text-[14px] dark:text-white">Chỉnh sửa</Text>
+                                </TouchableOpacity> */}
+                            </View>
+                        </Modal>
+                    </View>
+
+                }
             </View>
 
             {/* body */}
@@ -72,7 +136,7 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
                                         med.type == 'image' ?
                                             <Pressable onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] border-[0.2px] rounded-lg">
                                                 <Image
-                                                    source={{ uri: med.fileUrl }}
+                                                    source={{ uri: med.uri }}
                                                     className="w-full h-full rounded-lg"
                                                     contentFit="cover"
                                                 />
@@ -81,7 +145,7 @@ const BlogCard = ({ blog, handleLike, index, userId, colorScheme }) => {
                                             <Pressable onPress={() => router.push(`/(root)/feed/${_id}`)} className="w-full h-[350px] border-[0.2px] rounded-lg">
                                                 <Video
                                                     ref={videoRef}
-                                                    source={{ uri: med.fileUrl }}
+                                                    source={{ uri: med.uri }}
                                                     className="w-full h-full"
                                                     resizeMode="contain"
                                                     useNativeControls

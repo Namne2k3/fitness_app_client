@@ -10,7 +10,7 @@ import ImageModal from '../../../components/ImageModal'
 import MessageComponent from '../../../components/MessageComponent'
 import { createVideo } from '../../../libs/appwrite'
 import { analyzeImage } from '../../../libs/google_vision_cloud'
-import { createMessage, getAllMessagesByRoomId, getRoomById } from '../../../libs/mongodb'
+import { createMessage, getAllMessagesByRoomId, getRoomById, getUserById } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import socket from '../../../utils/socket'
 import { downloadAsync, documentDirectory } from 'expo-file-system';
@@ -67,7 +67,7 @@ const ChatRoom = () => {
     const handleDownloadImage = async () => {
         setSmallIsDownload(true)
         try {
-            const uri = selectedImage?.fileUrl;
+            const uri = selectedImage?.uri;
 
             if (!uri) {
                 Alert.alert('Lỗi', 'Thiếu đường dẫn của ảnh!');
@@ -140,11 +140,12 @@ const ChatRoom = () => {
 
                     setTimeout(() => flatListMessages.current?.scrollToEnd({ animated: true }), 0);
 
-                    await sendNotification(room?.members[0]?._id == user?._id
-                        ? room?.members[1]?.pushToken
-                        : room?.members[0]?.pushToken,
-                        newMessage.data
-                    );
+                    const userIdShouldBeNotify = room?.members[0]?._id == user?._id
+                        ? room?.members[1]?._id
+                        : room?.members[0]?._id
+
+                    const userShouldBeNotify = await getUserById(userIdShouldBeNotify)
+                    await sendNotification(userShouldBeNotify?.data?.pushToken, newMessage.data);
 
                 }
             }

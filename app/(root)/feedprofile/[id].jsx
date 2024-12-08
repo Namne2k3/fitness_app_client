@@ -11,6 +11,7 @@ import { images } from '../../../constants/image'
 import { findChatRoom, getFeedsByUserId, getUserById, updateBlogById } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import socket from '../../../utils/socket'
+import { formatDateWithMonth } from '../../../utils/index'
 const FeedProfile = () => {
 
     const { id } = useLocalSearchParams()
@@ -130,23 +131,52 @@ const FeedProfile = () => {
                         colorScheme == 'dark'
                             ? `flex-1 bg-[#000] rounded-full ${tab == 'information' ? 'border-[#fff]' : 'border-[#000]'} border-[1.5px] p-2 mx-2 justify-center items-center`
                             : `flex-1 bg-[#ccc] rounded-full ${tab == 'information' ? 'border-[#000]' : 'border-[#ccc]'} border-[1.5px] p-2 mx-2 justify-center items-center`}>
-                        <Text className="font-pregular text-[12px] dark:text-white">Information</Text>
+                        <Text className="font-pregular text-[12px] dark:text-white">Thông tin</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setTab('feeds')} className={
                         colorScheme == 'dark'
                             ? `flex-1 bg-[#000] rounded-full ${tab == 'feeds' ? 'border-[#fff]' : 'border-[#000]'} border-[1.5px] p-2 mx-2 justify-center items-center`
                             : `flex-1 bg-[#ccc] rounded-full ${tab == 'feeds' ? 'border-[#000]' : 'border-[#ccc]'} border-[1.5px] p-2 mx-2 justify-center items-center`}>
-                        <Text className="font-pregular text-[12px] dark:text-white">Feeds</Text>
+                        <Text className="font-pregular text-[12px] dark:text-white">Bài đăng</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-            <View className="flex border-[0.5px] dark:border-[#ccc] rounded-lg mt-2">
+            <View className="flex mt-2">
                 {
                     tab == 'information'
                         // information
                         ?
-                        <View>
-
+                        <View className="border-[#ccc] border-[0.5px] rounded-lg p-4 flex flex-row">
+                            <View className="flex-1 flex ">
+                                <View className="flex flex-row justify-between items-center mb-2">
+                                    <Text className="font-pbold text-lg">Tuổi</Text>
+                                    <Text className="text-lg font-pmedium">{user.age}</Text>
+                                </View>
+                                <View className="flex flex-row justify-between items-center mb-2">
+                                    <Text className="font-pbold text-lg">Giới tính</Text>
+                                    <Text className="text-lg font-pmedium capitalize">{user.gender == 'female' ? 'nữ' : 'nam'}</Text>
+                                </View>
+                                <View className="flex flex-row justify-between items-center mb-2">
+                                    <Text className="font-pbold text-lg">Cân nặng</Text>
+                                    <Text className="text-lg font-pmedium">{user.weight} kg</Text>
+                                </View>
+                                <View className="flex flex-row justify-between items-center mb-2">
+                                    <Text className="font-pbold text-lg">Chiều cao</Text>
+                                    <Text className="text-lg font-pmedium">{user.height} cm</Text>
+                                </View>
+                                <View className="flex flex-row justify-between items-center mb-2">
+                                    <Text className="font-pbold text-lg">Trình độ</Text>
+                                    <Text className="text-lg font-pmedium">{user.level}</Text>
+                                </View>
+                                <View className="flex flex-row justify-between items-center mb-2">
+                                    <Text className="font-pbold text-lg">ORM</Text>
+                                    <Text className="text-lg font-pmedium">{user.orm} kg</Text>
+                                </View>
+                                <View className="flex flex-row justify-between items-center mb-2">
+                                    <Text className="font-pbold text-lg">Đã tham gia từ</Text>
+                                    <Text className="text-lg font-pmedium">{new Date(user.created_at).toDateString()}</Text>
+                                </View>
+                            </View>
                         </View>
                         // feeds
                         :
@@ -155,7 +185,7 @@ const FeedProfile = () => {
                                 data={userFeeds}
                                 renderItem={({ item, index }) => {
                                     return (
-                                        <BlogCard colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
+                                        <BlogCard isAuthor={item?.author?._id == user?._id} colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
                                     )
                                 }}
 
@@ -168,7 +198,7 @@ const FeedProfile = () => {
                                             alt="No recent rides found"
                                             resizeMethod="contain"
                                         />
-                                        <Text className="text-sm dark:text-white">{userProfile?.username} has not posted yet!</Text>
+                                        <Text className="text-sm dark:text-white">{userProfile?.username} chưa có bài đăng nào!</Text>
                                     </View>
                                 )}
                                 ItemSeparatorComponent={

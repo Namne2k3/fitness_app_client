@@ -1,14 +1,15 @@
-import { AntDesign, FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { router, useFocusEffect } from 'expo-router';
+import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
+import { Image } from 'expo-image';
+import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, RefreshControl, Text, TouchableOpacity, View } from 'react-native';
-import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BlogCard from '../../../components/BlogCard';
 import { images } from '../../../constants/image';
-import { getAllBlog, updateBlogById, } from '../../../libs/mongodb';
+import { deleteBlogById, getAllBlog, updateBlogById, } from '../../../libs/mongodb';
 import useUserStore from '../../../store/userStore';
+import { deleteFile } from '../../../libs/appwrite';
 
 const Feed = () => {
     const { colorScheme } = useColorScheme()
@@ -26,6 +27,7 @@ const Feed = () => {
             setRefreshing(false);
         }, 1000);
     }, []);
+
 
     const fetchBlogs = async (isSearchReset = false) => {
         try {
@@ -52,6 +54,29 @@ const Feed = () => {
             Alert.alert("Lỗi", error.message)
         } finally {
             setSmallLoading(false)
+        }
+    }
+
+    const handleDeleteMedias = async (medias) => {
+        medias.map(async (item) => {
+            console.log("Check media $id >>> ", item.$id);
+
+            await deleteFile(item.$id)
+        })
+    }
+
+    const handleDeleteBlogById = async (blogId) => {
+        try {
+            const blogDelete = blogs.find(item => item._id == blogId)
+            await handleDeleteMedias(blogDelete?.medias)
+            const res = await deleteBlogById(blogId)
+            setBlogs((blogs) => blogs.filter((blog) => blog._id != blogId))
+
+            if (res.status === 200) {
+                Alert.alert("Đã xóa bài đăng")
+            }
+        } catch (error) {
+            Alert.alert("Lỗi", error.message);
         }
     }
 
@@ -85,9 +110,12 @@ const Feed = () => {
 
     return (
         <SafeAreaView className="flex h-full pt-4 dark:bg-slate-950">
-            <View className="pb-2 flex flex-row justify-between items-center px-4 border-b-[1px] border-[#ccc]">
+            <View className="pb-2 flex flex-row justify-between items-center px-4 border-[#ccc]">
                 <Text className="dark:text-white font-pextrabold text-[32px] text-center uppercase">bài viết</Text>
                 <View className="flex flex-row">
+                    <TouchableOpacity className="mb-1 px-1" onPress={() => router.push(`/(root)/feedprofile/${user?._id}`)}>
+                        <AntDesign name='user' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                    </TouchableOpacity>
                     <TouchableOpacity className="mb-1 px-1" onPress={() => router.push('/(root)/Chat')}>
                         <FontAwesome5 name='facebook-messenger' size={32} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                     </TouchableOpacity>
@@ -98,34 +126,38 @@ const Feed = () => {
             </View>
 
 
-            {
-                blogs?.length > 0 ?
-                    <FlatList
-                        refreshControl={
-                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                        }
-                        data={blogs}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <BlogCard colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
-                            )
-                        }}
-                        ItemSeparatorComponent={
-                            <View className="border-t-[0.5px] border-[#ccc]">
+            <FlatList
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                data={blogs}
+                renderItem={({ item, index }) => {
+                    return (
+                        <BlogCard handleDeleteBlogById={(blogId) => handleDeleteBlogById(blogId)} isAuthor={item?.author?._id == user?._id} colorScheme={colorScheme} userId={user?._id} index={index} handleLike={(blogId) => handleLike(blogId)} blog={item} />
+                    )
+                }}
+                ItemSeparatorComponent={
+                    <View className="border-t-[0.5px] border-[#ccc]">
 
-                            </View>
-                        }
-                        showsVerticalScrollIndicator={false}
-                        ListFooterComponent={
+                    </View>
+                }
+                showsVerticalScrollIndicator={false}
+                ListFooterComponent={
+                    <View className="px-4">
+                        {
                             !smallLoading ?
-                                <TouchableOpacity className='mb-4 flex flex-row justify-center items-center' onPress={() => fetchBlogs(false)}>
-                                    <Ionicons name='reload' size={30} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                                <TouchableOpacity className="mb-2 p-1 rounded-lg flex justify-center items-center bg-[#f5f5f5]" onPress={() => fetchBlogs(false)}>
+                                    <Text className="text-center">Tải thêm</Text>
                                 </TouchableOpacity>
+                                // <TouchableOpacity className='mb-4 flex flex-row justify-center items-center' onPress={() => fetchBlogs(false)}>
+                                //     <Ionicons name='reload' size={30} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                                // </TouchableOpacity>
                                 :
                                 <ActivityIndicator size={'large'} animating={smallLoading} style={{ marginTop: 12 }} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                         }
-                    />
-                    :
+                    </View>
+                }
+                ListEmptyComponent={
                     <View className="flex h-[80%] items-center justify-center bg-transparent px-8">
                         <Image
                             source={images.no_result}
@@ -135,7 +167,9 @@ const Feed = () => {
                         />
                         <Text className="text-sm dark:text-white text-center">Chưa có bài viết</Text>
                     </View>
-            }
+                }
+            />
+
 
         </SafeAreaView>
     )

@@ -52,7 +52,7 @@ const ImageModal = ({ smallIsDownload, handleDownloadImage, visibleImageModal, c
                 }}
             >
                 <Image
-                    source={{ uri: selectedImage?.fileUrl }}
+                    source={{ uri: selectedImage?.uri }}
                     contentFit='contain'
                     style={{
                         height: 500,

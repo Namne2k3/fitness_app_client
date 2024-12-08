@@ -80,7 +80,7 @@ const MyProfile = () => {
         try {
             // upload file image
             const imageUrl = await uploadFile(profileImage, profileImage?.type)
-            const updatedUser = await handleUpdateUser({ ...user, image: imageUrl.fileUrl })
+            const updatedUser = await handleUpdateUser({ ...user, image: imageUrl.uri })
             setUser(updatedUser)
             setProfileImage({})
 
@@ -120,8 +120,6 @@ const MyProfile = () => {
                 mealDistribution
             } = calculateTrainingPlan(tempUser)
 
-            console.log("Check daysShouldTraining >>> ", daysShouldTraining);
-
 
             const { currentBMI, targetBMI } = analyzeUser(
                 tempUser.weight, tempUser.height, tempUser.targetWeight
@@ -138,9 +136,6 @@ const MyProfile = () => {
                 bmi: currentBMI,
                 targetBMI: targetBMI
             }))
-
-            console.log("Temp user >>> ", tempUser);
-
 
             const res = await updateUserById({
                 ...tempUser,
@@ -184,7 +179,6 @@ const MyProfile = () => {
             const { currentBMI, targetBMI } = analyzeUser(
                 tempUser.weight, tempUser.height, tempUser.targetWeight
             )
-
             setTempUser((temp) => ({
                 ...temp,
                 daysShouldTraining: daysShouldTraining,
@@ -197,6 +191,7 @@ const MyProfile = () => {
                 targetBMI: targetBMI
             }))
 
+
             const updatedUser = await updateUserById({
                 ...tempUser,
                 daysShouldTraining: daysShouldTraining,
@@ -208,6 +203,8 @@ const MyProfile = () => {
                 bmi: currentBMI,
                 targetBMI: targetBMI
             })
+
+            setUser(updatedUser.data)
 
             const createdTrainings = await generateTrainings(updatedUser.data, data)
             const savedTrainings = await reCreateTrainingsByUserId(createdTrainings)

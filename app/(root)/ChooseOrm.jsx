@@ -12,7 +12,7 @@ import { createPlans, createTrainings, getAllExercises, handleUpdateUser } from 
 import useUserStore from '../../store/userStore'
 import { calculate1RM, createPlansForUser, generateTrainings } from '../../utils/index'
 import { seedDataOrm } from '../../constants/seeds'
-
+import socket from '../../utils/socket';
 
 function urlSelected(name) {
     let selected = {}
@@ -65,6 +65,7 @@ const ChooseOrm = () => {
             const saved = await createPlans(plans)
 
             if (saved?.data?.length > 0) {
+                socket.emit('register', user?._id);
                 router.replace({
                     pathname: '/(root)/(tabs)/training'
                 })

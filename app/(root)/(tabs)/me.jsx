@@ -1,5 +1,5 @@
 import CustomButton from '@/components/CustomButton'
-import { createFeedback } from '@/libs/mongodb'
+import { createFeedback, updateUserById } from '@/libs/mongodb'
 import { useUserStore } from '@/store'
 import { useAuth } from '@clerk/clerk-expo'
 import { AntDesign, FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
@@ -10,7 +10,7 @@ import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-na
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { removeToken } from '../../../libs/token'
 const Me = () => {
-    // const userData = useUserStore.getState().user
+
     const { user, setUser } = useUserStore();
     const { signOut } = useAuth()
     const packageInfo = require('../../../package.json');
@@ -39,6 +39,7 @@ const Me = () => {
 
     const handleLogOut = async () => {
         try {
+            await updateUserById({ ...user, pushToken: "" })
             await signOut()
             await removeToken()
             clearUser()

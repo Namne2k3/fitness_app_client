@@ -29,7 +29,8 @@ const SetCard = ({ index, item: { kilogram, reps, isCheck }, handleUpdateIsCheck
                 <>
                     <View className='flex flex-[0.5] mx-4'>
                         <TextInput
-                            value={`${Number(kilogram)}`}
+                            // value={`${Number(kilogram)}`}
+                            placeholder={kilogram.toString()}
                             className={`font-bold my-2 dark:text-white rounded-[16px] p-4 text-[15px] ${isCheck ? 'bg-[#2ba818]' : 'bg-[#e6e4e8]'} flex-1 text-left ${isCheck ? 'text-white' : 'text-black'}`}
                             keyboardType='numeric'
                             onChangeText={(text) => handleUpdateKilogramAndReps(itemParent, index, Number(text), Number(reps))}
@@ -40,7 +41,8 @@ const SetCard = ({ index, item: { kilogram, reps, isCheck }, handleUpdateIsCheck
             }
             <View className='flex flex-[0.5] mx-4'>
                 <TextInput
-                    value={`${Number(reps)}`}
+                    // value={`${Number(reps)}`}
+                    placeholder={reps.toString()}
                     className={`font-bold my-2 rounded-[16px] p-4 text-[15px] ${isCheck ? 'bg-[#2ba818]' : 'bg-[#e6e4e8]'} flex-1 text-left ${isCheck ? 'text-white' : 'text-black'}`}
                     keyboardType='numeric'
                     onChangeText={(text) => handleUpdateKilogramAndReps(itemParent, index, Number(kilogram), Number(text))}

@@ -1,22 +1,22 @@
-import { AntDesign, Feather, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import { AntDesign, Entypo, Feather, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
 import { Video } from 'expo-av'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { Image } from 'expo-image'
 import PagerView from 'react-native-pager-view'
 import BottomSheet from '../../../components/BottomSheet'
 import CommentCard from '../../../components/CommentCard'
 import LoadingModal from '../../../components/LoadingModal'
-import { getBlogById, updateBlogById } from '../../../libs/mongodb'
+import { deleteBlogById, getBlogById, updateBlogById } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import { formatDateWithMonth, formatTime } from '../../../utils'
 import ImageModal from '../../../components/ImageModal'
 import { downloadAsync, documentDirectory } from 'expo-file-system';
 import { saveToLibraryAsync, usePermissions } from 'expo-media-library';
+import { deleteFile } from '../../../libs/appwrite'
 const DetailFeed = () => {
-
     const { _id } = useLocalSearchParams()
     const [blog, setBlog] = useState({})
     const [commentContent, setCommentContent] = useState("")
@@ -31,7 +31,7 @@ const DetailFeed = () => {
     const [smallIsDownload, setSmallIsDownload] = useState(false)
     const [selectedImage, setSelectedImage] = useState({})
     const [permissionResponse, requestPermission] = usePermissions();
-
+    const [isVisibleModalEdit, setIsVisibleModalEdit] = useState(false)
     const handleDeleteComment = async () => {
         setIsPostingComment(true)
         try {
@@ -177,7 +177,7 @@ const DetailFeed = () => {
             if (permissionResponse.status !== 'granted') {
                 await requestPermission();
             }
-            const uri = selectedImage?.fileUrl;
+            const uri = selectedImage?.uri;
 
             if (!uri) {
                 Alert.alert('Lỗi', 'Thiếu đường dẫn của ảnh!');
@@ -204,6 +204,27 @@ const DetailFeed = () => {
         }
     };
 
+    const handleDeleteMedias = async (medias) => {
+        medias.map(async (item) => {
+            console.log("Check media $id >>> ", item.$id);
+
+            await deleteFile(item.$id)
+        })
+    }
+
+    const handleDeleteBlogById = async () => {
+        try {
+            await handleDeleteMedias(blog?.medias)
+            const res = await deleteBlogById(blog?._id)
+            if (res.status === 200) {
+                router.back()
+                Alert.alert("Đã xóa bài đăng")
+            }
+        } catch (error) {
+            Alert.alert("Lỗi", error.message);
+        }
+    }
+
     useEffect(() => {
         const fetchBlog = async () => {
             try {
@@ -211,7 +232,7 @@ const DetailFeed = () => {
 
                 setBlog(res.data)
             } catch (error) {
-                Alert.alert("Error", error.message)
+                Alert.alert("Lỗi", error.message)
             }
         }
         fetchBlog()
@@ -223,18 +244,71 @@ const DetailFeed = () => {
                 className="bg-[#fff] h-full flex-1 dark:bg-slate-950"
             >
                 {/* header */}
-                <View className="flex flex-row justify-between items-center px-2 pt-4 ">
-                    <TouchableOpacity onPress={() => { }} className="mr-3 ">
-                        <Image
-                            source={{ uri: blog?.author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
-                            className="w-10 h-10 rounded-full"
-                            contentFit='cover'
-                        />
-                    </TouchableOpacity>
-                    <View className="flex-1">
-                        <Text className="font-semibold text-sm dark:text-white">{blog?.author?.username}</Text>
-                        <Text className="text-gray-400 text-xs">{`${formatDateWithMonth(blog?.created_at)} ${formatTime(blog?.created_at)}`}</Text>
+                <View className="flex flex-row justify-between items-center flex-1 px-2">
+
+                    <View className="flex flex-row justify-between items-center flex-1">
+                        <TouchableOpacity onPress={() => { }} className="mr-3 ">
+                            <Image
+                                source={{ uri: blog?.author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg" }}
+                                className="w-10 h-10 rounded-full"
+                                contentFit='cover'
+                            />
+                        </TouchableOpacity>
+                        <View className="flex-1">
+                            <Text className="font-semibold text-sm dark:text-white">{blog?.author?.username}</Text>
+                            <Text className="text-gray-400 text-xs">{`${formatDateWithMonth(blog?.created_at)} ${formatTime(blog?.created_at)}`}</Text>
+                        </View>
                     </View>
+
+                    {
+                        blog?.author?._id == user?._id &&
+                        <View className="relative">
+                            <TouchableOpacity onPress={() => setIsVisibleModalEdit(true)} className="pl-2 py-2">
+                                <Entypo name='dots-three-vertical' size={20} />
+                            </TouchableOpacity>
+                            <Modal
+                                animationType="fade"
+                                transparent={true}
+                                visible={isVisibleModalEdit}
+                                onRequestClose={() => {
+                                    setIsVisibleModalEdit(!isVisibleModalEdit);
+                                }}
+                            >
+                                <TouchableOpacity
+                                    className="flex-1"
+                                    onPress={() => setIsVisibleModalEdit(false)}
+                                />
+                                <View className="absolute top-[120px] right-[10px] border-[0.2px] bg-[#fff] dark:bg-slate-950 rounded-lg px-2 mr-1 mt-2">
+
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            Alert.alert(
+                                                "",
+                                                "Bạn có chắc chắn muốn xóa bài đăng này?",
+                                                [
+                                                    {
+                                                        text: "Hủy",
+                                                        style: "cancel",
+                                                    },
+                                                    {
+                                                        text: "Xóa",
+                                                        onPress: async () => {
+                                                            await handleDeleteBlogById()
+                                                        },
+                                                        style: "destructive",
+                                                    },
+                                                ]
+                                            );
+                                        }}
+                                        className='py-3 px-4'
+                                    >
+                                        <Text className="text-left text-[#000] text-[14px] dark:text-white">Xóa</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </Modal>
+                        </View>
+
+                    }
                 </View>
 
                 <View className="flex">
@@ -254,13 +328,13 @@ const DetailFeed = () => {
                                     {
                                         med.type == 'image' ?
                                             <Image
-                                                source={{ uri: med.fileUrl }}
+                                                source={{ uri: med.uri }}
                                                 className="w-full h-full rounded-lg"
                                                 contentFit="contain"
                                             />
                                             :
                                             <Video
-                                                source={{ uri: med.fileUrl }}
+                                                source={{ uri: med.uri }}
                                                 className="w-full h-full rounded-lg"
                                                 resizeMode="contain"
                                                 useNativeControls

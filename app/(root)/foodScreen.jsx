@@ -169,7 +169,7 @@ const FoodScreen = () => {
                 <View className="flex p-2">
                     <View className="flex flex-row p-2">
                         <Text className="">Calo {`<=`}</Text>
-                        <Text className="font-pbold"> {form.Calories}</Text>
+                        <Text className="font-pbold"> {Number(form.Calories).toFixed()}</Text>
                     </View>
                     <Slider
                         value={form.Calories}
@@ -185,7 +185,7 @@ const FoodScreen = () => {
                 <View className="flex p-2">
                     <View className="flex flex-row p-2">
                         <Text className="">Chất đạm {`<=`}</Text>
-                        <Text className="font-pbold"> {form.Protein}</Text>
+                        <Text className="font-pbold"> {Number(form.Protein).toFixed()}</Text>
                     </View>
                     <Slider
                         value={form.Protein}
@@ -201,7 +201,7 @@ const FoodScreen = () => {
                 <View className="flex p-2">
                     <View className="flex flex-row p-2">
                         <Text className="">Chất béo {`<=`}</Text>
-                        <Text className="font-pbold"> {form.Fat}</Text>
+                        <Text className="font-pbold"> {Number(form.Fat).toFixed()}</Text>
                     </View>
                     <Slider
                         value={form.Fat}
@@ -217,7 +217,7 @@ const FoodScreen = () => {
                 <View className="flex p-2">
                     <View className="flex flex-row p-2">
                         <Text className="">Carb {`<=`}</Text>
-                        <Text className="font-pbold"> {form.Carbonhydrates}</Text>
+                        <Text className="font-pbold"> {Number(form.Carbonhydrates).toFixed()}</Text>
                     </View>
                     <Slider
                         value={form.Carbonhydrates}
