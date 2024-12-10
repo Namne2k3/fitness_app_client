@@ -4,6 +4,7 @@ import { seedPlanData } from '@/constants/seeds'
 import { createTrainings } from '@/libs/mongodb';
 import * as FileSystem from 'expo-file-system';
 import * as MailComposer from 'expo-mail-composer';
+import { Alert } from 'react-native';
 
 export function analyzeUser(weight, height, targetWeight) {
     if (!weight || !height || !targetWeight) {
@@ -115,86 +116,92 @@ export const BMR = (user) => {
 }
 export function calculateTrainingPlan(userData) {
 
-    console.log("user Data >>> ", userData);
+    try {
+        const {
+            weight,
+            targetWeight,
+            tdee,
+            healthGoal,
+            level
+        } = userData;
 
-    const {
-        weight,
-        targetWeight,
-        tdee,
-        healthGoal,
-        level
-    } = userData;
+        if (weight && targetWeight && tdee && healthGoal && level) {
+            const adjustedTDEE = tdee;
 
-    const adjustedTDEE = tdee;
+            let daysShouldTraining = 0;
+            let proteinMultiplier = 0;
+            let fatPercentage = 0;
 
-    let daysShouldTraining = 0;
-    let proteinMultiplier = 0;
-    let fatPercentage = 0;
+            // Xác định ngày tập luyện và hệ số protein
+            if (healthGoal === "Tăng cơ") {
+                daysShouldTraining = level === "Người mới bắt đầu" ? 4 : 5;
+                proteinMultiplier = 2.2; // Tăng cơ: 2.2g/kg
+                fatPercentage = 0.25; // 25% TDEE cho fat
+            } else if (healthGoal === "Giảm mỡ") {
+                daysShouldTraining = 5;
+                proteinMultiplier = 1.8; // Giảm mỡ: 1.8g/kg
+                fatPercentage = 0.20; // 20% TDEE cho fat
+            } else if (healthGoal === "Cân đối tổng thể") {
+                daysShouldTraining = 3;
+                proteinMultiplier = 1.5; // Cân đối: 1.5g/kg
+                fatPercentage = 0.25; // 25% TDEE cho fat
+            } else if (healthGoal === "Sức mạnh") {
+                daysShouldTraining = 4;
+                proteinMultiplier = 2; // Sức mạnh: 2g/kg
+                fatPercentage = 0.30; // 30% TDEE cho fat
+            }
 
-    // Xác định ngày tập luyện và hệ số protein
-    if (healthGoal === "Tăng cơ") {
-        daysShouldTraining = level === "Người mới bắt đầu" ? 4 : 5;
-        proteinMultiplier = 2.2; // Tăng cơ: 2.2g/kg
-        fatPercentage = 0.25; // 25% TDEE cho fat
-    } else if (healthGoal === "Giảm mỡ") {
-        daysShouldTraining = 5;
-        proteinMultiplier = 1.8; // Giảm mỡ: 1.8g/kg
-        fatPercentage = 0.20; // 20% TDEE cho fat
-    } else if (healthGoal === "Cân đối") {
-        daysShouldTraining = 3;
-        proteinMultiplier = 1.5; // Cân đối: 1.5g/kg
-        fatPercentage = 0.25; // 25% TDEE cho fat
-    } else if (healthGoal === "Sức mạnh") {
-        daysShouldTraining = 4;
-        proteinMultiplier = 2; // Sức mạnh: 2g/kg
-        fatPercentage = 0.30; // 30% TDEE cho fat
+            // Tính lượng protein và fat
+            const proteinRequirement = Math.ceil(weight * proteinMultiplier); // Lượng protein (g)
+            const fatRequirement = Math.ceil(adjustedTDEE * fatPercentage / 9); // Lượng fat (g), 1g fat = 9 calo
+
+            // Tính calo mỗi buổi tập
+            const minCaloriesPerTraining = Math.floor(adjustedTDEE * 0.10);
+            const maxCaloriesPerTraining = Math.floor(adjustedTDEE * 0.20);
+            const caloriesPerTraining = (minCaloriesPerTraining + maxCaloriesPerTraining) / 2;
+
+            // Tốc độ tăng cân/giảm cân lành mạnh
+            const calorieSurplusPerDay = healthGoal === "Tăng cơ" ? 500 : -500; // Dư/thâm hụt 500 calo mỗi ngày
+            const calorieChangePerKg = 7700; // Calo để tăng/giảm 1 kg
+
+            // Tổng số ngày để đạt cân nặng mục tiêu
+            let totalDaysToReachTarget = 0;
+            if (targetWeight !== weight) {
+                const totalWeightChange = Math.abs(targetWeight - weight); // Tổng số kg cần thay đổi
+                const totalCaloriesChange = totalWeightChange * calorieChangePerKg;
+                totalDaysToReachTarget = Math.ceil(totalCaloriesChange / Math.abs(calorieSurplusPerDay));
+            }
+
+            // Phân phối calo theo từng bữa
+            const mealDistribution = {
+                breakfast: Math.ceil(adjustedTDEE * 0.3),
+                lunch: Math.ceil(adjustedTDEE * 0.4),
+                dinner: Math.ceil(adjustedTDEE * 0.3)
+            };
+
+            console.log("Check all >> ", {
+                daysShouldTraining,
+                caloriesPerTraining,
+                proteinRequirement,
+                fatRequirement,
+                totalDaysToReachTarget,
+                mealDistribution
+            });
+
+            return {
+                daysShouldTraining,
+                caloriesPerTraining,
+                proteinRequirement,
+                fatRequirement,
+                totalDaysToReachTarget,
+                mealDistribution
+            };
+        } else {
+            throw new Error("Thiếu thông tin")
+        }
+    } catch (error) {
+        throw new Error(error.message)
     }
-
-    // Tính lượng protein và fat
-    const proteinRequirement = Math.ceil(weight * proteinMultiplier); // Lượng protein (g)
-    const fatRequirement = Math.ceil(adjustedTDEE * fatPercentage / 9); // Lượng fat (g), 1g fat = 9 calo
-
-    // Tính calo mỗi buổi tập
-    const minCaloriesPerTraining = Math.floor(adjustedTDEE * 0.10);
-    const maxCaloriesPerTraining = Math.floor(adjustedTDEE * 0.20);
-    const caloriesPerTraining = (minCaloriesPerTraining + maxCaloriesPerTraining) / 2;
-
-    // Tốc độ tăng cân/giảm cân lành mạnh
-    const calorieSurplusPerDay = healthGoal === "Tăng cơ" ? 500 : -500; // Dư/thâm hụt 500 calo mỗi ngày
-    const calorieChangePerKg = 7700; // Calo để tăng/giảm 1 kg
-
-    // Tổng số ngày để đạt cân nặng mục tiêu
-    let totalDaysToReachTarget = 0;
-    if (targetWeight !== weight) {
-        const totalWeightChange = Math.abs(targetWeight - weight); // Tổng số kg cần thay đổi
-        const totalCaloriesChange = totalWeightChange * calorieChangePerKg;
-        totalDaysToReachTarget = Math.ceil(totalCaloriesChange / Math.abs(calorieSurplusPerDay));
-    }
-
-    // Phân phối calo theo từng bữa
-    const mealDistribution = {
-        breakfast: Math.ceil(adjustedTDEE * 0.3),
-        lunch: Math.ceil(adjustedTDEE * 0.4),
-        dinner: Math.ceil(adjustedTDEE * 0.3)
-    };
-
-    console.log("Check all >> ", {
-        daysShouldTraining,
-        caloriesPerTraining,
-        proteinRequirement,
-        fatRequirement,
-        totalDaysToReachTarget,
-        mealDistribution
-    });
-
-    return {
-        daysShouldTraining,
-        caloriesPerTraining,
-        proteinRequirement,
-        fatRequirement,
-        totalDaysToReachTarget,
-        mealDistribution
-    };
 }
 
 
@@ -668,7 +675,7 @@ const generateTrainings = async (userData, exerciseData) => {
                 kilogram = orm * 0.85; // 85% ORM
                 break;
             }
-            case "Cân đối": {
+            case "Cân đối tổng thể": {
                 sets = level === "người mới bắt đầu" ? 3 : 4;
 
                 reps = gender === "nam"

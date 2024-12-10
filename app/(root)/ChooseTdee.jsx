@@ -34,7 +34,6 @@ const ChooseTdee = () => {
                 tdee: form.tdee,
             })
 
-            console.log("Check daysShouldTraining >>> ", daysShouldTraining);
 
             setUser({
                 ...user,
@@ -48,6 +47,20 @@ const ChooseTdee = () => {
                 fatRequirement: fatRequirement,
                 mealDistribution: mealDistribution
             })
+
+            console.log("All: ", {
+                ...user,
+                bmr: form.bmr,
+                activityLevel: form.level_workout,
+                tdee: form.tdee,
+                daysShouldTraining: daysShouldTraining,
+                caloriesPerTraining: caloriesPerTraining,
+                totalDaysToReachTarget: totalDaysToReachTarget,
+                proteinRequirement: proteinRequirement,
+                fatRequirement: fatRequirement,
+                mealDistribution: mealDistribution
+            });
+
 
             router.push('/(root)/ChooseOrm')
         } catch (error) {
