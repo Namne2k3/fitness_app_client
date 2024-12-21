@@ -13,7 +13,7 @@ const GeneralSettings = () => {
             await AsyncStorage.setItem('theme', theme);
             console.log(`Theme saved as ${theme}`);
         } catch (error) {
-            console.error('Failed to save theme to storage', error);
+            console.error('Lỗi khi lưu dữ liệu theme vào hệ thống', error);
         }
     };
 

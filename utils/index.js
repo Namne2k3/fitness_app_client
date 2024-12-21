@@ -235,7 +235,7 @@ export function generatePrompt(trainingRecord) {
 
         return prompt;
     } catch (error) {
-        console.log("error prompt >>> ", error.message);
+        console.log("error prompt: ", error.message);
 
     }
 }

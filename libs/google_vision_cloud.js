@@ -29,7 +29,6 @@ export const analyzeImage = async (base64Images) => {
             },
         });
 
-        console.log("Check response.data >>> ", response.data);
         return response.data;
     } catch (error) {
         console.error('Error calling Google Vision API:', error.message);

@@ -3,16 +3,16 @@ import { Image } from 'expo-image'
 import { router } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useEffect, useState } from 'react'
-import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
 import LoadingCreatingModal from '../../components/LoadingCreatingModal'
+import { seedDataOrm } from '../../constants/seeds'
 import { createPlans, createTrainings, getAllExercises, handleUpdateUser } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
 import { calculate1RM, createPlansForUser, generateTrainings } from '../../utils/index'
-import { seedDataOrm } from '../../constants/seeds'
-import socket from '../../utils/socket';
+import socket from '../../utils/socket'
 
 function urlSelected(name) {
     let selected = {}
@@ -230,5 +230,3 @@ const ChooseOrm = () => {
 }
 
 export default ChooseOrm
-
-const styles = StyleSheet.create({})

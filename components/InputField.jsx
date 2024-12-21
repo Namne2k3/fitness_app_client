@@ -36,7 +36,7 @@ const InputField = ({
                 <View className={`my-2 ${className}`}>
                     {
                         label && (
-                            <Text className={`text-lg font-psemibold mb-3 ${labelStyle}`}>
+                            <Text className={`text-lg font-psemibold mb-3 ${labelStyle} dark:text-white`}>
                                 {label}
                             </Text>
                         )

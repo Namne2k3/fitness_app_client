@@ -3,7 +3,7 @@ import { Image } from 'expo-image'
 import { router } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Alert, FlatList, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import HistoryRecordCard from '../../components/HistoryRecordCard'
 import { images } from '../../constants/image'
@@ -35,7 +35,6 @@ const AllHistoryRecords = () => {
             if (newRecordDatas?.length > 0) {
                 setSkip((prev) => prev + limit)
             }
-            console.log("Message: ", res.message);
 
         } catch (error) {
             Alert.alert("Lỗi", error.message)
@@ -106,5 +105,3 @@ const AllHistoryRecords = () => {
 }
 
 export default AllHistoryRecords
-
-const styles = StyleSheet.create({})

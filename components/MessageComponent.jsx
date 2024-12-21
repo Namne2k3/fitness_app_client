@@ -51,7 +51,7 @@ const MessageComponent = ({ item, user, roomImage, openModal }) => {
                                     <TouchableOpacity onPress={() => openModal(img)} key={`${img.fileUrl}_${index}`}>
                                         <Image
                                             source={{
-                                                uri: img.fileUrl
+                                                uri: img.uri
                                             }}
                                             width={100}
                                             height={100}
@@ -64,7 +64,7 @@ const MessageComponent = ({ item, user, roomImage, openModal }) => {
                         }
                     </View>
                 }
-                <Text className="font-pitalic">{new Date(item.created_at).toLocaleTimeString()}</Text>
+                <Text className="font-pitalic dark:text-[#ccc]">{new Date(item.created_at).toLocaleTimeString()}</Text>
             </View>
         </View>
     );

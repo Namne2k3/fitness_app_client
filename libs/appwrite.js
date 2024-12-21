@@ -98,8 +98,6 @@ export const uploadFile = async (file, type) => {
             asset
         )
 
-        console.log("Check uploadedFile >>> ", uploadedFile);
-
 
         const fileUrl = await getFilePreview(uploadedFile.$id, type);
         return {

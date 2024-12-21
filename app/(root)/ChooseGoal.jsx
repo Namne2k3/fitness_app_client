@@ -1,7 +1,7 @@
-import { AntDesign, Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
+import { AntDesign, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons'
 import { router } from 'expo-router'
 import React, { useState } from 'react'
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../../components/CustomButton'
 import useUserStore from '../../store/userStore'
@@ -77,11 +77,3 @@ const ChooseGoal = () => {
 }
 
 export default ChooseGoal
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        padding: 16,
-    },
-})

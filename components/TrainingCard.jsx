@@ -28,7 +28,7 @@ const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpd
     const isNeedKg = !NoNeedKg.includes(exercise?.equipment)
 
     return (
-        <View className="bg-[#fff] flex justify-center items-center dark:bg-slate-800">
+        <View className="bg-[#fff] flex justify-center items-center dark:bg-[#292727]">
             <View className="flex flex-row justify-between items-center">
                 <View>
                     <TouchableOpacity onPress={() => toggleBottomSheetModal(exercise)}>
@@ -36,7 +36,7 @@ const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpd
                             source={{
                                 uri: exercise.gifUrl
                             }}
-                            className="w-[70px] h-[70px] mr-2"
+                            className="w-[70px] h-[70px] mr-2 rounded-lg"
                             contentFit="contain"
                         />
                     </TouchableOpacity>
@@ -47,14 +47,14 @@ const TrainingCard = ({ item: { exercise, sets }, handleUpdateIsCheck, handleUpd
                 </View>
             </View>
 
-            <View className="w-full mt-2">
+            <View className="w-full mt-4">
                 <FlatList
                     data={sets}
                     renderItem={({ item, index }) => (
                         <SetCard isNeedKg={isNeedKg} handleUpdateIsCheck={handleUpdateIsCheck} hasCheck={hasCheck} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} itemParent={{ exercise, sets }} index={index} item={item} />
                     )}
                     ItemSeparatorComponent={() => (
-                        <View className="h-[16px] dark:bg-slate-800" />
+                        <View className="h-[16px] dark:bg-[#292727]" />
                     )}
                     showsVerticalScrollIndicator={false}
                 />

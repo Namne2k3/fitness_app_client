@@ -11,7 +11,15 @@ import { tokenCache } from '../libs/clerk';
 import store from '../store/reduxStore'
 import { Provider } from 'react-redux'
 import { NotificationProvider } from '../context/NotificationContext';
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from 'react-native-reanimated';
 
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: true, // Reanimated runs in strict mode by default
+});
 SplashScreen.preventAutoHideAsync();
 
 
@@ -52,9 +60,9 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
+      <StatusBar style={colorScheme == 'light' ? 'dark' : 'light'} />
       <NotificationProvider>
         <ClerkProvider rkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-          <StatusBar style={colorScheme == 'light' ? 'dark' : 'light'} />
           <GestureHandlerRootView>
 
             <Stack>

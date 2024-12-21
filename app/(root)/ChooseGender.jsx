@@ -1,13 +1,12 @@
 import { AntDesign } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomButton from '../../components/CustomButton';
 import { images } from '../../constants/image';
 import useUserStore from '../../store/userStore';
 const { width } = Dimensions.get('window');
-
 
 const ChooseGender = () => {
     const user = useUserStore.getState().user;
@@ -33,15 +32,13 @@ const ChooseGender = () => {
         }
     }
 
-    useEffect(() => {
-
-    }, [])
-
     return (
         <SafeAreaView className="flex flex-col flex-1 mt-4 h-full bg-[#fff]">
+
             <View>
                 <Text className="font-pbold text-[28px] text-center">Giới tính của bạn</Text>
             </View>
+
             <View style={styles.genderContainer}>
                 <TouchableOpacity onPress={() => setGender('male')} style={styles.imageContainer}>
                     <Image
@@ -57,7 +54,6 @@ const ChooseGender = () => {
                         resizeMode="cover"
                     />
                 </TouchableOpacity>
-
 
             </View>
             <View className="flex flex-row justify-around items-center my-6">
@@ -93,11 +89,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 16,
     },
-    // title: {
-    //     fontFamily: 'Poppins-ExtraBold', // Thay font của bạn
-    //     fontSize: 30,
-    //     textAlign: 'center',
-    // },
     genderContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -109,8 +100,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        width: width * 0.4, // Chiều rộng là 40% màn hình
-        height: width * 0.9, // Giữ tỷ lệ vuông
+        width: width * 0.4,
+        height: width * 0.9,
 
     },
 });

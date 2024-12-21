@@ -101,7 +101,7 @@ const BodyPartExercisesDetails = () => {
         ItemSeparatorComponent={() =>
           <View className="h-[16px] bg-[#fff] dark:bg-slate-950" />
         }
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
         ListFooterComponent={
           !smallLoading ?

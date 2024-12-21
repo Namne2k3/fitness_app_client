@@ -34,35 +34,30 @@ const ChooseTdee = () => {
                 tdee: form.tdee,
             })
 
+            if (daysShouldTraining,
+                caloriesPerTraining,
+                proteinRequirement,
+                fatRequirement,
+                totalDaysToReachTarget,
+                mealDistribution
+            ) {
+                setUser({
+                    ...user,
+                    bmr: form.bmr,
+                    activityLevel: form.level_workout,
+                    tdee: form.tdee,
+                    daysShouldTraining: daysShouldTraining,
+                    caloriesPerTraining: caloriesPerTraining,
+                    totalDaysToReachTarget: totalDaysToReachTarget,
+                    proteinRequirement: proteinRequirement,
+                    fatRequirement: fatRequirement,
+                    mealDistribution: mealDistribution
+                })
 
-            setUser({
-                ...user,
-                bmr: form.bmr,
-                activityLevel: form.level_workout,
-                tdee: form.tdee,
-                daysShouldTraining: daysShouldTraining,
-                caloriesPerTraining: caloriesPerTraining,
-                totalDaysToReachTarget: totalDaysToReachTarget,
-                proteinRequirement: proteinRequirement,
-                fatRequirement: fatRequirement,
-                mealDistribution: mealDistribution
-            })
-
-            console.log("All: ", {
-                ...user,
-                bmr: form.bmr,
-                activityLevel: form.level_workout,
-                tdee: form.tdee,
-                daysShouldTraining: daysShouldTraining,
-                caloriesPerTraining: caloriesPerTraining,
-                totalDaysToReachTarget: totalDaysToReachTarget,
-                proteinRequirement: proteinRequirement,
-                fatRequirement: fatRequirement,
-                mealDistribution: mealDistribution
-            });
-
-
-            router.push('/(root)/ChooseOrm')
+                router.push('/(root)/ChooseOrm')
+            } else {
+                throw new Error("Xảy ra lỗi khi tính toán thông số")
+            }
         } catch (error) {
             Alert.alert("Lỗi", error.message)
         }
@@ -82,7 +77,6 @@ const ChooseTdee = () => {
                 <Text className="font-pbold text-[28px] text-center">Mức độ hoạt động</Text>
             </View>
             <ScrollView>
-
 
                 <View className="flex px-4">
                     <TouchableOpacity onPress={() => setSelected("Ít vận động")} className={` bg-[#fff] mt-4 flex flex-row justify-between items-center p-4 shadow-gray-600 shadow-lg border-[1px] rounded-lg border-[#ccc] ${selected == 'Ít vận động' && 'border-[2px] border-[#000]'}`}>

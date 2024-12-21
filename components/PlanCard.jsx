@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import React from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 
-const PlanCard = ({ planId, item, index, current }) => {
+const PlanCard = ({ planId, item, index, current, colorScheme }) => {
 
     return (
         <TouchableOpacity
@@ -17,13 +17,13 @@ const PlanCard = ({ planId, item, index, current }) => {
                     })
                 }
             }}
-            className={`bg-[#fff] rounded-lg ${current == index && 'bg-[#3749db]'} flex flex-row justify-between p-4`}
+            className={`bg-[#fff] dark:bg-[#292727] rounded-lg ${current == index && 'bg-[#3749db]'} flex flex-row justify-between p-4`}
         >
             <View className="flex">
-                <Text className={`text-black font-pextrabold text-lg ${current == index && 'text-white'}`}>
+                <Text className={`text-black font-pextrabold text-lg ${current == index && 'text-white'} dark:text-white`}>
                     {item?.title}
                 </Text>
-                <Text className={`text-black font-pmedium text-md ${current == index && 'text-white'}`}>
+                <Text className={`text-black font-pmedium text-md ${current == index && 'text-white'} dark:text-white`}>
                     {item?.name}
                 </Text>
             </View>
@@ -37,7 +37,7 @@ const PlanCard = ({ planId, item, index, current }) => {
             {
                 current < index &&
                 <View className="flex justify-center items-center px-2">
-                    <MaterialIcons name='lock-outline' size={28} color={'#000'} />
+                    <MaterialIcons name='lock-outline' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                 </View>
             }
             {

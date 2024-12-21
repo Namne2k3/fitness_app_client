@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, ImageBackground, StyleSheet, Text, View } from "react-native";
 import Swiper from 'react-native-swiper';
+import { useColorScheme } from 'nativewind'
 import { images } from "../../constants/image";
 import { getAllPlansByUserId } from '../../libs/mongodb';
-import useUserStore from '../../store/userStore';
 import usePlanStore from '../../store/usePlanStore';
 import LoadingModal from "../../components/LoadingModal";
 import PlanCard from "../../components/PlanCard";
-import { useLocalSearchParams } from "expo-router";
 
 const Plan = () => {
-
+    const { colorScheme } = useColorScheme()
     const { plans, setPlans } = usePlanStore()
     const [isLoading, setIsLoading] = useState(false)
 
@@ -22,8 +21,6 @@ const Plan = () => {
 
                 const res = await getAllPlansByUserId();
                 if (res.data) {
-                    console.log("Plans length >>> ", res.data.length);
-
                     setPlans(res.data); // Lưu vào Zustand
                 }
             } catch (error) {
@@ -38,7 +35,7 @@ const Plan = () => {
     }, []);
 
     return (
-        <View className="flex-1">
+        <View className="flex-1 justify-center items-start dark:bg-slate-950 " >
             <Swiper
                 showsPagination={false}
                 paginationStyle={styles.paginationStyle} // Custom style for pagination
@@ -69,7 +66,7 @@ const Plan = () => {
                             <FlatList
                                 data={plan?.trainings}
                                 renderItem={({ item, index }) => (
-                                    <PlanCard planId={plan?._id} current={plan.current} index={index} item={item} />
+                                    <PlanCard colorScheme={colorScheme} planId={plan?._id} current={plan.current} index={index} item={item} />
                                 )}
                                 keyExtractor={(item) => `${item?.title}_${index}`}
                                 ItemSeparatorComponent={

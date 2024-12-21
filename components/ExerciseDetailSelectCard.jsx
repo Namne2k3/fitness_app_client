@@ -5,7 +5,7 @@ import { AntDesign } from '@expo/vector-icons'
 
 const ExerciseDetailSelectCard = ({ colorScheme, exerciseSelections, handleAddExerciseToSelection, exercise, handlePresentModalSheet }) => {
 
-    const selected = exerciseSelections.find((element) => element.id === exercise.id)
+    const selected = exerciseSelections.find((element) => element._id === exercise._id)
     return (
         <TouchableOpacity
             onLongPress={() => handlePresentModalSheet(exercise)}

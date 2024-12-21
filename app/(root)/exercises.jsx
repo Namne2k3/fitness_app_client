@@ -1,5 +1,4 @@
-import CustomButton from '@/components/CustomButton'
-import { getAllExercisesBySearchQueryName } from '@/libs/mongodb'
+import { getAllBodyPart, getAllEquipments, getAllExercisesBySearchQueryName } from '@/libs/mongodb'
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import { useColorScheme } from 'nativewind'
@@ -9,44 +8,6 @@ import BottomSheet from '../../components/BottomSheet'
 import BottomSheetModalComponent from '../../components/BottomSheetModal'
 import ExerciseDetailCard from '../../components/ExerciseDetailCard'
 import { images } from '../../constants/image'
-
-const bodyParts = [
-    'bụng', 'cardio',
-    'chân', 'cơ cổ',
-    'lưng', 'mông',
-    'ngực', 'tay',
-    'vai'
-]
-
-const equipments = [
-    'bóng bosu',
-    'bóng tặp thăng bằng',
-    'máy tập trượt tuyết (skierg)',
-    'bóng y tế',
-    'búa',
-    'con lăn',
-    'con lăn bánh xe',
-    'dây kháng lực',
-    'dây thừng',
-    'lốp xe',
-    'máy cáp',
-    'máy kéo tạ',
-    'máy leo cầu thang',
-    'máy tập elip',
-    'máy tập smith',
-    'máy tập thân trên',
-    'máy tập đòn bẩy',
-    'thanh trap',
-    'thanh tạ',
-    'thanh tạ ez',
-    'trọng lượng cơ thể',
-    'tạ olympic',
-    'tạ tay',
-    'tạ đeo',
-    'tạ ấm',
-    'xe đạp tập cố định'
-]
-
 
 const Exercises = () => {
 
@@ -61,6 +22,8 @@ const Exercises = () => {
     const { colorScheme } = useColorScheme()
     const [skip, setSkip] = useState(0)
     const limit = 10
+    const [bodyParts, setBodyParts] = useState([])
+    const [equipments, setEquipments] = useState([])
 
     const [filter, setFilter] = useState({
         bodyParts: [],
@@ -151,6 +114,31 @@ const Exercises = () => {
     }
 
     useEffect(() => {
+        const fetchAllBodyParts = async () => {
+            try {
+                const res = await getAllBodyPart()
+                setBodyParts(res.data)
+            } catch (error) {
+                console.log("Lỗi tìm tất cả dữ liệu bộ phận cơ thể", error.message)
+            }
+        }
+        fetchAllBodyParts()
+    }, [])
+
+    useEffect(() => {
+        const fetchAllEquipments = async () => {
+            try {
+                const res = await getAllEquipments()
+                setEquipments(res.data)
+            } catch (error) {
+                console.log("Lỗi tìm tất cả dữ liệu thiết bị", error.message)
+            }
+        }
+
+        fetchAllEquipments()
+    }, [])
+
+    useEffect(() => {
         const debounceTimeout = setTimeout(() => {
             fetchDataByQuery(true);
         }, 1000);
@@ -179,7 +167,7 @@ const Exercises = () => {
                     </View>
                 ) :
                     <View className="flex flex-row justify-between items-center">
-                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">bài tập</Text>
+                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">tìm kiếm</Text>
                         <View>
                             <TouchableOpacity onPress={handleToggleSearching}>
                                 <FontAwesome name='search' size={26} color={colorScheme == 'dark' ? '#fff' : '#000'} />
@@ -201,7 +189,7 @@ const Exercises = () => {
                         bodyParts: [],
                         equipments: [],
                     })}>
-                    <Text>Hủy lọc</Text>
+                    <Text className="dark:text-gray-400">Hủy lọc</Text>
                 </TouchableOpacity>
             </View>
             {
@@ -239,7 +227,7 @@ const Exercises = () => {
                                     source={images.no_result}
                                     className="w-40 h-40"
                                     alt="No recent rides found"
-                                    resizeMethod="contain"
+                                    contentFit="contain"
                                 />
                                 <Text className="text-sm">Không tìm thấy dữ liệu bài tập!</Text>
                             </View>
@@ -248,44 +236,52 @@ const Exercises = () => {
                     />
                 )
             }
-            <BottomSheetModalComponent selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
-            <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['100%']} bottomSheetRef={bottomSheetRefFilter}>
-                <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] m-2">
-                    <Text className="font-pmedium text-lg mb-1">Phần bộ phận cơ thể</Text>
+            <BottomSheetModalComponent snapPoints={['100%']} selectedExercise={selectedExercise} bottomSheetRef={bottomSheetRef} />
+            <BottomSheet
+                title="Lọc bài tập"
+                enablePanDownToClose={true}
+                snapPoints={['90%']}
+                bottomSheetRef={bottomSheetRefFilter}
+            >
+                <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] m-2 dark:bg-[#292727] dark:border-[#ccc]">
+                    <Text className="font-pmedium text-lg mb-1 dark:text-white">Phần bộ phận cơ thể</Text>
                     <View className="flex flex-row flex-wrap">
-                        {
-                            bodyParts.map((item, index) => (
-                                <Pressable
-                                    onPress={() => handleSelectBodyPart(item)}
-                                    key={index}
-                                    className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 ${filter?.bodyParts?.includes(item) && 'bg-[#000]'}`}
+                        {bodyParts.map((item, index) => (
+                            <Pressable
+                                onPress={() => handleSelectBodyPart(item)}
+                                key={index}
+                                className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 dark:bg-[#292727] ${filter?.bodyParts?.includes(item) && 'bg-[#000] dark:bg-white'}`}
+                            >
+                                <Text
+                                    className={`font-pbold text-[12px] uppercase dark:text-white ${filter?.bodyParts?.includes(item) && 'text-white dark:text-black'} `}
                                 >
-                                    <Text className={`font-pbold text-[12px] uppercase ${filter?.bodyParts?.includes(item) && 'text-white'}`}>{item}</Text>
-                                </Pressable>
-                            ))
-                        }
+                                    {item._id}
+                                </Text>
+                            </Pressable>
+                        ))}
                     </View>
                 </View>
 
-                <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] mx-2">
-                    <Text className="font-pmedium text-lg mb-1">Thiết bị</Text>
+                <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] mx-2 dark:bg-[#292727] dark:border-[#ccc]">
+                    <Text className="font-pmedium text-lg mb-1 dark:text-white">Thiết bị</Text>
                     <View className="flex flex-row flex-wrap">
-
-                        {
-                            equipments.map((item, index) => (
-                                <Pressable
-                                    onPress={() => handleSelectEquipment(item)}
-                                    key={index}
-                                    className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 ${filter?.equipments?.includes(item) && 'bg-[#000]'}`}
+                        {equipments.map((item, index) => (
+                            <Pressable
+                                onPress={() => handleSelectEquipment(item)}
+                                key={index}
+                                className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 dark:bg-[#292727] ${filter?.equipments?.includes(item) && 'bg-black dark:bg-white'}`}
+                            >
+                                <Text
+                                    className={`font-pbold text-[12px] uppercase dark:text-white ${filter?.equipments?.includes(item) && 'text-white dark:text-black'}`}
                                 >
-                                    <Text className={`font-pbold text-[12px] uppercase ${filter?.equipments?.includes(item) && 'text-white'}`}>{item}</Text>
-                                </Pressable>
-                            ))
-                        }
-
+                                    {item._id}
+                                </Text>
+                            </Pressable>
+                        ))}
                     </View>
                 </View>
             </BottomSheet>
+
         </View>
     )
 }

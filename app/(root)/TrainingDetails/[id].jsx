@@ -17,11 +17,6 @@ const TrainingDetails = () => {
     const { index, planId, data } = useLocalSearchParams()
 
     const [trainingData, setTrainingData] = useState(data ? JSON.parse(data) : {})
-    if (trainingData == null) {
-        console.log("vo day");
-
-    }
-
     const [selectedExercise, setSelectedExercise] = useState({})
     const { colorScheme } = useColorScheme()
     const bottomSheetRef = useRef(null)
@@ -31,7 +26,6 @@ const TrainingDetails = () => {
     let color = randomColor()
 
     const handleExeTrainingCardPress = useCallback(async (exercise) => {
-        // const selectedData = await fetchExerciseById(exercise.id)
         setSelectedExercise(exercise)
         bottomSheetRef.current?.present()
     })
@@ -45,7 +39,6 @@ const TrainingDetails = () => {
             setIsLoading(true)
             try {
                 const found = await fetchTrainingById(id)
-                console.log("Check found >>> ", found);
 
                 if (found == null) {
                     throw new Error("Không tìm thấy dữ liệu")
@@ -63,7 +56,6 @@ const TrainingDetails = () => {
             }
         }
         if (trainingData == null) {
-            console.log("vo day");
             getTrainingById()
         }
     }, [])
@@ -124,7 +116,8 @@ const TrainingDetails = () => {
                                                                 onPress: async () => {
                                                                     await handleDeleteTrainingById(id)
                                                                     setIsVisibleModalEdit(false);
-                                                                    router.replace('/(root)/(tabs)/custom')
+                                                                    // router.replace('/(root)/(tabs)/custom')
+                                                                    router.back()
                                                                 },
                                                                 style: "destructive",
                                                             },
@@ -190,12 +183,15 @@ const TrainingDetails = () => {
 
                 <FlatList
                     data={trainingData?.exercises}
-                    renderItem={({ item }) => (
-                        <ExerciseTrainingCard
-                            onPress={handleExeTrainingCardPress}
-                            item={item}
-                        />
-                    )}
+                    renderItem={({ item }) => {
+                        if (item.exercise)
+                            return (
+                                <ExerciseTrainingCard
+                                    onPress={handleExeTrainingCardPress}
+                                    item={item}
+                                />
+                            )
+                    }}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         padding: 16,

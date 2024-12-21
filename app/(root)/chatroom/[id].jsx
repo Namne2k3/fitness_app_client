@@ -1,10 +1,12 @@
 import { AntDesign, Feather, Ionicons } from '@expo/vector-icons'
+import { documentDirectory, downloadAsync } from 'expo-file-system'
 import { Image } from 'expo-image'
 import { launchImageLibraryAsync } from 'expo-image-picker'
+import { saveToLibraryAsync } from 'expo-media-library'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useEffect, useRef, useState } from 'react'
-import { ActivityIndicator, Alert, FlatList, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { ActivityIndicator, Alert, FlatList, Keyboard, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import ImageModal from '../../../components/ImageModal'
 import MessageComponent from '../../../components/MessageComponent'
@@ -13,12 +15,8 @@ import { analyzeImage } from '../../../libs/google_vision_cloud'
 import { createMessage, getAllMessagesByRoomId, getRoomById, getUserById } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import socket from '../../../utils/socket'
-import { downloadAsync, documentDirectory } from 'expo-file-system';
-import { saveToLibraryAsync } from 'expo-media-library';
 
 const sendNotification = async (expoPushToken, message) => {
-    console.log("Check message >>> ", message);
-
     const notificationBody = {
         to: expoPushToken,
         sound: 'default',
@@ -28,6 +26,7 @@ const sendNotification = async (expoPushToken, message) => {
             url: `/(root)/chatroom/${message.roomId}`
         }
     };
+    console.log("Dang gui thong bao");
 
     await fetch('https://exp.host/--/api/v2/push/send', {
         method: 'POST',
@@ -183,7 +182,7 @@ const ChatRoom = () => {
             });
             setSkip((prevSkip) => prevSkip + limit);
         } catch (error) {
-            console.log("Không tìm thấy tin nhắn >>> ", error);
+            console.log("Không tìm thấy tin nhắn: ", error);
         } finally {
             setIsFetching(false);
         }
@@ -193,13 +192,12 @@ const ChatRoom = () => {
         try {
             setSmallChooseMediasLoading(true)
             let result = await launchImageLibraryAsync({
-                mediaTypes: 'Images',
+                mediaTypes: 'All',
                 allowsMultipleSelection: true,
                 aspect: [4, 3],
                 quality: 1,
                 base64: true,
             });
-
             const base64Images = result?.assets?.map((base64Img) => base64Img.base64)
 
             if (!result.canceled) {
@@ -254,13 +252,14 @@ const ChatRoom = () => {
     }
 
     const handleScroll = (event) => {
-        setIsAtBottomList(false)
         const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
         const isAtBottom =
-            layoutMeasurement.height + contentOffset.y >= contentSize.height - 100; // Kiểm tra cuộn tới cuối (dư 20px)
+            layoutMeasurement.height + contentOffset.y >= contentSize.height - 50; // Kiểm tra cuộn tới cuối (dư 20px)
 
         if (isAtBottom) {
             setIsAtBottomList(true)
+        } else {
+            setIsAtBottomList(false)
         }
     };
 
@@ -282,7 +281,7 @@ const ChatRoom = () => {
     useEffect(() => {
 
         fetchAllMessageByRoomId()
-        setTimeout(() => flatListMessages.current?.scrollToEnd({ animated: true }), 0); // Đảm bảo cuộn sau khi render
+        setTimeout(() => flatListMessages.current?.scrollToEnd({ animated: true }), 500); // Đảm bảo cuộn sau khi render
         return () => {
             setForm((form) => ({
                 ...form,
@@ -294,14 +293,26 @@ const ChatRoom = () => {
 
     useEffect(() => {
         socket.emit('joinRoom', id);
-        socket.on("newMessage", async (message) => {
-            if (message.sender._id != user._id) {
+
+        const handleNewMessage = async (message) => {
+            if (message.sender._id !== user._id) {
                 console.log("Đã nhận tin nhắn phía room của " + user.username);
                 setMessages((prevMessages) => [...prevMessages, message]);
+
+                if (isAtBottomList) {
+                    setTimeout(() => flatListMessages.current?.scrollToEnd({ animated: true }), 1000);
+                }
             }
             setMessage("");
-        });
-    }, []);
+        };
+
+        socket.on("newMessage", handleNewMessage);
+
+        return () => {
+            socket.off("newMessage", handleNewMessage);
+        };
+    }, [id, user._id, isAtBottomList]);
+
 
     return (
         <SafeAreaView className="bg-[#fff] flex dark:bg-slate-950 h-full">
@@ -335,10 +346,9 @@ const ChatRoom = () => {
                         isFetchMore
                             ?
                             <ActivityIndicator size='small' />
-                            : <TouchableOpacity className="mb-2 p-1 rounded-lg flex justify-center items-center bg-[#f5f5f5]" onPress={() => handleLoadMore()}>
-                                <Text className="text-center">Tải thêm</Text>
+                            : <TouchableOpacity className="mb-2 p-1 rounded-lg flex justify-center items-center bg-[#f5f5f5] dark:bg-[#292727]" onPress={() => handleLoadMore()}>
+                                <Text className="text-center dark:text-white">Tải thêm</Text>
                             </TouchableOpacity>
-
                     }
                     showsVerticalScrollIndicator={false}
                     ref={flatListMessages}
@@ -432,17 +442,3 @@ const ChatRoom = () => {
 }
 
 export default ChatRoom
-const styles = StyleSheet.create({
-    modalBackground: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    },
-    image: {
-        width: '90%', // Hoặc một giá trị cụ thể
-        height: '90%', // Hoặc một giá trị cụ thể
-        maxHeight: '80%', // Giới hạn chiều cao tối đa
-        maxWidth: '80%', // Giới hạn chiều rộng tối đa
-    },
-});

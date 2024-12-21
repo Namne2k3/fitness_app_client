@@ -19,7 +19,7 @@ const FeedBack = () => {
         setIsVisibleModalLoading(true)
         try {
             if (!content) {
-                throw new Error("Bạn phải điền phản hồi!")
+                throw new Error("Bạn chưa điền phản hồi!")
             }
             await createFeedback({
                 user: user?._id,

@@ -15,7 +15,7 @@ const ChatComponent = ({ item, handlePressChatComponent, index }) => {
             style={styles.cchat}
             onLongPress={() => console.log('Long press')}
             onPress={() => handlePressChatComponent(item)}
-            className="bg-[#f5f5f5]"
+            className="bg-[#f5f5f5] dark:bg-[#292727]"
         >
 
             <Image
@@ -29,14 +29,14 @@ const ChatComponent = ({ item, handlePressChatComponent, index }) => {
 
             <View style={styles.crightContainer}>
                 <View>
-                    <Text style={styles.cusername}>{roomName}</Text>
+                    <Text style={styles.cusername} className="dark:text-white">{roomName}</Text>
 
-                    <Text style={styles.cmessage}>
-                        {lastMessage?.content ? lastMessage?.content : "Tap to start chatting"}
+                    <Text style={styles.cmessage} className="dark:text-white">
+                        {lastMessage?.content ? lastMessage?.content : "Hãy bắt đầu nhắn tin"}
                     </Text>
                 </View>
                 <View>
-                    <Text style={styles.ctime}>
+                    <Text style={styles.ctime} className="dark:text-white">
                         {updated_at ? new Date(updated_at).toLocaleTimeString() : "now"}
                     </Text>
                 </View>

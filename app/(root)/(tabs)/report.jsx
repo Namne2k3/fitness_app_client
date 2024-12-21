@@ -69,13 +69,11 @@ const Report = () => {
             return total + record.caloriesBurned;
         }, 0);
 
-        setTotalCaloriesBurned(total)
+        setTotalCaloriesBurned(Number(total).toFixed(2))
 
     }
 
     const fetchData = async () => {
-
-        // setLoading(true);
 
         try {
             await Promise.all([
@@ -86,7 +84,7 @@ const Report = () => {
 
         } catch (error) {
 
-            Alert.alert("Lỗi", error.message)
+            console.log("Lỗi", error.message)
         }
         finally {
             setLoading(false)
@@ -152,15 +150,15 @@ const Report = () => {
                                 <Text className="text-[13px] font-pbold dark:text-white flex-1">Phân phối calo theo bữa</Text>
                                 <View className="flex w-[90%] mt-2">
                                     <View className="flex flex-row justify-between items-center">
-                                        <Text className="font-pmedium">Bữa sáng:</Text>
+                                        <Text className="font-pmedium dark:text-white">Bữa sáng:</Text>
                                         <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.breakfast} g</Text>
                                     </View>
                                     <View className="flex flex-row justify-between items-center">
-                                        <Text className="font-pmedium">Bữa trưa:</Text>
+                                        <Text className="font-pmedium dark:text-white">Bữa trưa:</Text>
                                         <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.lunch} g</Text>
                                     </View>
                                     <View className="flex flex-row justify-between items-center">
-                                        <Text className="font-pmedium">Bữa tối:</Text>
+                                        <Text className="font-pmedium dark:text-white">Bữa tối:</Text>
                                         <Text className="font-pbold text-[#3749db]"> {user?.mealDistribution?.dinner} g</Text>
                                     </View>
                                 </View>

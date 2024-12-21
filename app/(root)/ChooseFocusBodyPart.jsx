@@ -9,7 +9,9 @@ import { router } from 'expo-router'
 const bodyPart = [
     'lưng', 'vai', 'tay', 'ngực', 'bụng', 'mông', 'chân', 'toàn thân'
 ]
+
 const { width } = Dimensions.get('window');
+
 const ChooseFocusBodyPart = () => {
     const user = useUserStore.getState().user;
     const setUser = useUserStore.getState().setUser;

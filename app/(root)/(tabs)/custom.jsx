@@ -1,7 +1,7 @@
 import { images } from '@/constants/image';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -40,9 +40,11 @@ const CustomPage = () => {
     }, 1000);
   }, []);
 
-  useEffect(() => {
-    handleFetchTrainingsByUserId();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      handleFetchTrainingsByUserId();
+    }, [])
+  );
 
   return (
     <SafeAreaView className="flex bg-[#f3f2f3] h-full px-4 pt-4 dark:bg-slate-950">

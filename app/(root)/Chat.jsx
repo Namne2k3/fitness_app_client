@@ -1,7 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import React, { useCallback, useRef, useState } from "react";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
-
 import { router, useFocusEffect } from "expo-router";
 import { useColorScheme } from "nativewind";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,7 +17,6 @@ const Chat = () => {
     const [fetching, setFetching] = useState(false)
     const bottomSheetRef = useRef(null)
 
-
     const handlePressChatComponent = useCallback((room) => {
         router.push({
             pathname: `/(root)/chatroom/${room?._id}`,
@@ -30,23 +28,22 @@ const Chat = () => {
         })
     }, [])
 
-    const openBottomSheet = () => {
-        bottomSheetRef?.current?.present()
-    }
-
     const fetchAllChatRooms = async () => {
         try {
             const res = await getAllChatRooms()
             setRooms(res.data)
         } catch (error) {
-            Alert.alert('Error', error.message)
+            Alert.alert('Lỗi', error.message)
         } finally {
             setFetching(false)
         }
     }
-    useFocusEffect(useCallback(() => {
-        fetchAllChatRooms()
-    }, []))
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchAllChatRooms()
+        }, [])
+    )
 
     return (
         <SafeAreaView className="bg-[#fff] flex dark:bg-slate-950 p-4 h-full pb-[100px]">
@@ -62,9 +59,6 @@ const Chat = () => {
                     </TouchableOpacity>
                 </View>
                 <Text className=" text-center font-pextrabold text-[24px] dark:text-white">Tin nhắn</Text>
-                {/* <TouchableOpacity onPress={openBottomSheet} className="flex flex-row flex-1 justify-end items-center">
-                    <Feather name="edit" size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
-                </TouchableOpacity> */}
             </View>
 
             <View>

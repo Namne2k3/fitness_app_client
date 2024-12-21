@@ -7,7 +7,6 @@ const socket = io('https://w2fw01lr-3000.asse.devtunnels.ms', {
 });
 
 const handleNotify = async (message) => {
-    console.log("Check mess >>> ", message);
 
     await scheduleNotificationAsync({
         content: {

@@ -56,16 +56,21 @@ const SignIn = () => {
             if (data.token) {
                 await AsyncStorage.setItem('jwt_token', data.token);
                 const userData = await getUserByEmail(form.email)
-                const pushToken = await registerPushToken()
-                await updateUserById({ ...userData, pushToken: pushToken })
+                if (userData?.isLocked) {
+                    throw new Error("Tài khoản của bạn tạm thời bị khóa")
+                } else {
+                    const pushToken = await registerPushToken()
+                    await updateUserById({ ...userData, pushToken: pushToken })
 
-                setUser(userData)
-                if (!userData.weight || !userData.height || userData.height == "0" || !userData.orm || !userData.tdee) {
-                    router.replace(`/(root)/ChooseGender`)
-                    return;
+                    setUser(userData)
+                    if (!userData.weight || !userData.height || userData.height == "0" || !userData.orm || !userData.tdee) {
+                        router.push(`/(root)/ChooseGender`)
+                        return;
+                    }
+                    socket.emit('register', userData?._id);
+                    router.replace('/(root)/(tabs)/training')
+
                 }
-                socket.emit('register', userData?._id);
-                router.replace('/(root)/(tabs)/training')
 
             } else {
                 Alert.alert("Không thể đăng nhập", data.message || "Đã xảy ra lỗi không xác định.");

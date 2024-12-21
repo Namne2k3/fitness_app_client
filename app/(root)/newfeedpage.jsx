@@ -3,7 +3,7 @@ import { launchImageLibraryAsync } from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Swiper from 'react-native-swiper';
@@ -22,8 +22,8 @@ const NewFeedPage = () => {
 
 
     const { isEdit, data } = useLocalSearchParams()
-    // console.log("isEdit >>> ", isEdit == "true"); >>> true 
 
+    const [imageLoading, setImageLoading] = useState(false)
     const { colorScheme } = useColorScheme()
     const { user } = useUserStore()
     const [isVisibleModal, setIsVisibleModal] = useState(false)
@@ -51,7 +51,8 @@ const NewFeedPage = () => {
 
     const openPicker = async () => {
         try {
-            setIsVisibleModal(true)
+            setForm((prev) => ({ ...prev, medias: [] }))
+            setImageLoading(true)
             let result = await launchImageLibraryAsync({
                 mediaTypes: 'Images',
                 allowsMultipleSelection: true,
@@ -101,7 +102,7 @@ const NewFeedPage = () => {
             Alert.alert("Lỗi", error.message)
             return;
         } finally {
-            setIsVisibleModal(false)
+            setImageLoading(false)
         }
     }
 
@@ -161,42 +162,50 @@ const NewFeedPage = () => {
                     />
                 </View>
                 <View className="mt-4 flex-1 border-[#ccc] rounded-lg">
-                    <Swiper
-                        showsPagination={true}
-                        loop={false}
-                        height={350}
-                        paginationStyle={styles.paginationStyle} // Custom style for pagination
-                        dotStyle={styles.dotStyle} // Style for inactive dots
-                        activeDotStyle={styles.activeDotStyle} // Style for active dot
-                    >
-                        {
-                            form?.medias?.map((asset, index) => (
-                                <View key={index}>
-                                    {
-                                        asset.type == 'image/jpeg' || 'image' ?
-                                            <Image
-                                                source={{ uri: asset.uri }}
-                                                className="w-full h-full rounded-lg"
-                                                contentFit="cover"
-                                            />
-                                            :
-                                            <Video
-                                                source={{ uri: asset.uri }}
-                                                className="w-full h-full"
-                                                resizeMode={ResizeMode.COVER}
-                                                useNativeControls
-                                            />
-                                    }
-                                </View>
+                    {
+                        form?.medias?.length > 0 ?
+                            <Swiper
+                                showsPagination={true}
+                                loop={false}
+                                height={350}
+                                paginationStyle={styles.paginationStyle} // Custom style for pagination
+                                dotStyle={styles.dotStyle} // Style for inactive dots
+                                activeDotStyle={styles.activeDotStyle} // Style for active dot
+                            >
+                                {
+                                    form?.medias?.map((asset, index) => (
+                                        <View key={index}>
+                                            {
+                                                asset.type == 'image/jpeg' || 'image' ?
+                                                    <Image
+                                                        source={{ uri: asset.uri }}
+                                                        className="w-full h-full rounded-lg"
+                                                        contentFit="cover"
+                                                    />
+                                                    :
+                                                    <Video
+                                                        source={{ uri: asset.uri }}
+                                                        className="w-full h-full"
+                                                        resizeMode={ResizeMode.COVER}
+                                                        useNativeControls
+                                                    />
+                                            }
+                                        </View>
 
-                            ))
-                        }
-                    </Swiper>
+                                    ))
+                                }
+                            </Swiper>
+                            :
+                            imageLoading &&
+                            <View className="flex flex-1 justify-center items-center">
+                                <ActivityIndicator color={'#000'} size={'large'} />
+                            </View>
+                    }
                 </View>
             </View>
 
             <View className="flex mt-2 flex-[1]">
-                <TouchableOpacity onPress={() => openPicker()}>
+                <TouchableOpacity onPress={openPicker}>
                     {
                         form?.medias?.length == 0 ?
                             <Image

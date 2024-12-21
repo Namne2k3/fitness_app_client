@@ -3,7 +3,7 @@ import { Video } from 'expo-av'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { Alert, Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import { Alert, FlatList, Keyboard, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import { Image } from 'expo-image'
 import PagerView from 'react-native-pager-view'
 import BottomSheet from '../../../components/BottomSheet'
@@ -21,7 +21,7 @@ const DetailFeed = () => {
     const [blog, setBlog] = useState({})
     const [commentContent, setCommentContent] = useState("")
     const [isPostingComment, setIsPostingComment] = useState(false)
-    const user = useUserStore.getState().user
+    const { user } = useUserStore()
     const { colorScheme } = useColorScheme()
     const bottomSheetRef = useRef(null)
     const [isEdit, setIsEdit] = useState(false)
@@ -206,8 +206,6 @@ const DetailFeed = () => {
 
     const handleDeleteMedias = async (medias) => {
         medias.map(async (item) => {
-            console.log("Check media $id >>> ", item.$id);
-
             await deleteFile(item.$id)
         })
     }
@@ -229,10 +227,28 @@ const DetailFeed = () => {
         const fetchBlog = async () => {
             try {
                 const res = await getBlogById(_id);
-
-                setBlog(res.data)
+                if (!res.data) {
+                    Alert.alert(res.data.message, null, [
+                        {
+                            text: "Quay lại",
+                            onPress: () => {
+                                router.back()
+                            },
+                            style: "destructive",
+                        },
+                    ])
+                }
+                else {
+                    setBlog(res.data)
+                }
             } catch (error) {
-                Alert.alert("Lỗi", error.message)
+                Alert.alert("Lỗi", error.message, {
+                    text: "Quay lại",
+                    onPress: () => {
+                        router.back()
+                    },
+                    style: "destructive",
+                },)
             }
         }
         fetchBlog()
@@ -324,7 +340,7 @@ const DetailFeed = () => {
                     >
                         {blog?.medias?.map((med, index) => {
                             return (
-                                <Pressable onPress={() => openModal(med)} key={index} className="border-[0.5px] rounded-lg m-2">
+                                <Pressable onPress={() => openModal(med)} key={index} className="rounded-lg">
                                     {
                                         med.type == 'image' ?
                                             <Image
@@ -385,7 +401,7 @@ const DetailFeed = () => {
                             <View>
                                 <Image
                                     source={{
-                                        uri: blog?.author?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg"
+                                        uri: user?.image ?? "https://www.shutterstock.com/image-vector/profile-default-avatar-icon-user-600nw-2463844171.jpg"
                                     }}
                                     width={35}
                                     height={35}
@@ -393,7 +409,7 @@ const DetailFeed = () => {
                                     contentFit='contain'
                                 />
                             </View>
-                            <View className="ml-2 border-[0.5px] dark:border-[#fff] p-2 pr-4 text-md flex-1 flex-row justify-between items-center rounded-lg ">
+                            <View className="dark:border-[#fff] p-2 text-md flex-1 flex-row justify-between items-center rounded-lg ">
                                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="w-[85%]">
                                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                         <TextInput
@@ -421,10 +437,10 @@ const DetailFeed = () => {
                                                 setSelectedComment(null)
                                                 setIsEdit(false)
                                             }}>
-                                                <Text className="font-psemibold text-red-400 text-[14px]">Cancel</Text>
+                                                <Text className="font-psemibold p-1 text-red-400 text-[14px]">Hủy</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={handleEditComment}>
-                                                <Text className="font-psemibold text-[#00008B] text-[14px]">Update</Text>
+                                                <Text className="font-psemibold p-1 text-[#00008B] text-[14px]">Cập nhật</Text>
                                             </TouchableOpacity>
                                         </View>
                                         :
@@ -443,22 +459,30 @@ const DetailFeed = () => {
                 <View className="p-2 flex flex-1">
                     {
                         blog?.comments?.map((cmt, index) => (
-                            <CommentCard colorScheme={colorScheme} currentUserId={user?._id} index={index} setSelectedComment={(cmt) => setSelectedComment(cmt)} handlePresentModalSheet={handlePresentModalSheet} comment={cmt} key={index} />
+                            <CommentCard
+                                colorScheme={colorScheme}
+                                currentUserId={user?._id}
+                                index={index}
+                                setSelectedComment={(cmt) => setSelectedComment(cmt)}
+                                handlePresentModalSheet={handlePresentModalSheet}
+                                comment={cmt}
+                                key={index}
+                            />
                         ))
                     }
                 </View>
 
             </ScrollView>
             <LoadingModal visible={isPostingComment} message={"Loading..."} />
-            <BottomSheet snapPoints={['40%']} bottomSheetRef={bottomSheetRef}>
-                <View className="flex">
+            <BottomSheet title={'Chỉnh sửa'} snapPoints={['34%']} bottomSheetRef={bottomSheetRef}>
+                <View className="flex dark:bg-slate-950 justify-start items-center ">
                     <TouchableOpacity onPress={() => {
                         setIsEdit(true)
                         inputCommentRef.current?.focus()
                         bottomSheetRef?.current?.dismiss()
                     }} className="flex flex-row w-full justify-start items-start px-1 py-3 mx-2 border-b-[0.5px] border-[#ccc]">
                         <Feather name='edit-3' size={22} color={colorScheme == 'dark' ? '#fff' : "#000"} style={{ paddingRight: 8 }} />
-                        <Text className="font-pmedium text-[16px]">Edit</Text>
+                        <Text className="font-pmedium text-[16px] dark:text-white">Chỉnh sửa</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
                         Alert.alert(
@@ -478,11 +502,7 @@ const DetailFeed = () => {
                         );
                     }} className="flex flex-row w-full justify-start items-start px-1 py-3 mx-2 border-b-[0.5px] border-[#ccc]">
                         <MaterialCommunityIcons name='delete-alert-outline' size={22} color={colorScheme == 'dark' ? '#fff' : "#000"} style={{ paddingRight: 8 }} />
-                        <Text className="font-pmedium text-[16px]">Delete</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="flex flex-row w-full justify-start items-start px-1 py-3 mx-2 border-b-[0.5px] border-[#ccc]">
-                        <MaterialIcons name='report-gmailerrorred' size={22} color={colorScheme == 'dark' ? '#fff' : "#000"} style={{ paddingRight: 8 }} />
-                        <Text className="font-pmedium text-[16px]">Report</Text>
+                        <Text className="font-pmedium text-[16px] dark:text-white">Xóa</Text>
                     </TouchableOpacity>
                 </View>
             </BottomSheet>

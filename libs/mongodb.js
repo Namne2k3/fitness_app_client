@@ -4,6 +4,21 @@ import { getToken } from '../libs/token'
 
 const URL = process.env.EXPO_PUBLIC_URL_SERVER
 
+const getAllBodyParts = async () => {
+    const token = await getToken()
+    try {
+
+        const res = await axios.get(`${URL}/api/exercises/getAllBodyParts`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        return res
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 const deleteBlogById = async (id) => {
     const token = await getToken()
     try {
@@ -87,7 +102,6 @@ const fetchTrainingById = async (trainingId) => {
 }
 
 const updateTraining = async (training) => {
-    console.log("Check training params >>> ", training);
 
     const token = await getToken()
     try {
@@ -258,7 +272,7 @@ const isEmailExist = async (email) => {
 
         return data;
     } catch (error) {
-        console.log("Error message >>> ", error.message);
+        console.log("Error message: ", error.message);
     }
 }
 
@@ -326,7 +340,7 @@ const getAllBlog = async ({ limit, skip }) => {
         return res.data;
     } catch (error) {
         console.log("Error: ", error.message);
-        throw new Error("Error creating feed!");
+        throw new Error("Lỗi khi lấy thông tin dữ liệu!");
     }
 }
 
@@ -340,7 +354,7 @@ const getBlogById = async (id) => {
         })
         return res.data;
     } catch (error) {
-        throw new Error("Error creating feed!");
+        throw new Error("Lỗi khi lấy thông tin dữ liệu!");
     }
 }
 
@@ -361,7 +375,7 @@ const updateBlogById = async (id, feed) => {
 const getUserById = async (id) => {
     const token = await getToken()
     try {
-        const res = await axios.get(`${URL}/api/user/${id}`, {
+        const res = await axios.get(`${URL}/api/user/getUserById/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -384,7 +398,7 @@ const createNewChatRoom = async (chatroom) => {
 
         return res.data;
     } catch (error) {
-        console.log("Check error message >>> ", error.message);
+        console.log("Check error message: ", error.message);
 
         throw new Error(error)
     }
@@ -542,6 +556,21 @@ const getExerciseById = async (id) => {
             }
         })
 
+        return res.data;
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const getAllEquipments = async () => {
+    const token = await getToken()
+
+    try {
+        const res = await axios.get(`${URL}/api/exercises/getAllEquipments`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
         return res.data;
     } catch (error) {
         throw new Error(error)
@@ -777,6 +806,8 @@ const getRoomById = async (id) => {
 }
 
 export {
+    getAllEquipments,
+    getAllBodyParts,
     deleteBlogById,
     getRoomById,
     getAllFoods,

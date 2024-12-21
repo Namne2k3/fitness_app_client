@@ -6,21 +6,22 @@ import React, {
     useRef,
     ReactNode,
 } from "react";
-import * as Notifications from "expo-notifications";
-import * as TaskManager from "expo-task-manager";
+import {
+    registerTaskAsync,
+    setNotificationHandler,
+    removeNotificationSubscription,
+    addNotificationResponseReceivedListener,
+    addNotificationReceivedListener,
+    getLastNotificationResponseAsync
+} from 'expo-notifications'
+import { getRegisteredTasksAsync, defineTask } from 'expo-task-manager'
+
 import { registerForPushNotificationsAsync } from "@/utils/registerForPushNotificationsAsync";
 import { router } from "expo-router";
 
-// interface NotificationContextType {
-//     expoPushToken: string | null;
-//     notification: Notifications.Notification | null;
-//     error: Error | null;
-// }
-
-
 const BACKGROUND_NOTIFICATION_TASK = "BACKGROUND-NOTIFICATION-TASK";
 
-TaskManager.defineTask(
+defineTask(
     BACKGROUND_NOTIFICATION_TASK,
     ({ data, error, executionInfo }) => {
         if (error) {
@@ -32,9 +33,9 @@ TaskManager.defineTask(
     }
 );
 
-Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
 
-Notifications.setNotificationHandler({
+setNotificationHandler({
     handleNotification: async () => ({
         shouldShowAlert: true,
         shouldPlaySound: true,
@@ -68,15 +69,15 @@ export const NotificationProvider = ({ children }) => {
     const responseListener = useRef();
 
     const registerTask = async () => {
-        const tasks = await TaskManager.getRegisteredTasksAsync();
+        const tasks = await getRegisteredTasksAsync();
         if (!tasks.some((task) => task.taskName === BACKGROUND_NOTIFICATION_TASK)) {
-            await Notifications.registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
+            await registerTaskAsync(BACKGROUND_NOTIFICATION_TASK);
         }
     };
 
     useEffect(() => {
         const checkLastNotification = async () => {
-            const lastNotificationResponse = await Notifications.getLastNotificationResponseAsync();
+            const lastNotificationResponse = await getLastNotificationResponseAsync();
             if (lastNotificationResponse) {
                 // console.log('App opened via notification:', lastNotificationResponse);
                 handleNotificationResponse(lastNotificationResponse);
@@ -90,20 +91,20 @@ export const NotificationProvider = ({ children }) => {
             );
 
             // Kiểm tra thông báo cuối cùng khi ứng dụng được mở lại
-            const lastNotificationResponse = await Notifications.getLastNotificationResponseAsync();
+            const lastNotificationResponse = await getLastNotificationResponseAsync();
             if (lastNotificationResponse) {
                 // console.log('Last notification response:', JSON.stringify(lastNotificationResponse, null, 2));
                 handleNotificationResponse(lastNotificationResponse);
             }
 
             notificationListener.current =
-                Notifications.addNotificationReceivedListener((notification) => {
+                addNotificationReceivedListener((notification) => {
                     // console.log("🔔 Notification Received While the app is running: ", JSON.stringify(notification));
                     handleNotificationResponse(notification);
                 });
 
             responseListener.current =
-                Notifications.addNotificationResponseReceivedListener((response) => {
+                addNotificationResponseReceivedListener((response) => {
                     console.log(
                         "🔔 Notification Response when user interacted : ",
                         JSON.stringify(response, null, 2),
@@ -128,12 +129,12 @@ export const NotificationProvider = ({ children }) => {
 
         return () => {
             if (notificationListener.current) {
-                Notifications.removeNotificationSubscription(
+                removeNotificationSubscription(
                     notificationListener.current
                 );
             }
             if (responseListener.current) {
-                Notifications.removeNotificationSubscription(responseListener.current);
+                removeNotificationSubscription(responseListener.current);
             }
         };
     }, []);

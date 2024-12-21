@@ -1,4 +1,5 @@
-import { AntDesign, Entypo, Feather, FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import { AntDesign, Entypo, Feather, FontAwesome, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import DateTimePicker from '@react-native-community/datetimepicker'
 import { Image } from 'expo-image'
 import { launchImageLibraryAsync } from 'expo-image-picker'
 import { router } from 'expo-router'
@@ -12,14 +13,12 @@ import CustomButton from '../../components/CustomButton'
 import InputField from '../../components/InputField'
 import LoadingModal from '../../components/LoadingModal'
 import { images } from '../../constants/image'
+import { levelToPointMap, seedDataOrm } from '../../constants/seeds'
 import { uploadFile } from '../../libs/appwrite'
 import { getAllExercises, handleUpdateUser, reCreatePlans, reCreateTrainingsByUserId, updateUserById } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
 import { calculate1RM, createPlansForUser, generateTrainings } from '../../utils'
-import { levelToPointMap, seedDataOrm } from '../../constants/seeds'
-import { BMR, calculateTrainingPlan } from '../../utils/index'
-import { analyzeUser } from '../../utils/index'
-import DateTimePicker from '@react-native-community/datetimepicker'
+import { analyzeUser, BMR, calculateTrainingPlan } from '../../utils/index'
 
 const { width } = Dimensions.get('window');
 
@@ -41,7 +40,6 @@ const removeImageField = (obj) => {
 const MyProfile = () => {
 
     const { user, setUser } = useUserStore()
-    // console.log("USER >>> ", user);
 
     const [tempUser, setTempUser] = useState({})
     const { colorScheme } = useColorScheme()
@@ -534,12 +532,12 @@ const MyProfile = () => {
                 </View>
                 <LoadingModal visible={isVisibleModal} />
             </ScrollView>
-            <BottomSheet enablePanDownToClose={false} snapPoints={['95%']} bottomSheetRef={bottomSheetRef}>
+            <BottomSheet enablePanDownToClose={false} snapPoints={['90%']} bottomSheetRef={bottomSheetRef}>
                 {
                     isChanging == "gender" &&
                     <>
                         <View>
-                            <Text className="font-pbold text-[28px] text-center">Giới tính của bạn</Text>
+                            <Text className="font-pbold text-[28px] text-center dark:text-white">Giới tính của bạn</Text>
                         </View>
 
                         <View style={styles.genderContainer}>
@@ -575,7 +573,7 @@ const MyProfile = () => {
                                     gender: 'male'
                                 }))}
                             >
-                                <Text className="font-pextrabold text-lg">Nam</Text>
+                                <Text className="font-pextrabold text-lg dark:text-white">Nam</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setTempUser((temp) => ({
@@ -583,7 +581,7 @@ const MyProfile = () => {
                                     gender: 'female'
                                 }))}
                             >
-                                <Text className="font-pextrabold text-lg">Nữ</Text>
+                                <Text className="font-pextrabold text-lg dark:text-white">Nữ</Text>
                             </TouchableOpacity>
                         </View>
                         <View className="flex flex-row justify-around items-center my-2">
@@ -593,7 +591,7 @@ const MyProfile = () => {
                                     gender: 'male'
                                 }))}
                             >
-                                <AntDesign name={tempUser?.gender == 'male' ? 'checkcircle' : 'checkcircleo'} size={28} />
+                                <AntDesign color={colorScheme == 'dark' ? '#fff' : '#000'} name={tempUser?.gender == 'male' ? 'checkcircle' : 'checkcircleo'} size={28} />
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setTempUser((temp) => ({
@@ -601,7 +599,7 @@ const MyProfile = () => {
                                     gender: 'female'
                                 }))}
                             >
-                                <AntDesign name={tempUser?.gender == 'female' ? 'checkcircle' : 'checkcircleo'} size={28} />
+                                <AntDesign color={colorScheme == 'dark' ? '#fff' : '#000'} name={tempUser?.gender == 'female' ? 'checkcircle' : 'checkcircleo'} size={28} />
                             </TouchableOpacity>
                         </View>
                         <View className="m-4 ">
@@ -614,7 +612,7 @@ const MyProfile = () => {
 
                 {
                     isChanging == "weight" &&
-                    <View className="p-4">
+                    <View className="">
                         <View >
                             <InputField
                                 placeholder={user?.weight.toString()}
@@ -645,8 +643,8 @@ const MyProfile = () => {
                                 textRight={'Cm'}
                             />
                         </View>
-                        <View >
-                            <Text className={`text-lg font-psemibold`}>
+                        <View className="mt-2">
+                            <Text className={`text-lg font-psemibold dark:text-white`}>
                                 Sinh năm
                             </Text>
                             <View className={`flex flex-row justify-between items-center relative bg-neutral-100 rounded-full border border-neutral-100 my-2`}>
@@ -691,9 +689,9 @@ const MyProfile = () => {
                 {
                     isChanging == 'healthGoal' &&
                     <>
-                        <View className="flex px-4">
+                        <View className="flex">
                             <View>
-                                <Text className="font-pbold text-[28px] text-center">Mục tiêu của bạn là gì?</Text>
+                                <Text className="font-pbold text-[28px] text-center dark:text-white">Mục tiêu</Text>
                             </View>
                             <View className="h-[100px]"></View>
                             <TouchableOpacity
@@ -747,7 +745,7 @@ const MyProfile = () => {
                                 }
                             </TouchableOpacity>
                         </View>
-                        <View className="m-4 ">
+                        <View className="mt-4">
                             <CustomButton onPress={handleDismissBottomSheet} bgColor='bg-[#3749db]' text="Xong" textStyle={{
                                 fontFamily: "Roboto-Bold"
                             }} />
@@ -757,7 +755,10 @@ const MyProfile = () => {
                 {
                     isChanging == 'activityLevel' &&
                     <View>
-                        <View className="flex px-4">
+                        <View className="flex">
+                            <View>
+                                <Text className="font-pbold text-[28px] text-center dark:text-white">Tầng suất hoạt động</Text>
+                            </View>
                             <TouchableOpacity
                                 onPress={() => {
                                     setTempUser((tempUser) => ({
@@ -858,7 +859,7 @@ const MyProfile = () => {
                                 }
                             </TouchableOpacity>
                         </View>
-                        <View className="m-4 ">
+                        <View className="mt-4">
                             <CustomButton bgColor={`bg-[#3749db]`} onPress={handleDismissBottomSheet} text="Xong" textStyle={{
                                 fontFamily: "Roboto-Bold"
                             }} />
@@ -867,8 +868,8 @@ const MyProfile = () => {
                 }
                 {
                     isChanging == 'level' &&
-                    <View className="px-4 mt-4">
-                        <Text className="font-pbold text-[28px] text-center mb-4">Bạn là ?</Text>
+                    <View>
+                        <Text className="font-pbold text-[28px] text-center mb-4 dark:text-white">Kinh nghiệm</Text>
 
                         <TouchableOpacity
                             onPress={() => {
@@ -880,14 +881,14 @@ const MyProfile = () => {
                             className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${tempUser.level == 'Người mới bắt đầu' && 'border-[2px] border-[#000]'}`}
                         >
                             <View className="flex flex-row justify-center items-center">
-                                <FontAwesome name='battery-1' size={28} />
+                                <FontAwesome name='battery-1' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                             </View>
                             <View className="flex flex-1 ml-4 ">
-                                <Text className="font-pextrabold text-lg">Người mới bắt đầu</Text>
-                                <Text>Luyện tập ít hơn 6 tháng</Text>
+                                <Text className="font-pextrabold text-lg dark:text-white">Người mới bắt đầu</Text>
+                                <Text className="dark:text-white">Luyện tập ít hơn 6 tháng</Text>
                             </View>
                             {
-                                tempUser.level == 'Người mới bắt đầu' && <AntDesign name={'checkcircle'} size={28} />
+                                tempUser.level == 'Người mới bắt đầu' && <AntDesign color={colorScheme == 'dark' ? '#fff' : '#000'} name={'checkcircle'} size={28} />
                             }
                         </TouchableOpacity>
 
@@ -901,14 +902,14 @@ const MyProfile = () => {
                             className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${tempUser.level == 'Trung cấp' && 'border-[2px] border-[#000]'}`}
                         >
                             <View className="flex flex-row justify-center items-center">
-                                <FontAwesome name='battery-2' size={28} />
+                                <FontAwesome name='battery-2' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                             </View>
                             <View className="flex flex-1 ml-4 mr-2">
-                                <Text className="font-pextrabold text-lg">Trung cấp</Text>
-                                <Text>Luyện tập hơn 6 tháng và ít hơn 2 năm</Text>
+                                <Text className="font-pextrabold text-lg dark:text-white">Trung cấp</Text>
+                                <Text className="dark:text-white">Luyện tập hơn 6 tháng và ít hơn 2 năm</Text>
                             </View>
                             {
-                                tempUser.level == 'Trung cấp' && <AntDesign name={'checkcircle'} size={28} />
+                                tempUser.level == 'Trung cấp' && <AntDesign color={colorScheme == 'dark' ? '#fff' : '#000'} name={'checkcircle'} size={28} />
                             }
                         </TouchableOpacity>
 
@@ -922,17 +923,17 @@ const MyProfile = () => {
                             className={`flex flex-row justify-center items-center p-4 rounded-lg border-[1px] border-[#ccc] mb-3 ${tempUser.level == 'Thâm niên' && 'border-[2px] border-[#000]'}`}
                         >
                             <View className="flex flex-row justify-center items-center">
-                                <FontAwesome name='battery-4' size={28} />
+                                <FontAwesome name='battery-4' size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                             </View>
                             <View className="flex flex-1 ml-4">
-                                <Text className="font-pextrabold text-lg">Thâm niên</Text>
-                                <Text>Hơn 2 năm luyện tập</Text>
+                                <Text className="font-pextrabold text-lg dark:text-white">Thâm niên</Text>
+                                <Text className="dark:text-white">Hơn 2 năm luyện tập</Text>
                             </View>
                             {
-                                tempUser.level == 'Thâm niên' && <AntDesign name={'checkcircle'} size={28} />
+                                tempUser.level == 'Thâm niên' && <AntDesign color={colorScheme == 'dark' ? '#fff' : '#000'} name={'checkcircle'} size={28} />
                             }
                         </TouchableOpacity>
-                        <View className="mt-4 ">
+                        <View className="mt-4">
                             <CustomButton bgColor={`bg-[#3749db]`} onPress={handleDismissBottomSheet} text="Xong" textStyle={{
                                 fontFamily: "Roboto-Bold"
                             }} />
@@ -1079,11 +1080,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         padding: 16,
     },
-    // title: {
-    //     fontFamily: 'Poppins-ExtraBold', // Thay font của bạn
-    //     fontSize: 30,
-    //     textAlign: 'center',
-    // },
     genderContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -1095,8 +1091,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        width: width * 0.4, // Chiều rộng là 40% màn hình
-        height: width * 0.9, // Giữ tỷ lệ vuông
+        width: width * 0.4,
+        height: width * 0.9,
 
     },
 });

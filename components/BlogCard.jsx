@@ -52,7 +52,7 @@ const BlogCard = ({ handleDeleteBlogById, blog, handleLike, index, userId, color
                     isAuthor &&
                     <View className="relative">
                         <TouchableOpacity onPress={() => setIsVisibleModalEdit(true)} className="pl-2 py-2">
-                            <Entypo name='dots-three-vertical' size={20} />
+                            <Entypo name='dots-three-vertical' size={20} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                         </TouchableOpacity>
                         <Modal
                             animationType="fade"

@@ -7,48 +7,13 @@ import { router } from 'expo-router'
 import CustomButton from '../../components/CustomButton'
 import ExerciseDetailSelectCard from '../../components/ExerciseDetailSelectCard'
 import LoadingModal from '../../components/LoadingModal'
-import { createCustomTrainings, getAllExercisesBySearchQueryName } from '../../libs/mongodb'
+import { createCustomTrainings, getAllBodyPart, getAllEquipments, getAllExercisesBySearchQueryName } from '../../libs/mongodb'
 import { useUserStore } from '../../store';
 import { images } from '../../constants/image'
 import BottomSheetModalComponent from '../../components/BottomSheetModal';
 import BottomSheet from '../../components/BottomSheet';
 import { useColorScheme } from 'nativewind';
-const bodyParts = [
-    'bụng', 'cardio',
-    'chân', 'cơ cổ',
-    'lưng', 'mông',
-    'ngực', 'tay',
-    'vai'
-]
 
-const equipments = [
-    'bóng bosu',
-    'bóng tặp thăng bằng',
-    'máy tập trượt tuyết (skierg)',
-    'bóng y tế',
-    'búa',
-    'con lăn',
-    'con lăn bánh xe',
-    'dây kháng lực',
-    'dây thừng',
-    'lốp xe',
-    'máy cáp',
-    'máy kéo tạ',
-    'máy leo cầu thang',
-    'máy tập elip',
-    'máy tập smith',
-    'máy tập thân trên',
-    'máy tập đòn bẩy',
-    'thanh trap',
-    'thanh tạ',
-    'thanh tạ ez',
-    'trọng lượng cơ thể',
-    'tạ olympic',
-    'tạ tay',
-    'tạ đeo',
-    'tạ ấm',
-    'xe đạp tập cố định'
-]
 const CreateExercisePage = () => {
 
 
@@ -69,6 +34,8 @@ const CreateExercisePage = () => {
         bodyParts: [],
         equipments: [],
     })
+    const [bodyParts, setBodyParts] = useState([])
+    const [equipments, setEquipments] = useState([])
     const [trainingData, setTrainingData] = useState({
         title: 'Bài tập mới',
         exercises: [
@@ -112,11 +79,11 @@ const CreateExercisePage = () => {
     }
 
     const handleAddExerciseToSelection = useCallback((exercise) => {
-        if (!exerciseSelections.some((ex) => ex.id === exercise.id)) {
+        if (!exerciseSelections.some((ex) => ex._id === exercise._id)) {
             setExerciseSelections((prev) => [...prev, exercise]);
         } else {
             setExerciseSelections(
-                (prev) => prev.filter((ex) => ex.id !== exercise.id) // Sử dụng `id` hoặc thuộc tính bạn đang sử dụng
+                (prev) => prev.filter((ex) => ex._id !== exercise._id) // Sử dụng `id` hoặc thuộc tính bạn đang sử dụng
             );
         }
     }, [exerciseSelections]);
@@ -127,7 +94,7 @@ const CreateExercisePage = () => {
             let updatedTrainingData = JSON.parse(JSON.stringify(trainingData));
             exerciseSelections.map((ex, index) => {
                 const existingExercise = updatedTrainingData.exercises.find(
-                    (item) => item.exercise.id === ex.id
+                    (item) => item.exercise._id === ex._id
                 );
 
                 if (!existingExercise) {
@@ -157,9 +124,7 @@ const CreateExercisePage = () => {
             }))
 
             setIsVisibleLoadingModal(false)
-            router.push({
-                pathname: '/(root)/(tabs)/custom'
-            })
+            router.back()
             Alert.alert("Đã tạo set bài tập mới!")
 
         } catch (error) {
@@ -219,6 +184,30 @@ const CreateExercisePage = () => {
         bottomSheetRefFilter?.current?.present()
     }
 
+    useEffect(() => {
+        const fetchAllBodyParts = async () => {
+            try {
+                const res = await getAllBodyPart()
+                setBodyParts(res.data)
+            } catch (error) {
+                Alert.alert("Lỗi", error.message)
+            }
+        }
+        fetchAllBodyParts()
+    }, [])
+
+    useEffect(() => {
+        const fetchAllEquipments = async () => {
+            try {
+                const res = await getAllEquipments()
+                setEquipments(res.data)
+            } catch (error) {
+                Alert.alert("Lỗi", error.message)
+            }
+        }
+
+        fetchAllEquipments()
+    }, [])
 
     useEffect(() => {
         const debounceTimeout = setTimeout(() => {
@@ -332,7 +321,7 @@ const CreateExercisePage = () => {
                     <CustomButton bgColor='bg-[#3749db]' text="Tạo mới" onPress={handleSaveAddExerciseToTraining} />
                 </View>
                 <BottomSheetModalComponent bottomSheetRef={bottomSheetRef} selectedExercise={selectedExercise} />
-                <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['95%']} bottomSheetRef={bottomSheetRefFilter}>
+                <BottomSheet title="Lọc bài tập" enablePanDownToClose={false} snapPoints={['90%']} bottomSheetRef={bottomSheetRefFilter}>
                     <View className="p-2 rounded-lg bg-neutral-100 border-[0.5px] m-2">
                         <Text className="font-pmedium text-lg mb-1">Phần bộ phận cơ thể</Text>
                         <View className="flex flex-row flex-wrap">
@@ -343,7 +332,7 @@ const CreateExercisePage = () => {
                                         key={index}
                                         className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 ${filter?.bodyParts?.includes(item) && 'bg-[#000]'}`}
                                     >
-                                        <Text className={`font-pbold text-[12px] uppercase ${filter?.bodyParts?.includes(item) && 'text-white'}`}>{item}</Text>
+                                        <Text className={`font-pbold text-[12px] uppercase ${filter?.bodyParts?.includes(item) && 'text-white'}`}>{item._id}</Text>
                                     </Pressable>
                                 ))
                             }
@@ -361,7 +350,7 @@ const CreateExercisePage = () => {
                                         key={index}
                                         className={`p-2 rounded-full border-[0.5px] mr-1 mb-1 ${filter?.equipments?.includes(item) && 'bg-[#000]'}`}
                                     >
-                                        <Text className={`font-pbold text-[12px] uppercase ${filter?.equipments?.includes(item) && 'text-white'}`}>{item}</Text>
+                                        <Text className={`font-pbold text-[12px] uppercase ${filter?.equipments?.includes(item) && 'text-white'}`}>{item._id}</Text>
                                     </Pressable>
                                 ))
                             }

@@ -1,9 +1,9 @@
 import { Feather, FontAwesome5 } from '@expo/vector-icons'
+import { Image } from 'expo-image'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useColorScheme } from 'nativewind'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import BlogCard from '../../../components/BlogCard'
 import LoadingModal from '../../../components/LoadingModal'
@@ -11,10 +11,10 @@ import { images } from '../../../constants/image'
 import { findChatRoom, getFeedsByUserId, getUserById, updateBlogById } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import socket from '../../../utils/socket'
-import { formatDateWithMonth } from '../../../utils/index'
 const FeedProfile = () => {
 
     const { id } = useLocalSearchParams()
+
     const [userProfile, setUserProfile] = useState({})
     const [userFeeds, setUserFeeds] = useState([])
     const { colorScheme } = useColorScheme()
@@ -69,7 +69,8 @@ const FeedProfile = () => {
         const fetchUserData = async () => {
             setIsFetching(true)
             try {
-                const res = await getUserById(id);
+                const res = await getUserById(id)
+
                 setUserProfile(res.data)
             } catch (error) {
                 Alert.alert("Lỗi", error.message)
@@ -149,32 +150,32 @@ const FeedProfile = () => {
                         <View className="border-[#ccc] border-[0.5px] rounded-lg p-4 flex flex-row">
                             <View className="flex-1 flex ">
                                 <View className="flex flex-row justify-between items-center mb-2">
-                                    <Text className="font-pbold text-lg">Tuổi</Text>
-                                    <Text className="text-lg font-pmedium">{user.age}</Text>
+                                    <Text className="font-pbold text-lg dark:text-white">Tuổi</Text>
+                                    <Text className="text-lg font-pmedium dark:text-white">{userProfile.age}</Text>
                                 </View>
                                 <View className="flex flex-row justify-between items-center mb-2">
-                                    <Text className="font-pbold text-lg">Giới tính</Text>
-                                    <Text className="text-lg font-pmedium capitalize">{user.gender == 'female' ? 'nữ' : 'nam'}</Text>
+                                    <Text className="font-pbold text-lg dark:text-white">Giới tính</Text>
+                                    <Text className="text-lg font-pmedium capitalize dark:text-white">{userProfile.gender == 'female' ? 'nữ' : 'nam'}</Text>
                                 </View>
                                 <View className="flex flex-row justify-between items-center mb-2">
-                                    <Text className="font-pbold text-lg">Cân nặng</Text>
-                                    <Text className="text-lg font-pmedium">{user.weight} kg</Text>
+                                    <Text className="font-pbold text-lg dark:text-white">Cân nặng</Text>
+                                    <Text className="text-lg font-pmedium dark:text-white">{userProfile.weight} kg</Text>
                                 </View>
                                 <View className="flex flex-row justify-between items-center mb-2">
-                                    <Text className="font-pbold text-lg">Chiều cao</Text>
-                                    <Text className="text-lg font-pmedium">{user.height} cm</Text>
+                                    <Text className="font-pbold text-lg dark:text-white">Chiều cao</Text>
+                                    <Text className="text-lg font-pmedium dark:text-white">{userProfile.height} cm</Text>
                                 </View>
                                 <View className="flex flex-row justify-between items-center mb-2">
-                                    <Text className="font-pbold text-lg">Trình độ</Text>
-                                    <Text className="text-lg font-pmedium">{user.level}</Text>
+                                    <Text className="font-pbold text-lg dark:text-white">Trình độ</Text>
+                                    <Text className="text-lg font-pmedium dark:text-white">{userProfile.level}</Text>
                                 </View>
                                 <View className="flex flex-row justify-between items-center mb-2">
-                                    <Text className="font-pbold text-lg">ORM</Text>
-                                    <Text className="text-lg font-pmedium">{user.orm} kg</Text>
+                                    <Text className="font-pbold text-lg dark:text-white">ORM</Text>
+                                    <Text className="text-lg font-pmedium dark:text-white">{userProfile.orm} kg</Text>
                                 </View>
                                 <View className="flex flex-row justify-between items-center mb-2">
-                                    <Text className="font-pbold text-lg">Đã tham gia từ</Text>
-                                    <Text className="text-lg font-pmedium">{new Date(user.created_at).toDateString()}</Text>
+                                    <Text className="font-pbold text-lg dark:text-white">Đã tham gia từ</Text>
+                                    <Text className="text-lg font-pmedium dark:text-white">{new Date(userProfile.created_at).toDateString()}</Text>
                                 </View>
                             </View>
                         </View>

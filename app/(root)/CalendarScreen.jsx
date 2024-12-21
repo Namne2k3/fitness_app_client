@@ -155,7 +155,6 @@ const CalendarScreen = () => {
     const fetchCalendars = async () => {
         try {
             setIsLoading(true)
-            console.log("Fetch calendars ....");
             const res = await getCalendars();
             if (res?.data) {
 
@@ -184,7 +183,7 @@ const CalendarScreen = () => {
     }, [])
 
     return (
-        <SafeAreaView className="flex flex-1 h-full p-4">
+        <SafeAreaView className="flex flex-1 h-full p-4 dark:bg-slate-950">
             <View className="flex flex-row justify-between items-center pb-2">
                 <TouchableOpacity
                     onPress={() => router.back()}
@@ -195,7 +194,7 @@ const CalendarScreen = () => {
                     <Feather name='arrow-left' size={24} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                 </TouchableOpacity>
 
-                <Text className="text-[28px] font-pextrabold uppercase">Đặt thông báo</Text>
+                <Text className="text-[28px] font-pextrabold uppercase dark:text-white">Đặt thông báo</Text>
             </View>
 
             <ScrollView
@@ -204,11 +203,11 @@ const CalendarScreen = () => {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
-                <View className="bg-[#fff] rounded-lg my-2">
-                    <Text className="font-pmedium text-lg px-3 pt-3">Các thông báo được thiết lập</Text>
+                <View className="bg-[#fff] rounded-lg my-2 dark:bg-[#292727]">
+                    <Text className="font-pmedium text-lg px-3 pt-3 dark:text-white">Các thông báo được thiết lập</Text>
                     <FlatList
-                        data={calendars || []} // Dữ liệu của bạn
-                        renderItem={({ item }) => <CalendarCard handleDeleteNotification={(item) => handleDeleteNotification(item)} item={item} />}
+                        data={calendars || []}
+                        renderItem={({ item }) => <CalendarCard colorScheme={colorScheme} handleDeleteNotification={(item) => handleDeleteNotification(item)} item={item} />}
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={(item, index) => index.toString()}
@@ -226,8 +225,8 @@ const CalendarScreen = () => {
                     />
                 </View>
 
-                <View className=" bg-[#fff] rounded-lg my-2">
-                    <Text className="font-pmedium text-lg px-3 pt-3">Chọn set tập</Text>
+                <View className=" bg-[#fff] rounded-lg my-2 dark:bg-[#292727]">
+                    <Text className="font-pmedium text-lg px-3 pt-3 dark:text-white">Chọn set tập</Text>
                     <FlatList
                         horizontal
                         data={
@@ -242,21 +241,21 @@ const CalendarScreen = () => {
                                     ...current,
                                     training: item
                                 }))}
-                                className={`bg-[#f2f2f2] rounded-lg p-4 mr-3 flex flex-row justify-center items-center ${form?.training?._id == item?._id && 'border-[2px]'}`}
+                                className={`bg-[#f2f2f2] dark:bg-[#292727] dark:border-[#ccc] dark:border-[0.5px] rounded-lg p-4 mr-3 flex flex-row justify-center items-center ${form?.training?._id == item?._id && 'border-[2px]'}`}
                             >
                                 <View className="flex flex-col " >
-                                    <Text className="font-pbold text-lg">{item?.title}</Text>
+                                    <Text className="font-pbold text-lg dark:text-white">{item?.title}</Text>
                                     {
                                         item?.planName &&
-                                        <Text className="font-pmedium text-[16px] capitalize">{item?.planName}</Text>
+                                        <Text className="font-pmedium text-[16px] capitalize dark:text-white">{item?.planName}</Text>
                                     }
-                                    <Text>6 bài</Text>
+                                    {/* <Text>6 bài</Text> */}
                                 </View>
 
                                 {
                                     form?.training?._id == item?._id ?
                                         <View className={`ml-4 rounded-full w-[40px] h-[40px] flex justify-center items-center `}>
-                                            <Feather name='check' size={40} />
+                                            <Feather name='check' size={40} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                                         </View>
                                         :
                                         <View className={`ml-4 rounded-full w-[40px] h-[40px] flex justify-center items-center `} style={{ backgroundColor: randomColor() }}>
@@ -274,7 +273,7 @@ const CalendarScreen = () => {
                     />
                 </View>
 
-                <View className="my-2 bg-[#fff] rounded-lg p-4 pb-0">
+                <View className="my-2 bg-[#fff] rounded-lg p-4 pb-0 dark:bg-[#292727]">
                     <DateTimePicker
                         mode="single"
                         date={form.calendarDate}
@@ -287,20 +286,30 @@ const CalendarScreen = () => {
                         }}
                         locale="vi"
                         displayFullDays
+                        calendarTextStyle={{
+                            color: colorScheme == 'dark' ? '#fff' : '#000'
+                        }}
+                        headerTextStyle={{
+                            color: colorScheme == 'dark' ? '#fff' : '#000'
+                        }}
+                        weekDaysTextStyle={{
+                            color: colorScheme == 'dark' ? '#fff' : '#000'
+                        }}
+                        headerButtonColor={`${colorScheme == 'dark' ? '#fff' : '#000'}`}
                         initialView={'day'}
                         disabledDates={disablePastDates}
                     />
                 </View>
 
                 <View className="my-2">
-                    <TouchableOpacity className="p-4 bg-[#fff] rounded-lg flex justify-center items-center shadow-lg" onPress={showDatePicker}>
+                    <TouchableOpacity className="p-4 bg-[#fff] dark:bg-[#292727] rounded-lg flex justify-center items-center shadow-lg" onPress={showDatePicker}>
                         {
                             form?.calendarDate != null ? <View>
-                                <Text className="font-pmedium text-center text-lg">Thời gian: </Text>
-                                <Text className="font-pmedium text-center text-lg">{new Date(form.calendarDate.toString()).toLocaleDateString()} {new Date(form.calendarDate.toString()).toLocaleTimeString()}</Text>
+                                <Text className="font-pmedium text-center text-lg dark:text-white">Thời gian: </Text>
+                                <Text className="font-pmedium text-center text-lg dark:text-white">{new Date(form.calendarDate.toString()).toLocaleDateString()} {new Date(form.calendarDate.toString()).toLocaleTimeString()}</Text>
                             </View>
                                 :
-                                <Text className="font-pmedium text-center text-lg">Chọn ngày và giờ</Text>
+                                <Text className="font-pmedium text-center text-lg dark:text-white">Chọn ngày và giờ</Text>
                         }
                     </TouchableOpacity>
                 </View>

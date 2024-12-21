@@ -93,7 +93,7 @@ const BeginTrainingId = () => {
 
             const updatedExercises = prevData.exercises.map(exercise => {
 
-                if (exercise.exercise.id === item.exercise.id) {
+                if (exercise.exercise._id === item.exercise._id) {
 
                     const updatedSets = exercise.sets.map((set, setIndex) => {
                         if (setIndex === index) {
@@ -119,7 +119,7 @@ const BeginTrainingId = () => {
 
             const updatedExercises = prevData.exercises.map(exercise => {
 
-                if (exercise.exercise.id === item.exercise.id) {
+                if (exercise.exercise._id === item.exercise._id) {
 
                     const updatedSets = exercise.sets.map((set, setIndex) => {
                         if (setIndex === index) {
@@ -296,27 +296,30 @@ const BeginTrainingId = () => {
                     </View>
                 }
                 data={dataTraining?.exercises}
-                renderItem={({ item }) => (
-                    <View className="bg-[#fff] flex p-4 dark:bg-slate-800">
-                        <TrainingCard toggleBottomSheetModal={toggleBottomSheetModal} handleUpdateIsCheck={handleUpdateIsCheck} hasCheck={true} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
-                        <View className="flex flex-row justify-between items-center">
-                            <CustomButton
-                                containerStyle="mt-4 flex-1 mr-2 border-[1px] border-[#000]"
-                                textStyle={{ color: colorScheme == 'dark' ? '#fff' : '#000' }}
-                                bgColor={colorScheme == 'dark' ? 'bg-slate-800' : 'bg-[#fff]'}
-                                text="-"
-                                onPress={() => handleRemoveLastSet(item)}
-                            />
-                            <CustomButton
-                                containerStyle="mt-4 flex-1 ml-2 border-[1px] border-[#000]"
-                                textStyle={{ color: colorScheme == 'dark' ? '#fff' : '#000' }}
-                                bgColor={colorScheme == 'dark' ? 'bg-slate-800' : 'bg-[#fff]'}
-                                text="+"
-                                onPress={() => handleAddSet(item)}
-                            />
-                        </View>
-                    </View>
-                )}
+                renderItem={({ item }) => {
+                    if (item.exercise)
+                        return (
+                            <View className="bg-[#fff] flex p-4 dark:bg-[#292727]">
+                                <TrainingCard toggleBottomSheetModal={toggleBottomSheetModal} handleUpdateIsCheck={handleUpdateIsCheck} hasCheck={true} handleUpdateKilogramAndReps={handleUpdateKilogramAndReps} item={item} />
+                                <View className="flex flex-row justify-between items-center">
+                                    <CustomButton
+                                        containerStyle="mt-4 flex-1 mr-2 border-[1px] border-[#000]"
+                                        textStyle={{ color: colorScheme == 'dark' ? '#fff' : '#000' }}
+                                        bgColor={colorScheme == 'dark' ? 'bg-slate-950' : 'bg-[#fff]'}
+                                        text="-"
+                                        onPress={() => handleRemoveLastSet(item)}
+                                    />
+                                    <CustomButton
+                                        containerStyle="mt-4 flex-1 ml-2 border-[1px] border-[#000]"
+                                        textStyle={{ color: colorScheme == 'dark' ? '#fff' : '#000' }}
+                                        bgColor={colorScheme == 'dark' ? 'bg-slate-950' : 'bg-[#fff]'}
+                                        text="+"
+                                        onPress={() => handleAddSet(item)}
+                                    />
+                                </View>
+                            </View>
+                        )
+                }}
                 ItemSeparatorComponent={() => (
                     <View className="bg-[#eaecef] h-[10px] dark:bg-slate-950" />
                 )}

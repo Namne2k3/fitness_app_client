@@ -8,7 +8,7 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useColorScheme } from 'nativewind';
 import React, { useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import socket from '../../utils/socket';
 
@@ -38,8 +38,15 @@ const WelcomePage = () => {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     const userData = await getUserById(res.data.user._id);
-                    socket.emit('register', userData?.data?._id);
-                    setUser(userData?.data);
+                    if (userData?.data?.isLocked == true) {
+                        await AsyncStorage.removeItem('jwt_token');
+                        Alert.alert("Tài khoản của bạn tạm thời bị khóa")
+                        router.replace(`/(auth)/sign-in`)
+                        return false
+                    } else {
+                        socket.emit('register', userData?.data?._id);
+                        setUser(userData?.data);
+                    }
                     return true;
                 } catch (error) {
                     console.log('Có lỗi khi lấy thông tin người dùng:', error.message);

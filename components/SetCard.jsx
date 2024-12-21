@@ -8,7 +8,7 @@ const SetCard = ({ index, item: { kilogram, reps, isCheck }, handleUpdateIsCheck
     const { colorScheme } = useColorScheme()
 
     return (
-        <View className={`flex flex-row justify-between items-center w-full ${isCheck ? 'bg-[#239140]' : colorScheme == 'dark' ? 'bg-slate-700' : 'bg-[#f5f4f5]'} px-4 py-1 rounded-[20px]`}>
+        <View className={`flex flex-row justify-between items-center w-full ${isCheck ? 'bg-[#239140]' : colorScheme == 'dark' ? 'bg-slate-950' : 'bg-[#f5f4f5]'} px-4 py-1 rounded-[20px]`}>
 
             {
                 hasCheck &&

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, Pressable, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { AntDesign } from '@expo/vector-icons';
 import { useColorScheme } from 'nativewind';
@@ -28,7 +28,6 @@ const BottomSheet = ({ onDismiss, title, bottomSheetRef, children, snapPoints = 
                 handleStyle={{
                     borderColor: colorScheme == 'dark' ? "rgb(2,6,23)" : '#000',
                     backgroundColor: colorScheme == 'dark' ? "rgb(2,6,23)" : '#fff',
-                    borderRadius: 12,
                 }}
                 style={{
                     borderRadius: 12,
@@ -36,16 +35,22 @@ const BottomSheet = ({ onDismiss, title, bottomSheetRef, children, snapPoints = 
                     backgroundColor: colorScheme == 'dark' ? 'rgb(2,6,23)' : '#fff',
                     borderColor: '#000',
                 }}
+                ba
             >
-                <View>
-                    <View className="flex flex-row justify-between items-center px-4">
-                        <Text className="font-pbold text-lg uppercase">{title ?? ""}</Text>
+                <BottomSheetScrollView
+                    contentContainerStyle={{
+                        padding: 16,
+                        backgroundColor: colorScheme == 'dark' ? '#000' : '#fff'
+                    }}
+                >
+                    <View className="flex flex-row justify-between items-center pb-4">
+                        <Text className="font-pbold text-lg uppercase dark:text-white">{title ?? ""}</Text>
                         <TouchableOpacity onPress={handleClose}>
-                            <AntDesign name="close" size={28} />
+                            <AntDesign name="close" size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
                         </TouchableOpacity>
                     </View>
                     {children}
-                </View>
+                </BottomSheetScrollView>
             </BottomSheetModal>
         </BottomSheetModalProvider>
     );

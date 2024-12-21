@@ -4,7 +4,6 @@ import { getAbbreviation, randomColor } from '../utils/index.js'
 import { router } from 'expo-router'
 
 const CustomTrainingCard = ({ item }) => {
-
     return (
         <TouchableOpacity
             onPress={() => router.push({
@@ -34,12 +33,15 @@ const CustomTrainingCard = ({ item }) => {
             </View>
             <View className="flex mt-4">
                 {
-                    item?.exercises?.map((ex, index) => (
-                        <View key={index} className="flex flex-row justify-between items-start mb-2">
-                            <Text className="dark:text-white flex-1 font-pmedium capitalize">{ex?.exercise?.name}</Text>
-                            <Text className="dark:text-white flex-[0.4] text-right font-pextrabold">{ex?.sets?.length} Hiệp</Text>
-                        </View>
-                    ))
+                    item?.exercises?.map((ex, index) => {
+                        if (ex.exercise)
+                            return (
+                                <View key={index} className="flex flex-row justify-between items-start mb-2">
+                                    <Text className="dark:text-white flex-1 font-pmedium capitalize">{ex?.exercise?.name}</Text>
+                                    <Text className="dark:text-white flex-[0.4] text-right font-pextrabold">{ex?.sets?.length + ` Hiệp`}</Text>
+                                </View>
+                            )
+                    })
                 }
             </View>
         </TouchableOpacity>

@@ -107,7 +107,7 @@ const FoodScreen = () => {
                     </View>
                 ) :
                     <View className="flex flex-row justify-between items-center">
-                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">thực phẩm</Text>
+                        <Text className="font-pextrabold text-[32px] dark:text-white uppercase">tìm kiếm</Text>
                         <View>
                             <TouchableOpacity onPress={handleToggleSearching}>
                                 <FontAwesome name='search' size={26} color={colorScheme == 'dark' ? '#fff' : '#000'} />
@@ -165,7 +165,7 @@ const FoodScreen = () => {
                     />
                 )
             }
-            <BottomSheet title="Lọc thực phẩm" enablePanDownToClose={false} snapPoints={['100%']} bottomSheetRef={bottomSheetRefFilter}>
+            <BottomSheet title="Lọc thực phẩm" enablePanDownToClose={true} snapPoints={['90%']} bottomSheetRef={bottomSheetRefFilter}>
                 <View className="flex p-2">
                     <View className="flex flex-row p-2">
                         <Text className="">Calo {`<=`}</Text>

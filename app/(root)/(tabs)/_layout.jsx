@@ -42,7 +42,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="exercisesScreen"
         options={{
-          title: 'Bài tập',
+          title: 'Tìm kiếm',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={26} name='space-dashboard' color={color} />
@@ -72,7 +72,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="feed"
         options={{
-          title: 'Feed',
+          title: 'Bảng tin',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <MaterialIcons size={26} name='article' color={color} />
@@ -82,7 +82,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="me"
         options={{
-          title: 'Me',
+          title: 'Tôi',
           headerShown: false,
           tabBarIcon: ({ color }) => (
             <Ionicons size={26} name='person' color={color} />

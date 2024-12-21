@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { Image } from 'expo-image'
 import React from 'react'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useColorScheme } from 'nativewind';
+import { AntDesign } from '@expo/vector-icons';
 
-const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoints = ['100%'] }) => {
+const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoints = ['95%'] }) => {
 
     const { colorScheme } = useColorScheme()
 
@@ -45,6 +46,11 @@ const BottomSheetModalComponent = ({ selectedExercise, bottomSheetRef, snapPoint
                     }}
                     showsVerticalScrollIndicator={false}
                 >
+                    <View className="flex flex-row justify-end items-center pb-4">
+                        <TouchableOpacity onPress={() => bottomSheetRef?.current?.dismiss()}>
+                            <AntDesign name="close" size={28} color={colorScheme == 'dark' ? '#fff' : '#000'} />
+                        </TouchableOpacity>
+                    </View>
                     <View className="flex justify-center items-center rounded-lg" >
                         <Image
                             source={{

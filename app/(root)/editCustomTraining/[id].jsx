@@ -79,7 +79,7 @@ const EditCustomTraining = () => {
 
             const updatedExercises = prevData.exercises.map(exercise => {
 
-                if (exercise.exercise.id === item.exercise.id) {
+                if (exercise.exercise._id === item.exercise._id) {
 
                     const updatedSets = exercise.sets.map((set, setIndex) => {
                         if (setIndex === index) {
@@ -118,8 +118,6 @@ const EditCustomTraining = () => {
     // useEffect(() => {
     //     const fetchData = async () => {
     //         const data = await fetchTrainingById(id);
-    //         console.log("Check data fetching >>> ", data);
-
     //         setDataTraining(data)
     //     }
 

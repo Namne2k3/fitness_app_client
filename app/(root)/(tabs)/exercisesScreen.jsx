@@ -1,27 +1,38 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { useColorScheme } from "nativewind";
-import { SafeAreaView } from "react-native-safe-area-context";
-import Exercises from '../exercises'
-import FoodScreen from '../foodScreen'
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { StatusBar } from 'expo-status-bar';
+import Exercises from '../exercises';
+import FoodScreen from '../foodScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
 const ExercisesScreen = () => {
-
-    const { colorScheme } = useColorScheme()
+    const { colorScheme } = useColorScheme();
+    const insets = useSafeAreaInsets();
 
     return (
-        <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
+        <View
+            style={[
+                styles.container,
+                {
+                    paddingTop: insets.top,
+                    backgroundColor: colorScheme === 'dark' ? '#000' : '#f3f2f3',
+                },
+            ]}
+        >
+            {/* Update StatusBar style */}
+            <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
             <Tab.Navigator
                 screenOptions={{
                     tabBarIndicatorStyle: {
                         backgroundColor: '#3749db',
                         padding: 2,
-                        borderRadius: 4
+                        borderRadius: 4,
                     },
-                    tabBarActiveTintColor: colorScheme == 'dark' ? '#fff' : '#000',
+                    tabBarActiveTintColor: colorScheme === 'dark' ? '#fff' : '#000',
                     tabBarInactiveTintColor: 'gray',
                     tabBarLabelStyle: {
                         fontSize: 18,
@@ -29,18 +40,22 @@ const ExercisesScreen = () => {
                     },
                     tabBarStyle: {
                         shadowColor: '#fff',
-                        backgroundColor: '#f3f2f3'
+                        backgroundColor: colorScheme === 'dark' ? '#000' : '#f3f2f3',
                     },
-                    swipeEnabled: false
+                    swipeEnabled: false,
                 }}
             >
                 <Tab.Screen name="BÀI TẬP" component={Exercises} />
                 <Tab.Screen name="THỰC PHẨM" component={FoodScreen} />
             </Tab.Navigator>
-        </SafeAreaView>
-    )
-}
+        </View>
+    );
+};
 
-export default ExercisesScreen
+export default ExercisesScreen;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+});

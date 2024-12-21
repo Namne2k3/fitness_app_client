@@ -96,8 +96,8 @@ const Me = () => {
                         <Text className=" dark:text-white font-pmedium text-[16px] capitalize">Thiết lập hệ thống</Text>
                     </TouchableOpacity>
                     <TouchableOpacity disabled className="flex flex-row py-4 mt-2  justify-start items-center border-[#ccc] border-b-[0.5px]">
-                        <AntDesign color={colorScheme == 'dark' ? '#fff' : "#9ca3af"} name='earth' size={24} style={{ marginRight: 12 }} />
-                        <Text className="text-gray-400 dark:text-white font-pmedium text-[16px] capitalize">Ngôn ngữ</Text>
+                        <AntDesign color={"#9ca3af"} name='earth' size={24} style={{ marginRight: 12 }} />
+                        <Text className="text-gray-400 font-pmedium text-[16px] capitalize">Ngôn ngữ</Text>
                     </TouchableOpacity>
                 </View>
                 <View className="bg-[#fff] rounded-lg p-4 dark:bg-[#292727]">
