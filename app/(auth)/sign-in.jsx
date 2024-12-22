@@ -87,7 +87,7 @@ const SignIn = () => {
     return (
         <SafeAreaView className="p-8 bg-[#fff] h-full">
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Text className="font-pextrabold text-[32px] mb-4 text-center">Đăng nhập</Text>
+                <Text className="font-pextrabold text-[32px] mb-4 text-center dark:text-white">Đăng nhập</Text>
                 <InputField
                     onChange={(text) => setForm({ ...form, email: text })}
                     label={'Email'}

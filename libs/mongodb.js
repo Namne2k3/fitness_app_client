@@ -805,7 +805,23 @@ const getRoomById = async (id) => {
     }
 }
 
+const handleLogout = async () => {
+    const token = await getToken();
+    try {
+        const res = await axios.get(`${URL}/api/auth/logout`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return res.data.message
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 export {
+    handleLogout,
     getAllEquipments,
     getAllBodyParts,
     deleteBlogById,

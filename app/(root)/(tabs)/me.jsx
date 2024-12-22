@@ -1,5 +1,5 @@
 import CustomButton from '@/components/CustomButton'
-import { createFeedback, updateUserById } from '@/libs/mongodb'
+import { createFeedback, handleLogout, updateUserById } from '@/libs/mongodb'
 import { useUserStore } from '@/store'
 import { useAuth } from '@clerk/clerk-expo'
 import { AntDesign, FontAwesome5, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
@@ -9,9 +9,10 @@ import React, { useCallback, useState } from 'react'
 import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { removeToken } from '../../../libs/token'
+
 const Me = () => {
 
-    const { user, setUser } = useUserStore();
+    const { user } = useUserStore();
     const { signOut } = useAuth()
     const packageInfo = require('../../../package.json');
     const [isRated, setIsRated] = useState(false)
@@ -38,11 +39,14 @@ const Me = () => {
     })
 
     const handleLogOut = async () => {
+
         try {
             await updateUserById({ ...user, pushToken: "" })
+            await handleLogout()
             await signOut()
             await removeToken()
             clearUser()
+            Alert.alert("Đã đăng xuất!");
             router.replace('/(auth)/sign-in')
         } catch (error) {
             console.error('Lỗi khi đăng xuất:', error);
