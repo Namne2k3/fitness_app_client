@@ -12,9 +12,11 @@ import { getUserByEmail, updateUserById } from '../../libs/mongodb'
 import useUserStore from '../../store/userStore'
 import { requestPermissionsAsync, getExpoPushTokenAsync } from 'expo-notifications';
 import socket from '../../utils/socket';
-
+import { useDispatch } from 'react-redux'
+import { setUser as setUserRedux } from '../../store/userReduxData/UserReduxActions'
 
 const SignIn = () => {
+    const dispatch = useDispatch()
     const [isVisibleLoadingModal, setIsVisibleLoadingModal] = useState(false)
     const [form, setForm] = useState({
         email: 'nhpn2003@gmail.com',
@@ -62,7 +64,8 @@ const SignIn = () => {
                     const pushToken = await registerPushToken()
                     await updateUserById({ ...userData, pushToken: pushToken })
 
-                    setUser(userData)
+                    // setUser(userData)
+                    dispatch(setUserRedux(userData))
                     if (!userData.weight || !userData.height || userData.height == "0" || !userData.orm || !userData.tdee) {
                         router.push(`/(root)/ChooseGender`)
                         return;

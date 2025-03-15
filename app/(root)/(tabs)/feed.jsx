@@ -10,10 +10,13 @@ import { images } from '../../../constants/image';
 import { deleteBlogById, getAllBlog, updateBlogById, } from '../../../libs/mongodb';
 import useUserStore from '../../../store/userStore';
 import { deleteFile } from '../../../libs/appwrite';
+import { useSelector } from 'react-redux';
+import { selectGetUser } from '../../../store/userReduxData/UserReduxSelectors';
 
 const Feed = () => {
     const { colorScheme } = useColorScheme()
-    const { user } = useUserStore()
+    const user = useSelector(selectGetUser)
+    // const { user } = useUserStore()
     const [blogs, setBlogs] = useState([])
     const [skip, setSkip] = useState(0);
     const limit = 5;

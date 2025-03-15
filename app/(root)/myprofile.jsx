@@ -19,6 +19,9 @@ import { getAllExercises, handleUpdateUser, reCreatePlans, reCreateTrainingsByUs
 import useUserStore from '../../store/userStore'
 import { calculate1RM, createPlansForUser, generateTrainings } from '../../utils'
 import { analyzeUser, BMR, calculateTrainingPlan } from '../../utils/index'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectGetUser } from '../../store/userReduxData/UserReduxSelectors'
+import { setUser as setUserRedux } from '../../store/userReduxData/UserReduxActions'
 
 const { width } = Dimensions.get('window');
 
@@ -39,8 +42,9 @@ const removeImageField = (obj) => {
 
 const MyProfile = () => {
 
-    const { user, setUser } = useUserStore()
-
+    // const { user, setUser } = useUserStore()
+    const user = useSelector(selectGetUser)
+    const dispatch = useDispatch()
     const [tempUser, setTempUser] = useState({})
     const { colorScheme } = useColorScheme()
     const [isChanging, setIsChanging] = useState("")
@@ -79,6 +83,7 @@ const MyProfile = () => {
             // upload file image
             const imageUrl = await uploadFile(profileImage, profileImage?.type)
             const updatedUser = await handleUpdateUser({ ...user, image: imageUrl.uri })
+            dispatch(setUserRedux(updatedUser))
             setUser(updatedUser)
             setProfileImage({})
 
@@ -148,7 +153,8 @@ const MyProfile = () => {
             })
 
             if (res.data != null) {
-                setUser(res.data)
+                dispatch(setUserRedux(res.data))
+                // setUser(res.data)
                 setTempUser(res.data)
                 Alert.alert(res.message)
             } else {
@@ -202,7 +208,8 @@ const MyProfile = () => {
                 targetBMI: targetBMI
             })
 
-            setUser(updatedUser.data)
+            // setUser(updatedUser.data)
+            dispatch(setUserRedux(updatedUser.data))
 
             const createdTrainings = await generateTrainings(updatedUser.data, data)
             const savedTrainings = await reCreateTrainingsByUserId(createdTrainings)

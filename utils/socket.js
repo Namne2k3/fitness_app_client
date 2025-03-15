@@ -1,7 +1,7 @@
 import { io } from 'socket.io-client'
 import { scheduleNotificationAsync } from 'expo-notifications';
 
-const socket = io('https://w2fw01lr-3000.asse.devtunnels.ms', {
+const socket = io(process.env.EXPO_PUBLIC_URL_SERVER, {
     transports: ['websocket'],
     withCredentials: true,
 });

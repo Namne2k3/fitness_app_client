@@ -9,10 +9,13 @@ import React, { useCallback, useState } from 'react'
 import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { removeToken } from '../../../libs/token'
+import { useSelector } from 'react-redux'
+import { selectGetUser } from '@/store/userReduxData/UserReduxSelectors'
 
 const Me = () => {
 
-    const { user } = useUserStore();
+    const user = useSelector(selectGetUser)
+    // const { user } = useUserStore();
     const { signOut } = useAuth()
     const packageInfo = require('../../../package.json');
     const [isRated, setIsRated] = useState(false)

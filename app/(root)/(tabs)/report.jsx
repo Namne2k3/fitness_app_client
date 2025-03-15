@@ -12,6 +12,8 @@ import { images } from '../../../constants/image'
 import { getTrainingRecord, getTrainingRecordsByMonth, getWeeklyTrainings } from '../../../libs/mongodb'
 import useUserStore from '../../../store/userStore'
 import { countDataByDaysInMonth, formatDate, getAverageTimeDurationThisWeek, getCurrentMonthDays, getCurrentWeekDays, getTotalTimeDuration } from '../../../utils/index'
+import { useSelector } from 'react-redux'
+import { selectGetUser } from '../../../store/userReduxData/UserReduxSelectors'
 const screenWidth = Dimensions.get('window').width
 
 const Report = () => {
@@ -20,7 +22,8 @@ const Report = () => {
     const [monthRecords, setMonthRecords] = useState([])
     const [weekRecords, setWeekRecords] = useState([])
     const [totalCaloriesBurned, setTotalCaloriesBurned] = useState(0)
-    const { user } = useUserStore()
+    // const { user } = useUserStore()
+    const user = useSelector(selectGetUser)
     const [refreshing, setRefreshing] = useState(false);
     const scrollViewRef = useRef();
     const [loading, setLoading] = useState(false)

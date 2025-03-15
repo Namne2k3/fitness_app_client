@@ -8,8 +8,8 @@ import { useColorScheme } from 'nativewind';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { tokenCache } from '../libs/clerk';
-import store from '../store/reduxStore'
-import { Provider } from 'react-redux'
+import store from '../store/userReduxData/store'
+import { Provider as ReduxProvider } from 'react-redux'
 import { NotificationProvider } from '../context/NotificationContext';
 import {
   configureReanimatedLogger,
@@ -59,7 +59,7 @@ export default function RootLayout() {
 
 
   return (
-    <Provider store={store}>
+    <ReduxProvider store={store}>
       <StatusBar style={colorScheme == 'light' ? 'dark' : 'light'} />
       <NotificationProvider>
         <ClerkProvider rkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
@@ -73,7 +73,7 @@ export default function RootLayout() {
           </GestureHandlerRootView>
         </ClerkProvider>
       </NotificationProvider>
-    </Provider>
+    </ReduxProvider>
 
   );
 }

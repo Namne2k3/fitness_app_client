@@ -6,10 +6,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { StatusBar } from 'expo-status-bar';
 import Exercises from '../exercises';
 import FoodScreen from '../foodScreen';
-
+import { useSelector } from 'react-redux';
+import { selectGetUser } from '../../../store/userReduxData/UserReduxSelectors';
 const Tab = createMaterialTopTabNavigator();
 
 const ExercisesScreen = () => {
+    const user = useSelector(selectGetUser)
+    console.log("check thu user from redux >>> ", user);
+
     const { colorScheme } = useColorScheme();
     const insets = useSafeAreaInsets();
 

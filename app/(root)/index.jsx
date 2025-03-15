@@ -11,11 +11,15 @@ import React, { useEffect } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import socket from '../../utils/socket';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser as setUserRedux } from '../../store/userReduxData/UserReduxActions'
+import { selectGetUser } from '@/store/userReduxData/UserReduxSelectors';
 
 const WelcomePage = () => {
     const { colorScheme, toggleColorScheme } = useColorScheme();
+    const user = useSelector(selectGetUser)
     const { setUser } = useUserStore()
-
+    const dispatch = useDispatch()
     useEffect(() => {
         const checkSavedTheme = async () => {
             try {
@@ -45,6 +49,10 @@ const WelcomePage = () => {
                         return false
                     } else {
                         socket.emit('register', userData?.data?._id);
+                        console.log("Check thu user data >>> ", userData?.data);
+
+                        dispatch(setUserRedux(userData?.data))
+                        console.log('Updated user from redux selector:', user);
                         setUser(userData?.data);
                     }
                     return true;
@@ -57,7 +65,7 @@ const WelcomePage = () => {
             const fetchSuccess = await fetchUserByToken();
 
             if (fetchSuccess) {
-                const updatedUser = useUserStore.getState().user;
+                const updatedUser = useUserStore.getState()?.user;
 
                 if (!updatedUser?.weight || !updatedUser?.height || !updatedUser?.orm || !updatedUser?.tdee || !updatedUser?.age) {
                     await AsyncStorage.removeItem('jwt_token');

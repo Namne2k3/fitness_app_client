@@ -9,6 +9,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomTrainingCard from '../../../components/CustomTrainingCard';
 import { fetchTrainingsByUserId } from '../../../libs/mongodb';
 import { useUserStore } from '../../../store';
+import { useSelector } from 'react-redux';
+import { selectGetUser } from '@/store/userReduxData/UserReduxSelectors';
 
 const CustomPage = () => {
   const [refreshing, setRefreshing] = useState(false);
@@ -17,7 +19,10 @@ const CustomPage = () => {
 
   const [isLoading, setIsLoading] = useState(true); // Sử dụng isLoading để kiểm tra trạng thái loading
 
-  const user = useUserStore((state) => state.user)
+  // const user = useUserStore((state) => state.user)
+  const user = useSelector(selectGetUser)
+  console.log("Check user >>> ", user);
+
 
   const { colorScheme } = useColorScheme()
 
